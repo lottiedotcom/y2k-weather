@@ -223,7 +223,7 @@
 
     <div class="weather-container">
         <h1>✨ Right Now ✨</h1>
-        <div id="location-name">Finding you, babe... 🗺️</div>
+        <div id="location-name">Finding you... 🗺️</div>
         
         <div id="loading">Locating... 📍</div>
         
@@ -301,15 +301,19 @@
             80: "Sparkly Showers", 81: "Heavy Showers", 82: "Pouring", 95: "Stormy Energy", 96: "Thunderstorm", 99: "Crazy Storm"
         };
 
-        // Your separate Sun Time Parser
-        function formatSunTime(utcString) {
+        // Fixed parsers so they don't break on mobile
+        function formatTime(isoString) {
+            if (!isoString) return "--:--";
             try {
-                const d = new Date(utcString);
-                return d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+                const timePart = isoString.split('T'); 
+                let [hours, minutes] = timePart.split(':');
+                let h = parseInt(hours, 10);
+                const ampm = h >= 12 ? 'PM' : 'AM';
+                h = h % 12 || 12;
+                return `${h}:${minutes} ${ampm}`;
             } catch(e) { return "--:--"; }
         }
 
-        // The fixed Day Name Parser
         function getDayName(dateString, index) {
             if (index === 0) return "Today";
             if (!dateString) return "Day";
@@ -374,7 +378,6 @@
         async function fetchWeather() {
             document.getElementById('loading').style.display = 'block';
             document.getElementById('weather-content').style.display = 'none';
-            document.getElementById('location-name').innerText = "Finding you, babe... 🗺️";
 
             const geoOptions = { enableHighAccuracy: true, maximumAge: 0, timeout: 10000 };
 
@@ -392,21 +395,9 @@
                     document.getElementById('location-name').innerText = `📍 Lost in the vibes`;
                 }
 
-                // YOUR SEPARATE SUN SOURCE (Restored)
                 try {
-                    const sunUrl = `https://api.sunrise-sunset.org/json?lat=${latitude}&lng=${longitude}&formatted=0`;
-                    const sunRes = await fetch(sunUrl);
-                    const sunData = await sunRes.json();
-                    document.getElementById('sunrise').innerText = formatSunTime(sunData.results.sunrise);
-                    document.getElementById('sunset').innerText = formatSunTime(sunData.results.sunset);
-                } catch (e) {
-                    document.getElementById('sunrise').innerText = "--:--";
-                    document.getElementById('sunset').innerText = "--:--";
-                }
-
-                try {
-                    // UPGRADED WEATHER API: NOAA Data for AccuWeather accuracy
-                    const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,surface_pressure,wind_speed_10m,weather_code,uv_index&hourly=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=auto&models=ndfd_conus,gfs_seamless`;
+                    // Back to the stable Open-Meteo best_match database
+                    const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,surface_pressure,wind_speed_10m,weather_code,uv_index&hourly=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=auto&models=best_match`;
                     const response = await fetch(weatherUrl);
                     const data = await response.json();
                     
@@ -429,6 +420,9 @@
                     const currentUV = Math.round(current.uv_index);
                     document.getElementById('uv-number').innerText = currentUV;
                     document.getElementById('uv-text').innerText = getUVSpeech(currentUV);
+
+                    document.getElementById('sunrise').innerText = formatTime(daily.sunrise);
+                    document.getElementById('sunset').innerText = formatTime(daily.sunset);
 
                     const moon = getMoonPhase();
                     document.getElementById('moon-icon').innerText = moon.i;
