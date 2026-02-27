@@ -13,20 +13,25 @@
             --box-glass: rgba(255, 255, 255, 0.4);
         }
 
+        /* Added scrolling support for the taller layout */
         body {
             margin: 0;
-            padding: 0;
+            padding: 20px 0;
             display: flex;
             justify-content: center;
-            align-items: center;
-            height: 100vh;
+            align-items: flex-start;
+            min-height: 100vh;
             background: url('https://i.postimg.cc/v488LSw0/your-image.jpg') no-repeat center center fixed;
             background-size: cover;
             font-family: 'Comic Sans MS', 'Chalkboard SE', cursive;
-            overflow: hidden;
+            overflow-y: auto;
         }
 
-        /* The Glossy Y2K Card */
+        /* Custom Y2K Scrollbar */
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: var(--glass); }
+        ::-webkit-scrollbar-thumb { background: var(--hot-pink); border-radius: 10px; border: 2px solid white; }
+
         .weather-container {
             background: var(--glass);
             backdrop-filter: blur(12px);
@@ -35,12 +40,11 @@
             border-radius: 40px;
             padding: 30px 20px;
             text-align: center;
-            box-shadow: 0 0 20px rgba(255, 0, 222, 0.5), 
-                        inset 0 0 15px white;
+            box-shadow: 0 0 20px rgba(255, 0, 222, 0.5), inset 0 0 15px white;
             width: 85%;
             max-width: 350px;
             color: white;
-            animation: float 4s ease-in-out infinite;
+            margin-bottom: 20px;
         }
 
         h1 {
@@ -58,6 +62,13 @@
             text-shadow: 0 0 15px var(--hot-pink), 2px 2px white;
         }
 
+        #feels-like {
+            font-size: 0.9rem;
+            font-style: italic;
+            margin-bottom: 10px;
+            text-shadow: 1px 1px var(--hot-pink);
+        }
+
         #status {
             font-size: 1.1rem;
             background: white;
@@ -70,15 +81,17 @@
             margin-bottom: 20px;
         }
 
-        /* ✨ THE CUTE LITTLE BOXES ✨ */
-        .stats-grid {
+        /* Grids for small stats */
+        .stats-grid, .sun-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
             gap: 10px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
+        
+        .stats-grid { grid-template-columns: repeat(3, 1fr); }
+        .sun-grid { grid-template-columns: repeat(2, 1fr); }
 
-        .stat-box {
+        .stat-box, .wide-box {
             background: var(--box-glass);
             border: 2px solid white;
             border-radius: 15px;
@@ -91,6 +104,11 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
+        }
+
+        .wide-box {
+            margin-bottom: 15px;
+            padding: 15px;
         }
 
         .stat-icon {
@@ -112,11 +130,40 @@
             margin-top: 2px;
         }
 
-        /* Floating Animation */
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-8px); }
+        .uv-message {
+            font-size: 0.8rem;
+            color: white;
+            margin-top: 5px;
+            text-shadow: 1px 1px var(--hot-pink);
         }
+
+        /* 7-Day Forecast Styling */
+        .forecast-title {
+            font-size: 1.2rem;
+            margin: 15px 0 10px 0;
+            text-shadow: 2px 2px var(--hot-pink);
+            border-bottom: 2px dashed white;
+            padding-bottom: 5px;
+        }
+
+        .forecast-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.15);
+            margin-bottom: 8px;
+            padding: 10px 15px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+            font-weight: bold;
+            text-shadow: 1px 1px var(--hot-pink);
+        }
+
+        .forecast-day { width: 50px; text-align: left; }
+        .forecast-icon { font-size: 1.2rem; }
+        .forecast-temps { width: 80px; text-align: right; }
+        .min-temp { color: var(--neon-blue); text-shadow: 1px 1px white; font-size: 0.8rem; margin-left: 5px;}
 
         #loading {
             font-style: italic;
@@ -125,9 +172,7 @@
             margin: 20px 0;
         }
 
-        @keyframes blink {
-            50% { opacity: 0.5; }
-        }
+        @keyframes blink { 50% { opacity: 0.5; } }
 
         .refresh-btn {
             background: linear-gradient(90deg, var(--neon-blue), var(--hot-pink));
@@ -142,6 +187,8 @@
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
             transition: 0.2s;
             text-shadow: 1px 1px black;
+            margin-top: 10px;
+            width: 100%;
         }
 
         .refresh-btn:active {
@@ -159,6 +206,7 @@
         
         <div id="weather-content" style="display:none;">
             <div id="temp">--°</div>
+            <div id="feels-like">Feels like <span id="apparent">--</span>°</div>
             <div id="status">VIBING</div>
             
             <div class="stats-grid">
@@ -178,36 +226,69 @@
                     <div class="stat-value"><span id="pressure">--</span> in</div>
                 </div>
             </div>
+
+            <div class="wide-box">
+                <div class="stat-icon">🧴</div>
+                <div class="stat-label">UV Index: <span id="uv-number">--</span></div>
+                <div class="uv-message" id="uv-text">Checking the rays...</div>
+            </div>
+
+            <div class="sun-grid">
+                <div class="stat-box">
+                    <div class="stat-icon">🌅</div>
+                    <div class="stat-label">Sunrise</div>
+                    <div class="stat-value" id="sunrise">--:--</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-icon">🌇</div>
+                    <div class="stat-label">Sunset</div>
+                    <div class="stat-value" id="sunset">--:--</div>
+                </div>
+            </div>
+
+            <div class="forecast-title">✨ 7-Day Outlook ✨</div>
+            <div id="forecast-list">
+                </div>
         </div>
 
         <button class="refresh-btn" onclick="fetchWeather()">REFRESH 🎀</button>
     </div>
 
     <script>
-        // Mapping Open-Meteo codes to cute Y2K phrases
         const weatherMoji = {
-            0: "Totally Sunny ☀️",
-            1: "Cute & Clear ✨",
-            2: "A Bit Cloudy ☁️",
-            3: "Overcast Bummer 🌫️",
-            45: "Foggy Mystery 🌫️",
-            48: "Foggy Mystery 🌫️",
-            51: "Light Drizzle 💧",
-            53: "Drizzle 💧",
-            55: "Heavy Drizzle 🌧️",
-            61: "Rainy Day 🎀",
-            63: "Steady Rain 🌧️",
-            65: "Heavy Rain ☔",
-            71: "Snowy Sparkles ❄️",
-            73: "Snowing ❄️",
-            75: "Heavy Snow ⛄",
-            80: "Sparkly Showers 🌧️",
-            81: "Heavy Showers ☔",
-            82: "Pouring ☔",
-            95: "Stormy Energy ⚡",
-            96: "Thunderstorm 🌩️",
-            99: "Crazy Storm 🌩️"
+            0: "☀️", 1: "🌤️", 2: "⛅", 3: "☁️",
+            45: "🌫️", 48: "🌫️", 51: "💧", 53: "💧", 55: "🌧️",
+            61: "🎀", 63: "🌧️", 65: "☔", 71: "❄️", 73: "❄️", 75: "⛄",
+            80: "🌧️", 81: "☔", 82: "☔", 95: "⚡", 96: "🌩️", 99: "🌩️"
         };
+
+        const weatherDescriptions = {
+            0: "Totally Sunny", 1: "Cute & Clear", 2: "A Bit Cloudy", 3: "Overcast Bummer",
+            45: "Foggy Mystery", 48: "Foggy Mystery", 51: "Light Drizzle", 53: "Drizzle", 55: "Heavy Drizzle",
+            61: "Rainy Day", 63: "Steady Rain", 65: "Heavy Rain", 71: "Snowy Sparkles", 73: "Snowing", 75: "Heavy Snow",
+            80: "Sparkly Showers", 81: "Heavy Showers", 82: "Pouring", 95: "Stormy Energy", 96: "Thunderstorm", 99: "Crazy Storm"
+        };
+
+        // Format time to 12-hour AM/PM
+        function formatTime(isoString) {
+            const date = new Date(isoString);
+            return date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+        }
+
+        // Get the day of the week abbreviation
+        function getDayName(isoString, index) {
+            if (index === 0) return "Today";
+            const date = new Date(isoString + "T12:00:00"); 
+            return date.toLocaleDateString([], { weekday: 'short' });
+        }
+
+        function getUVSpeech(uv) {
+            if (uv <= 2) return "Low rays! Ur safe to glow! ✨";
+            if (uv <= 5) return "Moderate! Grab some SPF! 🌸";
+            if (uv <= 7) return "High! Lather up, babe! ☀️";
+            if (uv <= 10) return "Very High! Protect that skin! ⛱️";
+            return "Extreme! Stay in the shade! 🛑";
+        }
 
         async function fetchWeather() {
             document.getElementById('loading').style.display = 'block';
@@ -217,23 +298,54 @@
                 const { latitude, longitude } = position.coords;
                 
                 try {
-                    // UPDATED API URL to grab exact current stats cleanly
-                    const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,surface_pressure,wind_speed_10m,weather_code&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch`;
+                    // Added daily variables, timezone=auto, and current uv_index
+                    const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,apparent_temperature,relative_humidity_2m,surface_pressure,wind_speed_10m,weather_code,uv_index&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=auto&models=best_match`;
                     
                     const response = await fetch(url);
                     const data = await response.json();
+                    
                     const current = data.current;
+                    const daily = data.daily;
 
-                    // Update UI with clean data
+                    // Update Top Section
                     document.getElementById('temp').innerText = Math.round(current.temperature_2m) + "°";
+                    document.getElementById('apparent').innerText = Math.round(current.apparent_temperature);
                     document.getElementById('wind').innerText = Math.round(current.wind_speed_10m);
                     document.getElementById('humidity').innerText = current.relative_humidity_2m;
                     
-                    // Convert pressure from hPa to inHg for standard US viewing
                     const pressureInHg = (current.surface_pressure * 0.02953).toFixed(1);
                     document.getElementById('pressure').innerText = pressureInHg;
                     
-                    document.getElementById('status').innerText = weatherMoji[current.weather_code] || "Weathering it! 💅";
+                    document.getElementById('status').innerText = `${weatherDescriptions[current.weather_code] || "Vibing"} ${weatherMoji[current.weather_code] || "💅"}`;
+
+                    // Update UV Index
+                    const currentUV = Math.round(current.uv_index);
+                    document.getElementById('uv-number').innerText = currentUV;
+                    document.getElementById('uv-text').innerText = getUVSpeech(currentUV);
+
+                    // Update Sunrise & Sunset (Using today's data at index 0)
+                    document.getElementById('sunrise').innerText = formatTime(daily.sunrise);
+                    document.getElementById('sunset').innerText = formatTime(daily.sunset);
+
+                    // Generate 7-Day Forecast
+                    const forecastList = document.getElementById('forecast-list');
+                    forecastList.innerHTML = ''; // Clear out old data
+                    
+                    for (let i = 0; i < 7; i++) {
+                        const dayName = getDayName(daily.time[i], i);
+                        const emoji = weatherMoji[daily.weather_code[i]] || "✨";
+                        const maxTemp = Math.round(daily.temperature_2m_max[i]);
+                        const minTemp = Math.round(daily.temperature_2m_min[i]);
+
+                        const row = document.createElement('div');
+                        row.className = 'forecast-row';
+                        row.innerHTML = `
+                            <div class="forecast-day">${dayName}</div>
+                            <div class="forecast-icon">${emoji}</div>
+                            <div class="forecast-temps">${maxTemp}° <span class="min-temp">${minTemp}°</span></div>
+                        `;
+                        forecastList.appendChild(row);
+                    }
 
                     document.getElementById('loading').style.display = 'none';
                     document.getElementById('weather-content').style.display = 'block';
@@ -245,7 +357,6 @@
             });
         }
 
-        // Initial Load
         fetchWeather();
     </script>
 </body>
