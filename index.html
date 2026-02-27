@@ -136,7 +136,6 @@
         .stat-value { font-size: 0.9rem; margin-top: 2px; text-align: center;}
         .uv-message { font-size: 0.8rem; color: white; margin-top: 5px; text-shadow: 1px 1px var(--hot-pink); }
 
-        /* Hourly Forecast Slider */
         .hourly-container {
             display: flex;
             overflow-x: auto;
@@ -161,7 +160,6 @@
         .hourly-icon { font-size: 1.2rem; }
         .hourly-temp { font-size: 0.9rem; font-weight: bold; color: var(--hot-pink); text-shadow: 1px 1px white; margin-top: 3px; }
 
-        /* 7-Day Forecast Styling */
         .forecast-title {
             font-size: 1.2rem;
             margin: 15px 0 10px 0;
@@ -231,7 +229,7 @@
         
         <div id="weather-content" style="display:none;">
             <div id="temp">--°</div>
-            <div id="feels-like">Feels Like: <span id="apparent">--</span>°</div>
+            <div id="feels-like">My RealFeel: <span id="apparent">--</span>°</div>
             <div id="status">VIBING</div>
             
             <div class="stats-grid">
@@ -303,31 +301,29 @@
             80: "Sparkly Showers", 81: "Heavy Showers", 82: "Pouring", 95: "Stormy Energy", 96: "Thunderstorm", 99: "Crazy Storm"
         };
 
-        function formatTime(isoString) {
-            if (!isoString) return "--:--";
+        // BULLETPROOF DATE PARSERS
+        function formatSunTime(utcString) {
             try {
-                const timePart = isoString.split('T'); 
-                const [hours, minutes] = timePart.split(':');
-                let h = parseInt(hours);
-                const ampm = h >= 12 ? 'PM' : 'AM';
-                h = h % 12 || 12; 
-                return `${h}:${minutes} ${ampm}`;
-            } catch (e) { return "--:--"; }
+                const d = new Date(utcString);
+                return d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+            } catch(e) { return "--:--"; }
         }
 
         function getDayName(isoString, index) {
             if (index === 0) return "Today";
+            if (!isoString) return "Day";
             try {
-                const parts = isoString.split('-');
-                const date = new Date(parts, parts - 1, parts);
-                return date.toLocaleDateString([], { weekday: 'short' });
+                const parts = isoString.split('T').split('-'); 
+                const d = new Date(parts, parts - 1, parts);
+                return d.toLocaleDateString('en-US', { weekday: 'short' });
             } catch (e) { return "Day"; }
         }
 
         function formatHourTime(isoString) {
+            if (!isoString) return "--";
             try {
                 const timePart = isoString.split('T'); 
-                let h = parseInt(timePart.split(':'));
+                let h = parseInt(timePart.split(':'), 10);
                 const ampm = h >= 12 ? 'pm' : 'am';
                 h = h % 12 || 12;
                 return `${h}${ampm}`;
@@ -381,18 +377,33 @@
             navigator.geolocation.getCurrentPosition(async (position) => {
                 const { latitude, longitude } = position.coords;
                 
+                // 1. SAFELY FETCH LOCATION
                 try {
-                    // NEW MORE PRECISE GEOCODING API
                     const geoUrl = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=14`;
                     const geoRes = await fetch(geoUrl);
                     const geoData = await geoRes.json();
-                    
-                    // Looks for the most specific local name possible instead of a broad city
                     const address = geoData.address || {};
                     const locName = address.neighbourhood || address.suburb || address.village || address.town || address.city || "Ur Vibe Zone";
                     document.getElementById('location-name').innerText = `📍 ${locName}`;
+                } catch (e) {
+                    document.getElementById('location-name').innerText = `📍 Lost in the vibes`;
+                }
 
-                    const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,surface_pressure,wind_speed_10m,weather_code,uv_index&hourly=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=auto&models=best_match`;
+                // 2. SAFELY FETCH SUN DATA (Brand new separate API)
+                try {
+                    const sunUrl = `https://api.sunrise-sunset.org/json?lat=${latitude}&lng=${longitude}&formatted=0`;
+                    const sunRes = await fetch(sunUrl);
+                    const sunData = await sunRes.json();
+                    document.getElementById('sunrise').innerText = formatSunTime(sunData.results.sunrise);
+                    document.getElementById('sunset').innerText = formatSunTime(sunData.results.sunset);
+                } catch (e) {
+                    document.getElementById('sunrise').innerText = "--:--";
+                    document.getElementById('sunset').innerText = "--:--";
+                }
+
+                // 3. FETCH WEATHER DATA
+                try {
+                    const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,surface_pressure,wind_speed_10m,weather_code,uv_index&hourly=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=auto&models=best_match`;
                     const response = await fetch(weatherUrl);
                     const data = await response.json();
                     
@@ -416,9 +427,6 @@
                     document.getElementById('uv-number').innerText = currentUV;
                     document.getElementById('uv-text').innerText = getUVSpeech(currentUV);
 
-                    document.getElementById('sunrise').innerText = formatTime(daily.sunrise);
-                    document.getElementById('sunset').innerText = formatTime(daily.sunset);
-
                     const moon = getMoonPhase();
                     document.getElementById('moon-icon').innerText = moon.i;
                     document.getElementById('moon-phase').innerText = moon.n;
@@ -427,40 +435,48 @@
                     hourlyList.innerHTML = '';
                     const now = new Date();
                     let startIdx = 0;
-                    for(let i=0; i < hourly.time.length; i++) {
-                        if (new Date(hourly.time[i]) >= now) { startIdx = i; break; }
-                    }
-                    for(let i=0; i < 6; i++) {
-                        const idx = startIdx + i;
-                        const hTime = formatHourTime(hourly.time[idx]);
-                        const hTemp = Math.round(hourly.temperature_2m[idx]);
-                        const hIcon = weatherMoji[hourly.weather_code[idx]] || "✨";
-                        
-                        hourlyList.innerHTML += `
-                            <div class="hourly-box">
-                                <div class="hourly-time">${i===0 ? "Now" : hTime}</div>
-                                <div class="hourly-icon">${hIcon}</div>
-                                <div class="hourly-temp">${hTemp}°</div>
-                            </div>
-                        `;
+                    if (hourly && hourly.time) {
+                        for(let i=0; i < hourly.time.length; i++) {
+                            // Simple string comparison for dates works better on mobile
+                            if (new Date(hourly.time[i]) >= now || hourly.time[i] > now.toISOString().slice(0,16)) { 
+                                startIdx = i; 
+                                break; 
+                            }
+                        }
+                        for(let i=0; i < 6; i++) {
+                            const idx = startIdx + i;
+                            const hTime = formatHourTime(hourly.time[idx]);
+                            const hTemp = Math.round(hourly.temperature_2m[idx]);
+                            const hIcon = weatherMoji[hourly.weather_code[idx]] || "✨";
+                            
+                            hourlyList.innerHTML += `
+                                <div class="hourly-box">
+                                    <div class="hourly-time">${i===0 ? "Now" : hTime}</div>
+                                    <div class="hourly-icon">${hIcon}</div>
+                                    <div class="hourly-temp">${hTemp}°</div>
+                                </div>
+                            `;
+                        }
                     }
 
                     const forecastList = document.getElementById('forecast-list');
                     forecastList.innerHTML = ''; 
                     
-                    for (let i = 0; i < 7; i++) {
-                        const dayName = getDayName(daily.time[i], i);
-                        const emoji = weatherMoji[daily.weather_code[i]] || "✨";
-                        const maxTemp = Math.round(daily.temperature_2m_max[i]);
-                        const minTemp = Math.round(daily.temperature_2m_min[i]);
+                    if (daily && daily.time) {
+                        for (let i = 0; i < 7; i++) {
+                            const dayName = getDayName(daily.time[i], i);
+                            const emoji = weatherMoji[daily.weather_code[i]] || "✨";
+                            const maxTemp = Math.round(daily.temperature_2m_max[i]);
+                            const minTemp = Math.round(daily.temperature_2m_min[i]);
 
-                        forecastList.innerHTML += `
-                            <div class="forecast-row">
-                                <div class="forecast-day">${dayName}</div>
-                                <div class="forecast-icon">${emoji}</div>
-                                <div class="forecast-temps">${maxTemp}° <span class="min-temp">${minTemp}°</span></div>
-                            </div>
-                        `;
+                            forecastList.innerHTML += `
+                                <div class="forecast-row">
+                                    <div class="forecast-day">${dayName}</div>
+                                    <div class="forecast-icon">${emoji}</div>
+                                    <div class="forecast-temps">${maxTemp}° <span class="min-temp">${minTemp}°</span></div>
+                                </div>
+                            `;
+                        }
                     }
 
                     document.getElementById('loading').style.display = 'none';
