@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>✨ Y2K WEATHER ✨</title>
+    <style>
+        :root {
+            --hot-pink: #ff00de;
+            --neon-blue: #00d4ff;
+            --glitter-white: rgba(255, 255, 255, 0.8);
+            --glass: rgba(255, 255, 255, 0.25);
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            /* Using your provided background image */
+            background: url('https://i.postimg.cc/v488LSw0/your-image.jpg') no-repeat center center fixed;
+            background-size: cover;
+            font-family: 'Comic Sans MS', 'Trebuchet MS', cursive;
+            overflow: hidden;
+        }
+
+        /* The Glossy Y2K Card */
+        .weather-container {
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 3px solid white;
+            border-radius: 40px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 0 20px var(--hot-pink), 
+                        inset 0 0 15px white;
+            width: 80%;
+            max-width: 350px;
+            color: white;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px var(--hot-pink), -2px -2px var(--neon-blue);
+        }
+
+        #temp {
+            font-size: 4rem;
+            font-weight: bold;
+            margin: 10px 0;
+            filter: drop-shadow(0 0 10px var(--hot-pink));
+        }
+
+        #status {
+            font-size: 1.2rem;
+            background: white;
+            color: var(--hot-pink);
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            box-shadow: 3px 3px 0px var(--neon-blue);
+        }
+
+        .details {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            display: flex;
+            justify-content: space-around;
+            text-shadow: 1px 1px black;
+        }
+
+        /* Floating Animation */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Loading Spinner */
+        #loading {
+            font-style: italic;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+
+        .refresh-btn {
+            margin-top: 20px;
+            background: var(--neon-blue);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px var(--hot-pink);
+            transition: 0.2s;
+        }
+
+        .refresh-btn:active {
+            box-shadow: 0 0px;
+            transform: translateY(4px);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="weather-container">
+        <h1>✨ Right Now ✨</h1>
+        <div id="loading">Locating you, babe...</div>
+        <div id="weather-content" style="display:none;">
+            <div id="temp">--°</div>
+            <div id="status">VIBING</div>
+            <div class="details">
+                <span>💨 <span id="wind">--</span>mph</span>
+                <span>💧 <span id="humidity">--</span>%</span>
+            </div>
+        </div>
+        <button class="refresh-btn" onclick="fetchWeather()">REFRESH 🎀</button>
+    </div>
+
+    <script>
+        // Mapping Open-Meteo codes to cute Y2K phrases
+        const weatherMoji = {
+            0: "Totally Sunny ☀️",
+            1: "Cute & Clear ✨",
+            2: "A Bit Cloudy ☁️",
+            3: "Overcast Bummer 🌫️",
+            45: "Foggy Mystery 🌫️",
+            61: "Rainy Day 🎀",
+            80: "Sparkly Showers 🌧️",
+            95: "Stormy Energy ⚡"
+        };
+
+        async function fetchWeather() {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('weather-content').style.display = 'none';
+
+            navigator.geolocation.getCurrentPosition(async (position) => {
+                const { latitude, longitude } = position.coords;
+                
+                try {
+                    const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true&hourly=relativehumidity_2m&temperature_unit=fahrenheit&windspeed_unit=mph`;
+                    const response = await fetch(url);
+                    const data = await response.json();
+
+                    // Update UI
+                    document.getElementById('temp').innerText = Math.round(data.current_weather.temperature) + "°";
+                    document.getElementById('wind').innerText = data.current_weather.windspeed;
+                    
+                    const code = data.current_weather.weathercode;
+                    document.getElementById('status').innerText = weatherMoji[code] || "Weathering it! 💅";
+                    
+                    // Humidity usually comes from hourly/current data
+                    document.getElementById('humidity').innerText = data.hourly.relativehumidity_2m;
+
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('weather-content').style.display = 'block';
+                } catch (error) {
+                    document.getElementById('loading').innerText = "Oops! Error fetching data. :(";
+                }
+            }, () => {
+                document.getElementById('loading').innerText = "Please enable location! 📍";
+            });
+        }
+
+        // Initial Load
+        fetchWeather();
+    </script>
+</body>
+</html>
