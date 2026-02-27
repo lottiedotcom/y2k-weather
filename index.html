@@ -13,7 +13,6 @@
             --box-glass: rgba(255, 255, 255, 0.4);
         }
 
-        /* Added scrolling support for the taller layout */
         body {
             margin: 0;
             padding: 20px 0;
@@ -27,9 +26,8 @@
             overflow-y: auto;
         }
 
-        /* Custom Y2K Scrollbar */
-        ::-webkit-scrollbar { width: 10px; }
-        ::-webkit-scrollbar-track { background: var(--glass); }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--glass); border-radius: 10px; }
         ::-webkit-scrollbar-thumb { background: var(--hot-pink); border-radius: 10px; border: 2px solid white; }
 
         .weather-container {
@@ -51,8 +49,21 @@
             font-size: 1.5rem;
             text-transform: uppercase;
             letter-spacing: 2px;
-            margin-bottom: 5px;
+            margin-bottom: 0px;
             text-shadow: 2px 2px var(--hot-pink), -2px -2px var(--neon-blue);
+        }
+
+        #location-name {
+            font-size: 1rem;
+            color: white;
+            text-shadow: 1px 1px var(--hot-pink);
+            margin-bottom: 15px;
+            font-weight: bold;
+            background: rgba(255, 255, 255, 0.2);
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 15px;
+            border: 1px solid white;
         }
 
         #temp {
@@ -81,7 +92,6 @@
             margin-bottom: 20px;
         }
 
-        /* Grids for small stats */
         .stats-grid, .sun-grid {
             display: grid;
             gap: 10px;
@@ -89,7 +99,7 @@
         }
         
         .stats-grid { grid-template-columns: repeat(3, 1fr); }
-        .sun-grid { grid-template-columns: repeat(2, 1fr); }
+        .sun-grid { grid-template-columns: repeat(3, 1fr); } /* Made it 3 for the moon! */
 
         .stat-box, .wide-box {
             background: var(--box-glass);
@@ -106,10 +116,7 @@
             justify-content: center;
         }
 
-        .wide-box {
-            margin-bottom: 15px;
-            padding: 15px;
-        }
+        .wide-box { margin-bottom: 15px; padding: 15px; }
 
         .stat-icon {
             font-size: 1.5rem;
@@ -123,19 +130,36 @@
             color: white;
             text-shadow: 1px 1px var(--hot-pink);
             letter-spacing: 1px;
+            text-align: center;
         }
 
-        .stat-value {
-            font-size: 0.9rem;
-            margin-top: 2px;
+        .stat-value { font-size: 0.9rem; margin-top: 2px; text-align: center;}
+        .uv-message { font-size: 0.8rem; color: white; margin-top: 5px; text-shadow: 1px 1px var(--hot-pink); }
+
+        /* Hourly Forecast Slider */
+        .hourly-container {
+            display: flex;
+            overflow-x: auto;
+            gap: 10px;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
         }
 
-        .uv-message {
-            font-size: 0.8rem;
-            color: white;
-            margin-top: 5px;
-            text-shadow: 1px 1px var(--hot-pink);
+        .hourly-box {
+            min-width: 60px;
+            background: var(--box-glass);
+            border: 1px solid white;
+            border-radius: 12px;
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 2px 2px 8px rgba(255, 0, 222, 0.2);
         }
+
+        .hourly-time { font-size: 0.7rem; color: white; text-shadow: 1px 1px var(--hot-pink); margin-bottom: 3px; }
+        .hourly-icon { font-size: 1.2rem; }
+        .hourly-temp { font-size: 0.9rem; font-weight: bold; color: var(--hot-pink); text-shadow: 1px 1px white; margin-top: 3px; }
 
         /* 7-Day Forecast Styling */
         .forecast-title {
@@ -201,12 +225,13 @@
 
     <div class="weather-container">
         <h1>✨ Right Now ✨</h1>
+        <div id="location-name">Detecting... 🛰️</div>
         
-        <div id="loading">Locating you, babe... 📍</div>
+        <div id="loading">Forcing GPS lock... 📍</div>
         
         <div id="weather-content" style="display:none;">
             <div id="temp">--°</div>
-            <div id="feels-like">Feels like <span id="apparent">--</span>°</div>
+            <div id="feels-like">My RealFeel: <span id="apparent">--</span>°</div>
             <div id="status">VIBING</div>
             
             <div class="stats-grid">
@@ -236,22 +261,31 @@
             <div class="sun-grid">
                 <div class="stat-box">
                     <div class="stat-icon">🌅</div>
-                    <div class="stat-label">Sunrise</div>
+                    <div class="stat-label">Rise</div>
                     <div class="stat-value" id="sunrise">--:--</div>
                 </div>
                 <div class="stat-box">
                     <div class="stat-icon">🌇</div>
-                    <div class="stat-label">Sunset</div>
+                    <div class="stat-label">Set</div>
                     <div class="stat-value" id="sunset">--:--</div>
                 </div>
+                <div class="stat-box">
+                    <div class="stat-icon" id="moon-icon">🌙</div>
+                    <div class="stat-label">Phase</div>
+                    <div class="stat-value" id="moon-phase" style="font-size:0.7rem;">--</div>
+                </div>
             </div>
+
+            <div class="forecast-title">✨ Next Few Hours ✨</div>
+            <div class="hourly-container" id="hourly-list">
+                </div>
 
             <div class="forecast-title">✨ 7-Day Outlook ✨</div>
             <div id="forecast-list">
                 </div>
         </div>
 
-        <button class="refresh-btn" onclick="fetchWeather()">REFRESH 🎀</button>
+        <button class="refresh-btn" onclick="fetchWeather()">FORCE UPDATE 🎀</button>
     </div>
 
     <script>
@@ -269,19 +303,45 @@
             80: "Sparkly Showers", 81: "Heavy Showers", 82: "Pouring", 95: "Stormy Energy", 96: "Thunderstorm", 99: "Crazy Storm"
         };
 
-        // Format time to 12-hour AM/PM
+        // Safer Time Formatter for Mobile
         function formatTime(isoString) {
-            const date = new Date(isoString);
-            return date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+            if (!isoString) return "--:--";
+            try {
+                // Manually parse to avoid mobile safari bugs
+                const timePart = isoString.split('T'); 
+                const [hours, minutes] = timePart.split(':');
+                let h = parseInt(hours);
+                const ampm = h >= 12 ? 'PM' : 'AM';
+                h = h % 12 || 12; 
+                return `${h}:${minutes} ${ampm}`;
+            } catch (e) {
+                return "--:--";
+            }
         }
 
-        // Get the day of the week abbreviation
+        // Safer Day Name Formatter
         function getDayName(isoString, index) {
             if (index === 0) return "Today";
-            const date = new Date(isoString + "T12:00:00"); 
-            return date.toLocaleDateString([], { weekday: 'short' });
+            try {
+                const parts = isoString.split('-');
+                const date = new Date(parts, parts - 1, parts);
+                return date.toLocaleDateString([], { weekday: 'short' });
+            } catch (e) {
+                return "Day";
+            }
         }
 
+        function formatHourTime(isoString) {
+            try {
+                const timePart = isoString.split('T'); 
+                let h = parseInt(timePart.split(':'));
+                const ampm = h >= 12 ? 'pm' : 'am';
+                h = h % 12 || 12;
+                return `${h}${ampm}`;
+            } catch(e) { return "--"; }
+        }
+
+        // Cute UV Index
         function getUVSpeech(uv) {
             if (uv <= 2) return "Low rays! Ur safe to glow! ✨";
             if (uv <= 5) return "Moderate! Grab some SPF! 🌸";
@@ -290,26 +350,73 @@
             return "Extreme! Stay in the shade! 🛑";
         }
 
+        // Mathematical Moon Phase Calculator
+        function getMoonPhase() {
+            const date = new Date();
+            let year = date.getFullYear(), month = date.getMonth() + 1, day = date.getDate();
+            if (month < 3) { year--; month += 12; }
+            ++month;
+            let jd = 365.25 * year + 30.6 * month + day - 694039.09;
+            jd /= 29.5305882;
+            let b = Math.round((jd - parseInt(jd)) * 8);
+            if (b >= 8) b = 0;
+            const phases = [
+                { i: "🌑", n: "New Moon" }, { i: "🌒", n: "Waxing Cres" },
+                { i: "🌓", n: "1st Quarter" }, { i: "🌔", n: "Waxing Gib" },
+                { i: "🌕", n: "Full Moon" }, { i: "🌖", n: "Waning Gib" },
+                { i: "🌗", n: "Last Quarter" }, { i: "🌘", n: "Waning Cres" }
+            ];
+            return phases[b];
+        }
+
+        // OUR VERY OWN ALGORITHM
+        function customRealFeel(temp, wind, humidity) {
+            if (temp <= 50 && wind > 3) {
+                // Custom Wind Chill
+                let chill = 35.74 + (0.6215 * temp) - (35.75 * Math.pow(wind, 0.16)) + (0.4275 * temp * Math.pow(wind, 0.16));
+                return Math.round(chill);
+            } else if (temp >= 80) {
+                // Custom Heat Index
+                let heat = -42.379 + 2.04901523*temp + 10.14333127*humidity - 0.22475541*temp*humidity - 0.00683783*temp*temp - 0.05481717*humidity*humidity + 0.00122874*temp*temp*humidity + 0.00085282*temp*humidity*humidity - 0.00000199*temp*temp*humidity*humidity;
+                return Math.round(heat);
+            }
+            return Math.round(temp);
+        }
+
         async function fetchWeather() {
             document.getElementById('loading').style.display = 'block';
             document.getElementById('weather-content').style.display = 'none';
+            document.getElementById('location-name').innerText = "Forcing satellite lock... 🛰️";
+
+            // SUPER STRICT GPS SETTINGS to get exact phone location, not cached network location
+            const geoOptions = {
+                enableHighAccuracy: true,
+                maximumAge: 0, 
+                timeout: 10000
+            };
 
             navigator.geolocation.getCurrentPosition(async (position) => {
                 const { latitude, longitude } = position.coords;
                 
                 try {
-                    // Added daily variables, timezone=auto, and current uv_index
-                    const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,apparent_temperature,relative_humidity_2m,surface_pressure,wind_speed_10m,weather_code,uv_index&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=auto&models=best_match`;
-                    
-                    const response = await fetch(url);
+                    // 1. Get City Name via Reverse Geocoding
+                    const geoUrl = `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`;
+                    const geoRes = await fetch(geoUrl);
+                    const geoData = await geoRes.json();
+                    const locName = geoData.city || geoData.locality || geoData.principalSubdivision || "Unknown Area";
+                    document.getElementById('location-name').innerText = `📍 ${locName}`;
+
+                    // 2. Fetch Weather Data (Added Hourly!)
+                    const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,surface_pressure,wind_speed_10m,weather_code,uv_index&hourly=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=auto&models=best_match`;
+                    const response = await fetch(weatherUrl);
                     const data = await response.json();
                     
                     const current = data.current;
                     const daily = data.daily;
+                    const hourly = data.hourly;
 
                     // Update Top Section
                     document.getElementById('temp').innerText = Math.round(current.temperature_2m) + "°";
-                    document.getElementById('apparent').innerText = Math.round(current.apparent_temperature);
                     document.getElementById('wind').innerText = Math.round(current.wind_speed_10m);
                     document.getElementById('humidity').innerText = current.relative_humidity_2m;
                     
@@ -318,18 +425,54 @@
                     
                     document.getElementById('status').innerText = `${weatherDescriptions[current.weather_code] || "Vibing"} ${weatherMoji[current.weather_code] || "💅"}`;
 
+                    // Use OUR Custom RealFeel
+                    const myRealFeel = customRealFeel(current.temperature_2m, current.wind_speed_10m, current.relative_humidity_2m);
+                    document.getElementById('apparent').innerText = myRealFeel;
+
                     // Update UV Index
                     const currentUV = Math.round(current.uv_index);
                     document.getElementById('uv-number').innerText = currentUV;
                     document.getElementById('uv-text').innerText = getUVSpeech(currentUV);
 
-                    // Update Sunrise & Sunset (Using today's data at index 0)
+                    // Safely Update Sunrise & Sunset
                     document.getElementById('sunrise').innerText = formatTime(daily.sunrise);
                     document.getElementById('sunset').innerText = formatTime(daily.sunset);
 
+                    // Update Moon Phase
+                    const moon = getMoonPhase();
+                    document.getElementById('moon-icon').innerText = moon.i;
+                    document.getElementById('moon-phase').innerText = moon.n;
+
+                    // Generate HOURLY Forecast Slider
+                    const hourlyList = document.getElementById('hourly-list');
+                    hourlyList.innerHTML = '';
+                    const now = new Date();
+                    let startIdx = 0;
+                    // Find the current hour in the array
+                    for(let i=0; i < hourly.time.length; i++) {
+                        if (new Date(hourly.time[i]) >= now) {
+                            startIdx = i; break;
+                        }
+                    }
+                    // Add next 6 hours
+                    for(let i=0; i < 6; i++) {
+                        const idx = startIdx + i;
+                        const hTime = formatHourTime(hourly.time[idx]);
+                        const hTemp = Math.round(hourly.temperature_2m[idx]);
+                        const hIcon = weatherMoji[hourly.weather_code[idx]] || "✨";
+                        
+                        hourlyList.innerHTML += `
+                            <div class="hourly-box">
+                                <div class="hourly-time">${i===0 ? "Now" : hTime}</div>
+                                <div class="hourly-icon">${hIcon}</div>
+                                <div class="hourly-temp">${hTemp}°</div>
+                            </div>
+                        `;
+                    }
+
                     // Generate 7-Day Forecast
                     const forecastList = document.getElementById('forecast-list');
-                    forecastList.innerHTML = ''; // Clear out old data
+                    forecastList.innerHTML = ''; 
                     
                     for (let i = 0; i < 7; i++) {
                         const dayName = getDayName(daily.time[i], i);
@@ -337,26 +480,26 @@
                         const maxTemp = Math.round(daily.temperature_2m_max[i]);
                         const minTemp = Math.round(daily.temperature_2m_min[i]);
 
-                        const row = document.createElement('div');
-                        row.className = 'forecast-row';
-                        row.innerHTML = `
-                            <div class="forecast-day">${dayName}</div>
-                            <div class="forecast-icon">${emoji}</div>
-                            <div class="forecast-temps">${maxTemp}° <span class="min-temp">${minTemp}°</span></div>
+                        forecastList.innerHTML += `
+                            <div class="forecast-row">
+                                <div class="forecast-day">${dayName}</div>
+                                <div class="forecast-icon">${emoji}</div>
+                                <div class="forecast-temps">${maxTemp}° <span class="min-temp">${minTemp}°</span></div>
+                            </div>
                         `;
-                        forecastList.appendChild(row);
                     }
 
                     document.getElementById('loading').style.display = 'none';
                     document.getElementById('weather-content').style.display = 'block';
                 } catch (error) {
-                    document.getElementById('loading').innerText = "Oops! Error fetching data. :(";
+                    document.getElementById('loading').innerText = "Oops! Network error. :(";
                 }
-            }, () => {
-                document.getElementById('loading').innerText = "Please enable location! 📍";
-            });
+            }, (err) => {
+                document.getElementById('loading').innerText = "Ensure GPS/Location is ON! 📍";
+            }, geoOptions);
         }
 
+        // Run it immediately
         fetchWeather();
     </script>
 </body>
