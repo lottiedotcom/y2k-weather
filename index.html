@@ -99,7 +99,7 @@
         }
         
         .stats-grid { grid-template-columns: repeat(3, 1fr); }
-        .sun-grid { grid-template-columns: repeat(3, 1fr); } /* Made it 3 for the moon! */
+        .sun-grid { grid-template-columns: repeat(3, 1fr); }
 
         .stat-box, .wide-box {
             background: var(--box-glass);
@@ -225,13 +225,13 @@
 
     <div class="weather-container">
         <h1>✨ Right Now ✨</h1>
-        <div id="location-name">Detecting... 🛰️</div>
+        <div id="location-name">Finding you, babe... 🗺️</div>
         
-        <div id="loading">Forcing GPS lock... 📍</div>
+        <div id="loading">Locating... 📍</div>
         
         <div id="weather-content" style="display:none;">
             <div id="temp">--°</div>
-            <div id="feels-like">My RealFeel: <span id="apparent">--</span>°</div>
+            <div id="feels-like">Feels Like: <span id="apparent">--</span>°</div>
             <div id="status">VIBING</div>
             
             <div class="stats-grid">
@@ -285,7 +285,7 @@
                 </div>
         </div>
 
-        <button class="refresh-btn" onclick="fetchWeather()">FORCE UPDATE 🎀</button>
+        <button class="refresh-btn" onclick="fetchWeather()">REFRESH 🎀</button>
     </div>
 
     <script>
@@ -303,32 +303,25 @@
             80: "Sparkly Showers", 81: "Heavy Showers", 82: "Pouring", 95: "Stormy Energy", 96: "Thunderstorm", 99: "Crazy Storm"
         };
 
-        // Safer Time Formatter for Mobile
         function formatTime(isoString) {
             if (!isoString) return "--:--";
             try {
-                // Manually parse to avoid mobile safari bugs
                 const timePart = isoString.split('T'); 
                 const [hours, minutes] = timePart.split(':');
                 let h = parseInt(hours);
                 const ampm = h >= 12 ? 'PM' : 'AM';
                 h = h % 12 || 12; 
                 return `${h}:${minutes} ${ampm}`;
-            } catch (e) {
-                return "--:--";
-            }
+            } catch (e) { return "--:--"; }
         }
 
-        // Safer Day Name Formatter
         function getDayName(isoString, index) {
             if (index === 0) return "Today";
             try {
                 const parts = isoString.split('-');
                 const date = new Date(parts, parts - 1, parts);
                 return date.toLocaleDateString([], { weekday: 'short' });
-            } catch (e) {
-                return "Day";
-            }
+            } catch (e) { return "Day"; }
         }
 
         function formatHourTime(isoString) {
@@ -341,7 +334,6 @@
             } catch(e) { return "--"; }
         }
 
-        // Cute UV Index
         function getUVSpeech(uv) {
             if (uv <= 2) return "Low rays! Ur safe to glow! ✨";
             if (uv <= 5) return "Moderate! Grab some SPF! 🌸";
@@ -350,7 +342,6 @@
             return "Extreme! Stay in the shade! 🛑";
         }
 
-        // Mathematical Moon Phase Calculator
         function getMoonPhase() {
             const date = new Date();
             let year = date.getFullYear(), month = date.getMonth() + 1, day = date.getDate();
@@ -369,14 +360,11 @@
             return phases[b];
         }
 
-        // OUR VERY OWN ALGORITHM
         function customRealFeel(temp, wind, humidity) {
             if (temp <= 50 && wind > 3) {
-                // Custom Wind Chill
                 let chill = 35.74 + (0.6215 * temp) - (35.75 * Math.pow(wind, 0.16)) + (0.4275 * temp * Math.pow(wind, 0.16));
                 return Math.round(chill);
             } else if (temp >= 80) {
-                // Custom Heat Index
                 let heat = -42.379 + 2.04901523*temp + 10.14333127*humidity - 0.22475541*temp*humidity - 0.00683783*temp*temp - 0.05481717*humidity*humidity + 0.00122874*temp*temp*humidity + 0.00085282*temp*humidity*humidity - 0.00000199*temp*temp*humidity*humidity;
                 return Math.round(heat);
             }
@@ -386,27 +374,24 @@
         async function fetchWeather() {
             document.getElementById('loading').style.display = 'block';
             document.getElementById('weather-content').style.display = 'none';
-            document.getElementById('location-name').innerText = "Forcing satellite lock... 🛰️";
+            document.getElementById('location-name').innerText = "Finding you, babe... 🗺️";
 
-            // SUPER STRICT GPS SETTINGS to get exact phone location, not cached network location
-            const geoOptions = {
-                enableHighAccuracy: true,
-                maximumAge: 0, 
-                timeout: 10000
-            };
+            const geoOptions = { enableHighAccuracy: true, maximumAge: 0, timeout: 10000 };
 
             navigator.geolocation.getCurrentPosition(async (position) => {
                 const { latitude, longitude } = position.coords;
                 
                 try {
-                    // 1. Get City Name via Reverse Geocoding
-                    const geoUrl = `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`;
+                    // NEW MORE PRECISE GEOCODING API
+                    const geoUrl = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=14`;
                     const geoRes = await fetch(geoUrl);
                     const geoData = await geoRes.json();
-                    const locName = geoData.city || geoData.locality || geoData.principalSubdivision || "Unknown Area";
+                    
+                    // Looks for the most specific local name possible instead of a broad city
+                    const address = geoData.address || {};
+                    const locName = address.neighbourhood || address.suburb || address.village || address.town || address.city || "Ur Vibe Zone";
                     document.getElementById('location-name').innerText = `📍 ${locName}`;
 
-                    // 2. Fetch Weather Data (Added Hourly!)
                     const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,surface_pressure,wind_speed_10m,weather_code,uv_index&hourly=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=auto&models=best_match`;
                     const response = await fetch(weatherUrl);
                     const data = await response.json();
@@ -415,7 +400,6 @@
                     const daily = data.daily;
                     const hourly = data.hourly;
 
-                    // Update Top Section
                     document.getElementById('temp').innerText = Math.round(current.temperature_2m) + "°";
                     document.getElementById('wind').innerText = Math.round(current.wind_speed_10m);
                     document.getElementById('humidity').innerText = current.relative_humidity_2m;
@@ -425,36 +409,27 @@
                     
                     document.getElementById('status').innerText = `${weatherDescriptions[current.weather_code] || "Vibing"} ${weatherMoji[current.weather_code] || "💅"}`;
 
-                    // Use OUR Custom RealFeel
                     const myRealFeel = customRealFeel(current.temperature_2m, current.wind_speed_10m, current.relative_humidity_2m);
                     document.getElementById('apparent').innerText = myRealFeel;
 
-                    // Update UV Index
                     const currentUV = Math.round(current.uv_index);
                     document.getElementById('uv-number').innerText = currentUV;
                     document.getElementById('uv-text').innerText = getUVSpeech(currentUV);
 
-                    // Safely Update Sunrise & Sunset
                     document.getElementById('sunrise').innerText = formatTime(daily.sunrise);
                     document.getElementById('sunset').innerText = formatTime(daily.sunset);
 
-                    // Update Moon Phase
                     const moon = getMoonPhase();
                     document.getElementById('moon-icon').innerText = moon.i;
                     document.getElementById('moon-phase').innerText = moon.n;
 
-                    // Generate HOURLY Forecast Slider
                     const hourlyList = document.getElementById('hourly-list');
                     hourlyList.innerHTML = '';
                     const now = new Date();
                     let startIdx = 0;
-                    // Find the current hour in the array
                     for(let i=0; i < hourly.time.length; i++) {
-                        if (new Date(hourly.time[i]) >= now) {
-                            startIdx = i; break;
-                        }
+                        if (new Date(hourly.time[i]) >= now) { startIdx = i; break; }
                     }
-                    // Add next 6 hours
                     for(let i=0; i < 6; i++) {
                         const idx = startIdx + i;
                         const hTime = formatHourTime(hourly.time[idx]);
@@ -470,7 +445,6 @@
                         `;
                     }
 
-                    // Generate 7-Day Forecast
                     const forecastList = document.getElementById('forecast-list');
                     forecastList.innerHTML = ''; 
                     
@@ -495,11 +469,10 @@
                     document.getElementById('loading').innerText = "Oops! Network error. :(";
                 }
             }, (err) => {
-                document.getElementById('loading').innerText = "Ensure GPS/Location is ON! 📍";
+                document.getElementById('loading').innerText = "Please enable location! 📍";
             }, geoOptions);
         }
 
-        // Run it immediately
         fetchWeather();
     </script>
 </body>
