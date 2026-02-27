@@ -301,7 +301,7 @@
             80: "Sparkly Showers", 81: "Heavy Showers", 82: "Pouring", 95: "Stormy Energy", 96: "Thunderstorm", 99: "Crazy Storm"
         };
 
-        // NEW ANDROID-SAFE PARSERS
+        // Your separate Sun Time Parser
         function formatSunTime(utcString) {
             try {
                 const d = new Date(utcString);
@@ -309,18 +309,17 @@
             } catch(e) { return "--:--"; }
         }
 
-        // Physically breaks apart the "YYYY-MM-DD" string so Android can't fail
+        // The fixed Day Name Parser
         function getDayName(dateString, index) {
             if (index === 0) return "Today";
             if (!dateString) return "Day";
             try {
-                const parts = dateString.split('-');
+                const parts = dateString.split('T').split('-');
                 const year = parseInt(parts, 10);
-                const month = parseInt(parts, 10) - 1; // JS months are 0-11
+                const month = parseInt(parts, 10) - 1; 
                 const day = parseInt(parts, 10);
-                const d = new Date(year, month, day);
-                const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-                return days[d.getDay()];
+                const d = new Date(year, month, day, 12, 0, 0);
+                return d.toLocaleDateString('en-US', { weekday: 'short' });
             } catch (e) { return "Day"; }
         }
 
@@ -393,6 +392,7 @@
                     document.getElementById('location-name').innerText = `📍 Lost in the vibes`;
                 }
 
+                // YOUR SEPARATE SUN SOURCE (Restored)
                 try {
                     const sunUrl = `https://api.sunrise-sunset.org/json?lat=${latitude}&lng=${longitude}&formatted=0`;
                     const sunRes = await fetch(sunUrl);
@@ -405,8 +405,8 @@
                 }
 
                 try {
-                    // UPGRADED API: Using the US National Weather Service model (ndfd_conus) for better US accuracy
-                    const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,surface_pressure,wind_speed_10m,weather_code,uv_index&hourly=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=auto&models=ndfd_conus,best_match`;
+                    // UPGRADED WEATHER API: NOAA Data for AccuWeather accuracy
+                    const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,surface_pressure,wind_speed_10m,weather_code,uv_index&hourly=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=auto&models=ndfd_conus,gfs_seamless`;
                     const response = await fetch(weatherUrl);
                     const data = await response.json();
                     
@@ -436,32 +436,27 @@
 
                     const hourlyList = document.getElementById('hourly-list');
                     hourlyList.innerHTML = '';
-                    
-                    // Fixed hourly slider logic!
-                    let currentHourStr = current.time.substring(0, 13) + ":00"; 
+                    const now = new Date();
                     let startIdx = 0;
                     if (hourly && hourly.time) {
                         for(let i=0; i < hourly.time.length; i++) {
-                            if (hourly.time[i] >= currentHourStr) { 
-                                startIdx = i; 
-                                break; 
+                            if (new Date(hourly.time[i]) >= now || hourly.time[i] > now.toISOString().slice(0,16)) { 
+                                startIdx = i; break; 
                             }
                         }
                         for(let i=0; i < 6; i++) {
                             const idx = startIdx + i;
-                            if(hourly.time[idx]) {
-                                const hTime = formatHourTime(hourly.time[idx]);
-                                const hTemp = Math.round(hourly.temperature_2m[idx]);
-                                const hIcon = weatherMoji[hourly.weather_code[idx]] || "✨";
-                                
-                                hourlyList.innerHTML += `
-                                    <div class="hourly-box">
-                                        <div class="hourly-time">${i===0 ? "Now" : hTime}</div>
-                                        <div class="hourly-icon">${hIcon}</div>
-                                        <div class="hourly-temp">${hTemp}°</div>
-                                    </div>
-                                `;
-                            }
+                            const hTime = formatHourTime(hourly.time[idx]);
+                            const hTemp = Math.round(hourly.temperature_2m[idx]);
+                            const hIcon = weatherMoji[hourly.weather_code[idx]] || "✨";
+                            
+                            hourlyList.innerHTML += `
+                                <div class="hourly-box">
+                                    <div class="hourly-time">${i===0 ? "Now" : hTime}</div>
+                                    <div class="hourly-icon">${hIcon}</div>
+                                    <div class="hourly-temp">${hTemp}°</div>
+                                </div>
+                            `;
                         }
                     }
 
