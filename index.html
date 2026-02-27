@@ -20,7 +20,7 @@
             justify-content: center;
             align-items: flex-start;
             min-height: 100vh;
-            background: url('https://i.postimg.cc/v488LSw0/your-image.jpg') no-repeat center center fixed;
+            background: url('https://i.postimg.cc/PCsjq3Sr/bg.jpg') no-repeat center center fixed;
             background-size: cover;
             font-family: 'Comic Sans MS', 'Chalkboard SE', cursive;
             overflow-y: auto;
@@ -92,14 +92,12 @@
             margin-bottom: 20px;
         }
 
-        .stats-grid, .sun-grid {
+        .stats-grid {
             display: grid;
+            grid-template-columns: repeat(3, 1fr);
             gap: 10px;
             margin-bottom: 15px;
         }
-        
-        .stats-grid { grid-template-columns: repeat(3, 1fr); }
-        .sun-grid { grid-template-columns: repeat(3, 1fr); }
 
         .stat-box, .wide-box {
             background: var(--box-glass);
@@ -117,6 +115,40 @@
         }
 
         .wide-box { margin-bottom: 15px; padding: 15px; }
+
+        /* The New Cute Celestial Block */
+        .celestial-box {
+            background: var(--box-glass);
+            border: 2px solid white;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 2px 2px 10px rgba(255, 0, 222, 0.2);
+        }
+        .celestial-title {
+            font-size: 0.8rem;
+            color: white;
+            text-shadow: 1px 1px var(--hot-pink);
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-bottom: 1px dashed white;
+            padding-bottom: 5px;
+        }
+        .celestial-grid {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+        }
+        .celestial-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--hot-pink);
+            font-weight: bold;
+            text-shadow: 1px 1px white;
+        }
 
         .stat-icon {
             font-size: 1.5rem;
@@ -256,21 +288,24 @@
                 <div class="uv-message" id="uv-text">Checking the rays...</div>
             </div>
 
-            <div class="sun-grid">
-                <div class="stat-box">
-                    <div class="stat-icon">🌅</div>
-                    <div class="stat-label">Rise</div>
-                    <div class="stat-value" id="sunrise">--:--</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-icon">🌇</div>
-                    <div class="stat-label">Set</div>
-                    <div class="stat-value" id="sunset">--:--</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-icon" id="moon-icon">🌙</div>
-                    <div class="stat-label">Phase</div>
-                    <div class="stat-value" id="moon-phase" style="font-size:0.7rem;">--</div>
+            <div class="celestial-box">
+                <div class="celestial-title">✨ Celestial Vibes ✨</div>
+                <div class="celestial-grid">
+                    <div class="celestial-item">
+                        <div class="stat-icon">🌅</div>
+                        <div class="stat-label">Rise</div>
+                        <div class="stat-value" id="sunrise">--:--</div>
+                    </div>
+                    <div class="celestial-item">
+                        <div class="stat-icon">🌇</div>
+                        <div class="stat-label">Set</div>
+                        <div class="stat-value" id="sunset">--:--</div>
+                    </div>
+                    <div class="celestial-item">
+                        <div class="stat-icon" id="moon-icon">🌙</div>
+                        <div class="stat-label">Phase</div>
+                        <div class="stat-value" id="moon-phase" style="font-size:0.7rem;">--</div>
+                    </div>
                 </div>
             </div>
 
@@ -301,30 +336,26 @@
             80: "Sparkly Showers", 81: "Heavy Showers", 82: "Pouring", 95: "Stormy Energy", 96: "Thunderstorm", 99: "Crazy Storm"
         };
 
-        // Fixed parsers so they don't break on mobile
-        function formatTime(isoString) {
-            if (!isoString) return "--:--";
-            try {
-                const timePart = isoString.split('T'); 
-                let [hours, minutes] = timePart.split(':');
-                let h = parseInt(hours, 10);
-                const ampm = h >= 12 ? 'PM' : 'AM';
-                h = h % 12 || 12;
-                return `${h}:${minutes} ${ampm}`;
-            } catch(e) { return "--:--"; }
-        }
-
+        // Date format fix for Mobile (handling "YYYY-MM-DD" safely)
         function getDayName(dateString, index) {
             if (index === 0) return "Today";
             if (!dateString) return "Day";
             try {
-                const parts = dateString.split('T').split('-');
+                const parts = dateString.split('-');
                 const year = parseInt(parts, 10);
                 const month = parseInt(parts, 10) - 1; 
                 const day = parseInt(parts, 10);
-                const d = new Date(year, month, day, 12, 0, 0);
+                const d = new Date(year, month, day, 12, 0, 0); // Force noon to prevent timezone shifts
                 return d.toLocaleDateString('en-US', { weekday: 'short' });
             } catch (e) { return "Day"; }
+        }
+
+        // Parse Sun times from the secondary API
+        function formatSunTime(utcString) {
+            try {
+                const d = new Date(utcString);
+                return d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+            } catch(e) { return "--:--"; }
         }
 
         function formatHourTime(isoString) {
@@ -395,9 +426,20 @@
                     document.getElementById('location-name').innerText = `📍 Lost in the vibes`;
                 }
 
+                // FETCH SUN TIMES FROM SEPARATE SOURCE (Exactly as requested)
                 try {
-                    // Back to the stable Open-Meteo best_match database
-                    const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,surface_pressure,wind_speed_10m,weather_code,uv_index&hourly=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=auto&models=best_match`;
+                    const sunUrl = `https://api.sunrise-sunset.org/json?lat=${latitude}&lng=${longitude}&formatted=0`;
+                    const sunRes = await fetch(sunUrl);
+                    const sunData = await sunRes.json();
+                    document.getElementById('sunrise').innerText = formatSunTime(sunData.results.sunrise);
+                    document.getElementById('sunset').innerText = formatSunTime(sunData.results.sunset);
+                } catch (e) {
+                    document.getElementById('sunrise').innerText = "--:--";
+                    document.getElementById('sunset').innerText = "--:--";
+                }
+
+                try {
+                    const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,surface_pressure,wind_speed_10m,weather_code,uv_index&hourly=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=auto&models=best_match`;
                     const response = await fetch(weatherUrl);
                     const data = await response.json();
                     
@@ -421,25 +463,25 @@
                     document.getElementById('uv-number').innerText = currentUV;
                     document.getElementById('uv-text').innerText = getUVSpeech(currentUV);
 
-                    document.getElementById('sunrise').innerText = formatTime(daily.sunrise);
-                    document.getElementById('sunset').innerText = formatTime(daily.sunset);
-
                     const moon = getMoonPhase();
                     document.getElementById('moon-icon').innerText = moon.i;
                     document.getElementById('moon-phase').innerText = moon.n;
 
                     const hourlyList = document.getElementById('hourly-list');
                     hourlyList.innerHTML = '';
-                    const now = new Date();
-                    let startIdx = 0;
+                    
                     if (hourly && hourly.time) {
-                        for(let i=0; i < hourly.time.length; i++) {
-                            if (new Date(hourly.time[i]) >= now || hourly.time[i] > now.toISOString().slice(0,16)) { 
-                                startIdx = i; break; 
-                            }
-                        }
+                        // Flawless Text-Match for Current Hour
+                        const now = new Date();
+                        const currentHourString = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}T${String(now.getHours()).padStart(2,'0')}:00`;
+                        
+                        let startIdx = hourly.time.indexOf(currentHourString);
+                        if (startIdx === -1) startIdx = 0; // Fallback
+
                         for(let i=0; i < 6; i++) {
                             const idx = startIdx + i;
+                            if(idx >= hourly.time.length) break;
+
                             const hTime = formatHourTime(hourly.time[idx]);
                             const hTemp = Math.round(hourly.temperature_2m[idx]);
                             const hIcon = weatherMoji[hourly.weather_code[idx]] || "✨";
