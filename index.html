@@ -26,6 +26,7 @@
             justify-content: center;
             align-items: flex-start;
             min-height: 100vh;
+            /* Updated to your new postimg link */
             background: url('https://i.postimg.cc/4xnNBjtt/94c7a4e74274f16f137ec827f2730270.jpg') no-repeat center center fixed;
             background-size: cover;
             font-family: 'Fredoka', sans-serif;
@@ -110,7 +111,7 @@
             margin-bottom: 15px;
         }
 
-        .stat-box, .wide-box, .celestial-box, .map-box {
+        .stat-box, .wide-box, .celestial-box {
             background: var(--inner-bubble);
             border: 2px solid white;
             border-radius: 25px;
@@ -127,19 +128,6 @@
 
         .wide-box { margin-bottom: 15px; padding: 15px; }
         .celestial-box { margin-bottom: 15px; padding: 15px; }
-        
-        /* New Map Container Styles */
-        .map-box {
-            padding: 10px;
-            margin-bottom: 15px;
-        }
-        
-        .radar-iframe {
-            width: 100%;
-            height: 250px;
-            border-radius: 15px;
-            border: 2px dashed var(--mermaid-aqua);
-        }
 
         .celestial-title {
             font-size: 0.9rem;
@@ -347,11 +335,6 @@
             <div class="forecast-title">🫧 Next Few Hours 🫧</div>
             <div class="hourly-container" id="hourly-list">
                 </div>
-            
-            <div class="forecast-title">🫧 Live Radar 🫧</div>
-            <div class="map-box">
-                <iframe id="live-map" class="radar-iframe" src="" frameborder="0"></iframe>
-            </div>
 
             <div class="forecast-title">🫧 7-Day Outlook 🫧</div>
             <div id="forecast-list">
@@ -383,22 +366,22 @@
             return d.toLocaleDateString('en-US', { weekday: 'short' });
         }
 
+        // NEW MATHEMATICAL HOUR CALCULATOR
+        function getMathematicalHour(offset) {
+            if (offset === 0) return "Now";
+            const d = new Date();
+            d.setHours(d.getHours() + offset);
+            let h = d.getHours();
+            const ampm = h >= 12 ? 'pm' : 'am';
+            h = h % 12 || 12;
+            return `${h}${ampm}`;
+        }
+
         function formatSunTime(utcString) {
             try {
                 const d = new Date(utcString);
                 return d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
             } catch(e) { return "--:--"; }
-        }
-
-        function formatHourTime(isoString) {
-            if (!isoString) return "--";
-            try {
-                const timePart = isoString.split('T'); 
-                let h = parseInt(timePart.split(':'), 10);
-                const ampm = h >= 12 ? 'pm' : 'am';
-                h = h % 12 || 12;
-                return `${h}${ampm}`;
-            } catch(e) { return "--"; }
         }
 
         function getUVSpeech(uv) {
@@ -498,31 +481,26 @@
                     document.getElementById('moon-icon').innerText = moon.i;
                     document.getElementById('moon-phase').innerText = moon.n;
 
-                    // ✨ FEED THE GPS COORDINATES INTO THE RADAR MAP ✨
-                    const mapUrl = `https://embed.windy.com/embed.html?type=map&location=coordinates&metricRain=in&metricTemp=°F&metricWind=mph&zoom=6&overlay=radar&product=radar&level=surface&lat=${latitude}&lon=${longitude}&detailLat=${latitude}&detailLon=${longitude}&marker=true`;
-                    document.getElementById('live-map').src = mapUrl;
-
                     const hourlyList = document.getElementById('hourly-list');
                     hourlyList.innerHTML = '';
                     
-                    if (hourly && hourly.time) {
-                        const now = new Date();
-                        const currentHourString = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}T${String(now.getHours()).padStart(2,'0')}:00`;
-                        
-                        let startIdx = hourly.time.indexOf(currentHourString);
-                        if (startIdx === -1) startIdx = 0;
+                    if (hourly && hourly.temperature_2m) {
+                        // Flawless array indexing based on current hour
+                        const currentHourIndex = new Date().getHours();
 
                         for(let i=0; i < 6; i++) {
-                            const idx = startIdx + i;
-                            if(idx >= hourly.time.length) break;
+                            const dataIdx = currentHourIndex + i;
+                            
+                            // Safety catch in case we hit the end of the array
+                            if(dataIdx >= hourly.temperature_2m.length) break;
 
-                            const hTime = formatHourTime(hourly.time[idx]);
-                            const hTemp = Math.round(hourly.temperature_2m[idx]);
-                            const hIcon = weatherMoji[hourly.weather_code[idx]] || "✨";
+                            const hTime = getMathematicalHour(i);
+                            const hTemp = Math.round(hourly.temperature_2m[dataIdx]);
+                            const hIcon = weatherMoji[hourly.weather_code[dataIdx]] || "✨";
                             
                             hourlyList.innerHTML += `
                                 <div class="hourly-box">
-                                    <div class="hourly-time">${i===0 ? "Now" : hTime}</div>
+                                    <div class="hourly-time">${hTime}</div>
                                     <div class="hourly-icon">${hIcon}</div>
                                     <div class="hourly-temp">${hTemp}°</div>
                                 </div>
@@ -533,7 +511,7 @@
                     const forecastList = document.getElementById('forecast-list');
                     forecastList.innerHTML = ''; 
                     
-                    if (daily && daily.time) {
+                    if (daily && daily.weather_code) {
                         for (let i = 0; i < 7; i++) {
                             const dayName = getDayName(i); 
                             const emoji = weatherMoji[daily.weather_code[i]] || "✨";
