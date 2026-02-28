@@ -7,13 +7,17 @@
     
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#ff85c2">
-    <link rel="apple-touch-icon" href="icon-192.png">
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="apple-touch-icon" href="icon.png">
 
     <style>
+        /* LOADING YOUR CUSTOM FONT */
+        @font-face {
+            font-family: 'Pinlock';
+            src: url('MGF-PinlockPersonalUse.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
         :root {
             --mermaid-aqua: #00f0ff;
             --moe-pink: #ff85c2;
@@ -32,7 +36,8 @@
             min-height: 100vh;
             background: url('https://i.postimg.cc/4xnNBjtt/94c7a4e74274f16f137ec827f2730270.jpg') no-repeat center center fixed;
             background-size: cover;
-            font-family: 'Fredoka', sans-serif;
+            /* APPLYING YOUR FONT HERE */
+            font-family: 'Pinlock', 'Comic Sans MS', cursive;
             overflow-y: auto;
             color: var(--deep-sea);
         }
@@ -61,7 +66,6 @@
             letter-spacing: 3px;
             margin-bottom: 0px;
             color: white;
-            font-weight: 700;
             text-shadow: 2px 2px var(--moe-pink), -2px -2px var(--mermaid-aqua);
         }
 
@@ -70,7 +74,6 @@
             color: var(--deep-sea);
             text-shadow: 1px 1px white;
             margin-bottom: 15px;
-            font-weight: 700;
             background: var(--inner-bubble);
             display: inline-block;
             padding: 5px 15px;
@@ -80,7 +83,6 @@
 
         #temp {
             font-size: 5.5rem;
-            font-weight: 700;
             margin: 0;
             color: white;
             text-shadow: 0 0 20px var(--mermaid-aqua), 3px 3px var(--moe-pink);
@@ -88,7 +90,6 @@
 
         #feels-like {
             font-size: 1.1rem;
-            font-weight: 700;
             margin-bottom: 10px;
             color: var(--moe-pink);
             text-shadow: 1px 1px white;
@@ -101,7 +102,6 @@
             display: inline-block;
             padding: 8px 20px;
             border-radius: 25px;
-            font-weight: 700;
             box-shadow: 4px 4px 0px var(--moe-pink);
             margin-bottom: 20px;
             border: 2px solid var(--mermaid-aqua);
@@ -121,7 +121,6 @@
             padding: 12px 5px;
             box-shadow: 3px 3px 12px rgba(0, 240, 255, 0.2), inset -3px -3px 10px rgba(255,255,255,0.5);
             color: var(--deep-sea);
-            font-weight: 700;
             text-shadow: 1px 1px 0px white;
             display: flex;
             flex-direction: column;
@@ -137,7 +136,6 @@
             color: var(--moe-pink);
             text-shadow: 1px 1px 0px white;
             margin-bottom: 10px;
-            font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 2px;
             border-bottom: 2px dotted var(--mermaid-aqua);
@@ -178,11 +176,10 @@
             color: var(--moe-pink);
             letter-spacing: 1px;
             text-align: center;
-            font-weight: 700;
         }
 
         .stat-value { font-size: 1rem; margin-top: 2px; text-align: center; color: var(--deep-sea);}
-        .uv-message { font-size: 0.9rem; color: var(--moe-pink); margin-top: 5px; font-weight: 700;}
+        .uv-message { font-size: 0.9rem; color: var(--moe-pink); margin-top: 5px; }
 
         .hourly-container {
             display: flex;
@@ -204,16 +201,15 @@
             box-shadow: 2px 2px 8px rgba(0, 240, 255, 0.15);
         }
 
-        .hourly-time { font-size: 0.85rem; color: var(--moe-pink); text-shadow: 1px 1px 0px white; margin-bottom: 3px; font-weight: 700;}
+        .hourly-time { font-size: 0.85rem; color: var(--moe-pink); text-shadow: 1px 1px 0px white; margin-bottom: 3px; }
         .hourly-icon { font-size: 1.3rem; filter: drop-shadow(2px 2px 0px white); margin: 3px 0; }
-        .hourly-temp { font-size: 1.1rem; font-weight: 700; color: var(--mermaid-aqua); text-shadow: 1px 1px 0px white; margin-top: 3px; }
-        .hourly-precip { font-size: 0.75rem; color: var(--deep-sea); font-weight: 700; margin-top: 3px; text-shadow: 1px 1px 0px white;}
+        .hourly-temp { font-size: 1.1rem; color: var(--mermaid-aqua); text-shadow: 1px 1px 0px white; margin-top: 3px; }
+        .hourly-precip { font-size: 0.75rem; color: var(--deep-sea); margin-top: 3px; text-shadow: 1px 1px 0px white;}
 
         .forecast-title {
             font-size: 1.3rem;
             margin: 15px 0 10px 0;
             color: white;
-            font-weight: 700;
             text-shadow: 2px 2px var(--mermaid-aqua), -1px -1px var(--moe-pink);
             border-bottom: 3px dotted white;
             padding-bottom: 5px;
@@ -229,20 +225,18 @@
             border-radius: 25px;
             border: 2px solid white;
             font-size: 1rem;
-            font-weight: 700;
             color: var(--deep-sea);
             text-shadow: 1px 1px 0px white;
             box-shadow: 2px 2px 8px rgba(0, 240, 255, 0.1);
         }
 
-        .forecast-day { width: 55px; text-align: left; color: var(--moe-pink); font-weight: 700;}
+        .forecast-day { width: 55px; text-align: left; color: var(--moe-pink); }
         .forecast-icon { font-size: 1.3rem; filter: drop-shadow(2px 2px 0px white); }
         .forecast-temps { width: 80px; text-align: right; }
         .min-temp { color: var(--mermaid-aqua); font-size: 0.9rem; margin-left: 5px;}
 
         #loading {
             font-size: 1.2rem;
-            font-weight: 700;
             color: white;
             animation: bounce 1.5s infinite;
             text-shadow: 2px 2px var(--mermaid-aqua);
@@ -261,8 +255,7 @@
             border-radius: 50px;
             color: white;
             font-size: 1.2rem;
-            font-family: 'Fredoka', sans-serif;
-            font-weight: 700;
+            font-family: 'Pinlock', cursive; /* ALSO APPLIED HERE */
             letter-spacing: 1px;
             cursor: pointer;
             box-shadow: 0 6px 15px rgba(0, 240, 255, 0.3), inset 0 -3px 0 rgba(0,0,0,0.1);
@@ -370,7 +363,6 @@
             return d.toLocaleDateString('en-US', { weekday: 'short' });
         }
 
-        // PERFECT HOUR MATH CALC
         function getMathematicalHour(offset) {
             if (offset === 0) return "Now";
             const d = new Date();
@@ -457,7 +449,6 @@
                 }
 
                 try {
-                    // Added precipitation_probability & precipitation to the hourly query
                     const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,surface_pressure,wind_speed_10m,weather_code,uv_index&hourly=temperature_2m,weather_code,precipitation_probability,precipitation&daily=weather_code,temperature_2m_max,temperature_2m_min&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=auto&models=best_match`;
                     const response = await fetch(weatherUrl);
                     const data = await response.json();
@@ -492,7 +483,6 @@
                     if (hourly && hourly.temperature_2m) {
                         const currentHourIndex = new Date().getHours();
 
-                        // Looping 24 times for a full day outlook
                         for(let i=0; i < 24; i++) {
                             const dataIdx = currentHourIndex + i;
                             
@@ -553,7 +543,6 @@
             }, geoOptions);
         }
 
-        // --- PWA Service Worker Registration ---
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('sw.js')
