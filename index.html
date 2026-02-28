@@ -3,15 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>✨ Y2K WEATHER ✨</title>
+    <title>🫧 MERMAID WEATHER 🫧</title>
     <style>
         :root {
-            /* Deepened the pink slightly so it pops against the bright background */
-            --hot-pink: #c9009a; 
-            --neon-blue: #00bfff;
-            --glass: rgba(255, 255, 255, 0.35);
-            /* Made the boxes more solid white so the text is much easier to read */
-            --box-glass: rgba(255, 255, 255, 0.65); 
+            /* The new Mermaid Moe Palette */
+            --mermaid-aqua: #00f0ff;
+            --moe-pink: #ff85c2;
+            --pearl-glow: #ffffff;
+            --deep-sea: #005f8a;
+            --bubble-glass: rgba(200, 245, 255, 0.25);
+            --inner-bubble: rgba(255, 255, 255, 0.4);
         }
 
         body {
@@ -21,77 +22,81 @@
             justify-content: center;
             align-items: flex-start;
             min-height: 100vh;
-            /* Using the DIRECT image link to fix the blurry quality */
             background: url('https://i.postimg.cc/PCsjq3Sr/image.png') no-repeat center center fixed;
             background-size: cover;
             font-family: 'Comic Sans MS', 'Chalkboard SE', cursive;
             overflow-y: auto;
+            color: var(--deep-sea);
         }
 
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: var(--glass); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb { background: var(--hot-pink); border-radius: 10px; border: 2px solid white; }
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: var(--bubble-glass); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: var(--moe-pink); border-radius: 10px; border: 2px dotted white; }
 
+        /* Main Bubble Container */
         .weather-container {
-            background: var(--glass);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 3px solid white;
-            border-radius: 40px;
+            background: var(--bubble-glass);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 4px dotted var(--pearl-glow);
+            border-radius: 50px; /* Extra round for bubble effect */
             padding: 30px 20px;
             text-align: center;
-            box-shadow: 0 0 20px rgba(255, 0, 222, 0.3), inset 0 0 15px white;
+            box-shadow: 0 0 25px rgba(0, 240, 255, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.8);
             width: 85%;
             max-width: 350px;
-            color: white;
             margin-bottom: 20px;
         }
 
         h1 {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
             margin-bottom: 0px;
-            text-shadow: 2px 2px var(--hot-pink), -2px -2px var(--neon-blue);
+            color: white;
+            text-shadow: 2px 2px var(--moe-pink), -2px -2px var(--mermaid-aqua);
         }
 
         #location-name {
             font-size: 1rem;
-            color: white;
-            text-shadow: 1px 1px var(--hot-pink);
+            color: var(--deep-sea);
+            text-shadow: 1px 1px white;
             margin-bottom: 15px;
             font-weight: bold;
-            background: rgba(255, 255, 255, 0.4);
+            background: var(--inner-bubble);
             display: inline-block;
-            padding: 4px 12px;
-            border-radius: 15px;
-            border: 1px solid white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            border: 2px dashed var(--mermaid-aqua);
         }
 
         #temp {
-            font-size: 4.5rem;
+            font-size: 5rem;
             font-weight: bold;
             margin: 0;
-            text-shadow: 0 0 15px var(--hot-pink), 2px 2px white;
+            color: white;
+            text-shadow: 0 0 20px var(--mermaid-aqua), 3px 3px var(--moe-pink);
         }
 
         #feels-like {
-            font-size: 0.9rem;
-            font-style: italic;
+            font-size: 0.95rem;
+            font-weight: bold;
             margin-bottom: 10px;
-            text-shadow: 1px 1px var(--hot-pink);
+            color: var(--moe-pink);
+            text-shadow: 1px 1px white;
         }
 
         #status {
             font-size: 1.1rem;
             background: white;
-            color: var(--hot-pink);
+            color: var(--mermaid-aqua);
             display: inline-block;
-            padding: 6px 18px;
-            border-radius: 20px;
+            padding: 8px 20px;
+            border-radius: 25px;
             font-weight: bold;
-            box-shadow: 3px 3px 0px var(--neon-blue);
+            box-shadow: 4px 4px 0px var(--moe-pink);
             margin-bottom: 20px;
+            border: 2px solid var(--mermaid-aqua);
         }
 
         .stats-grid {
@@ -101,15 +106,15 @@
             margin-bottom: 15px;
         }
 
-        .stat-box, .wide-box {
-            background: var(--box-glass);
+        /* Smaller internal bubbles */
+        .stat-box, .wide-box, .celestial-box {
+            background: var(--inner-bubble);
             border: 2px solid white;
-            border-radius: 15px;
-            padding: 10px 5px;
-            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-            color: var(--hot-pink);
+            border-radius: 25px;
+            padding: 12px 5px;
+            box-shadow: 3px 3px 12px rgba(0, 240, 255, 0.2), inset -3px -3px 10px rgba(255,255,255,0.5);
+            color: var(--deep-sea);
             font-weight: bold;
-            /* Updated text shadow to pop against the new background */
             text-shadow: 1px 1px 0px white;
             display: flex;
             flex-direction: column;
@@ -118,67 +123,59 @@
         }
 
         .wide-box { margin-bottom: 15px; padding: 15px; }
+        .celestial-box { margin-bottom: 15px; padding: 15px; }
 
-        .celestial-box {
-            background: var(--box-glass);
-            border: 2px solid white;
-            border-radius: 15px;
-            padding: 15px;
-            margin-bottom: 15px;
-            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-        }
         .celestial-title {
-            font-size: 0.8rem;
-            color: var(--hot-pink);
+            font-size: 0.85rem;
+            color: var(--moe-pink);
             text-shadow: 1px 1px 0px white;
             margin-bottom: 10px;
             font-weight: bold;
             text-transform: uppercase;
             letter-spacing: 2px;
-            border-bottom: 1px dashed white;
+            border-bottom: 2px dotted var(--mermaid-aqua);
             padding-bottom: 5px;
         }
+
         .celestial-grid {
             display: flex;
             justify-content: space-around;
             width: 100%;
         }
+
         .celestial-item {
             display: flex;
             flex-direction: column;
             align-items: center;
-            color: var(--hot-pink);
-            font-weight: bold;
-            text-shadow: 1px 1px 0px white;
         }
 
         .stat-icon {
-            font-size: 1.5rem;
+            font-size: 1.6rem;
             margin-bottom: 2px;
-            filter: drop-shadow(1px 1px 0px white);
+            filter: drop-shadow(2px 2px 0px white);
         }
         
-        /* Your Custom Icon Styling */
         .custom-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%; /* Made circles for the bubble theme */
             object-fit: cover;
             margin-bottom: 4px;
-            box-shadow: 1px 1px 4px rgba(0,0,0,0.2);
-            border: 1px solid white;
+            box-shadow: 0 0 8px var(--mermaid-aqua);
+            border: 2px solid white;
         }
 
         .stat-label {
             font-size: 0.65rem;
             text-transform: uppercase;
-            color: var(--hot-pink);
+            color: var(--moe-pink);
             letter-spacing: 1px;
             text-align: center;
+            font-weight: 900;
         }
 
-        .stat-value { font-size: 0.9rem; margin-top: 2px; text-align: center;}
-        .uv-message { font-size: 0.8rem; color: var(--hot-pink); margin-top: 5px; }
+        .stat-value { font-size: 0.95rem; margin-top: 2px; text-align: center; color: var(--deep-sea);}
+        .uv-message { font-size: 0.85rem; color: var(--moe-pink); margin-top: 5px; font-weight: bold;}
 
         .hourly-container {
             display: flex;
@@ -189,26 +186,27 @@
         }
 
         .hourly-box {
-            min-width: 60px;
-            background: var(--box-glass);
-            border: 1px solid white;
-            border-radius: 12px;
-            padding: 8px;
+            min-width: 65px;
+            background: var(--inner-bubble);
+            border: 2px solid white;
+            border-radius: 20px;
+            padding: 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 2px 2px 8px rgba(0, 240, 255, 0.15);
         }
 
-        .hourly-time { font-size: 0.7rem; color: var(--hot-pink); text-shadow: 1px 1px 0px white; margin-bottom: 3px; }
-        .hourly-icon { font-size: 1.2rem; filter: drop-shadow(1px 1px 0px white); }
-        .hourly-temp { font-size: 0.9rem; font-weight: bold; color: var(--hot-pink); text-shadow: 1px 1px 0px white; margin-top: 3px; }
+        .hourly-time { font-size: 0.75rem; color: var(--moe-pink); text-shadow: 1px 1px 0px white; margin-bottom: 3px; font-weight: bold;}
+        .hourly-icon { font-size: 1.3rem; filter: drop-shadow(2px 2px 0px white); }
+        .hourly-temp { font-size: 1rem; font-weight: bold; color: var(--mermaid-aqua); text-shadow: 1px 1px 0px white; margin-top: 3px; }
 
         .forecast-title {
             font-size: 1.2rem;
             margin: 15px 0 10px 0;
-            text-shadow: 2px 2px var(--hot-pink);
-            border-bottom: 2px dashed white;
+            color: white;
+            text-shadow: 2px 2px var(--mermaid-aqua), -1px -1px var(--moe-pink);
+            border-bottom: 3px dotted white;
             padding-bottom: 5px;
         }
 
@@ -216,51 +214,57 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: var(--box-glass);
-            margin-bottom: 8px;
-            padding: 10px 15px;
-            border-radius: 12px;
-            border: 1px solid white;
-            font-size: 0.9rem;
+            background: var(--inner-bubble);
+            margin-bottom: 10px;
+            padding: 12px 18px;
+            border-radius: 25px;
+            border: 2px solid white;
+            font-size: 0.95rem;
             font-weight: bold;
-            color: var(--hot-pink);
+            color: var(--deep-sea);
             text-shadow: 1px 1px 0px white;
-            box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.05);
+            box-shadow: 2px 2px 8px rgba(0, 240, 255, 0.1);
         }
 
-        .forecast-day { width: 50px; text-align: left; }
-        .forecast-icon { font-size: 1.2rem; filter: drop-shadow(1px 1px 0px white); }
+        .forecast-day { width: 50px; text-align: left; color: var(--moe-pink); }
+        .forecast-icon { font-size: 1.3rem; filter: drop-shadow(2px 2px 0px white); }
         .forecast-temps { width: 80px; text-align: right; }
-        .min-temp { color: var(--neon-blue); font-size: 0.8rem; margin-left: 5px;}
+        .min-temp { color: var(--mermaid-aqua); font-size: 0.85rem; margin-left: 5px;}
 
         #loading {
-            font-style: italic;
-            animation: blink 1.5s infinite;
-            text-shadow: 1px 1px var(--hot-pink);
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: white;
+            animation: bounce 1.5s infinite;
+            text-shadow: 2px 2px var(--mermaid-aqua);
             margin: 20px 0;
         }
 
-        @keyframes blink { 50% { opacity: 0.5; } }
+        @keyframes bounce { 
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
 
         .refresh-btn {
-            background: linear-gradient(90deg, var(--neon-blue), var(--hot-pink));
-            border: 2px solid white;
+            background: linear-gradient(135deg, var(--mermaid-aqua), var(--moe-pink));
+            border: 3px solid white;
             padding: 12px 25px;
             border-radius: 50px;
             color: white;
-            font-size: 1rem;
+            font-size: 1.1rem;
             font-family: inherit;
-            font-weight: bold;
+            font-weight: 900;
+            letter-spacing: 1px;
             cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 6px 15px rgba(0, 240, 255, 0.3), inset 0 -3px 0 rgba(0,0,0,0.1);
             transition: 0.2s;
-            text-shadow: 1px 1px black;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
             margin-top: 10px;
             width: 100%;
         }
 
         .refresh-btn:active {
-            box-shadow: 0 0px;
+            box-shadow: 0 2px 5px rgba(0, 240, 255, 0.3);
             transform: translateY(4px);
         }
     </style>
@@ -268,29 +272,29 @@
 <body>
 
     <div class="weather-container">
-        <h1>✨ Right Now ✨</h1>
-        <div id="location-name">Finding you... 🗺️</div>
+        <h1>🫧 Right Now 🫧</h1>
+        <div id="location-name">Scanning... (◕‿◕✿)</div>
         
-        <div id="loading">Locating... 📍</div>
+        <div id="loading">Locating... 🫧</div>
         
         <div id="weather-content" style="display:none;">
             <div id="temp">--°</div>
             <div id="feels-like">My RealFeel: <span id="apparent">--</span>°</div>
-            <div id="status">VIBING</div>
+            <div id="status">(>ω<) VIBING</div>
             
             <div class="stats-grid">
                 <div class="stat-box">
-                    <div class="stat-icon">💨</div>
+                    <div class="stat-icon">🫧</div>
                     <div class="stat-label">Wind</div>
                     <div class="stat-value"><span id="wind">--</span> mph</div>
                 </div>
                 <div class="stat-box">
-                    <div class="stat-icon">💧</div>
+                    <div class="stat-icon">🌊</div>
                     <div class="stat-label">Humidity</div>
                     <div class="stat-value"><span id="humidity">--</span>%</div>
                 </div>
                 <div class="stat-box">
-                    <div class="stat-icon">🫧</div>
+                    <div class="stat-icon">🪸</div>
                     <div class="stat-label">Pressure</div>
                     <div class="stat-value"><span id="pressure">--</span> in</div>
                 </div>
@@ -318,16 +322,16 @@
                     <div class="celestial-item">
                         <div class="stat-icon" id="moon-icon">🌙</div>
                         <div class="stat-label">Phase</div>
-                        <div class="stat-value" id="moon-phase" style="font-size:0.7rem;">--</div>
+                        <div class="stat-value" id="moon-phase" style="font-size:0.75rem;">--</div>
                     </div>
                 </div>
             </div>
 
-            <div class="forecast-title">✨ Next Few Hours ✨</div>
+            <div class="forecast-title">🫧 Next Few Hours 🫧</div>
             <div class="hourly-container" id="hourly-list">
                 </div>
 
-            <div class="forecast-title">✨ 7-Day Outlook ✨</div>
+            <div class="forecast-title">🫧 7-Day Outlook 🫧</div>
             <div id="forecast-list">
                 </div>
         </div>
@@ -350,7 +354,6 @@
             80: "Sparkly Showers", 81: "Heavy Showers", 82: "Pouring", 95: "Stormy Energy", 96: "Thunderstorm", 99: "Crazy Storm"
         };
 
-        // 100% FOOLPROOF DAY CALCULATOR - Bypasses API formatting entirely
         function getDayName(index) {
             if (index === 0) return "Today";
             const d = new Date();
@@ -377,11 +380,11 @@
         }
 
         function getUVSpeech(uv) {
-            if (uv <= 2) return "Low rays! Ur safe to glow! ✨";
+            if (uv <= 2) return "Low rays! Ur safe to glow! (≧◡≦)";
             if (uv <= 5) return "Moderate! Grab some SPF! 🌸";
             if (uv <= 7) return "High! Lather up, babe! ☀️";
             if (uv <= 10) return "Very High! Protect that skin! ⛱️";
-            return "Extreme! Stay in the shade! 🛑";
+            return "Extreme! Stay in the shade! (ﾟДﾟ;)";
         }
 
         function getMoonPhase() {
@@ -427,10 +430,10 @@
                     const geoRes = await fetch(geoUrl);
                     const geoData = await geoRes.json();
                     const address = geoData.address || {};
-                    const locName = address.neighbourhood || address.suburb || address.village || address.town || address.city || "Ur Vibe Zone";
+                    const locName = address.neighbourhood || address.suburb || address.village || address.town || address.city || "Deep Sea Vibe Zone";
                     document.getElementById('location-name').innerText = `📍 ${locName}`;
                 } catch (e) {
-                    document.getElementById('location-name').innerText = `📍 Lost in the vibes`;
+                    document.getElementById('location-name').innerText = `📍 Lost in the waves`;
                 }
 
                 try {
@@ -460,7 +463,7 @@
                     const pressureInHg = (current.surface_pressure * 0.02953).toFixed(1);
                     document.getElementById('pressure').innerText = pressureInHg;
                     
-                    document.getElementById('status').innerText = `${weatherDescriptions[current.weather_code] || "Vibing"} ${weatherMoji[current.weather_code] || "💅"}`;
+                    document.getElementById('status').innerText = `${weatherDescriptions[current.weather_code] || "Vibing"} ${weatherMoji[current.weather_code] || "✨"}`;
 
                     const myRealFeel = customRealFeel(current.temperature_2m, current.wind_speed_10m, current.relative_humidity_2m);
                     document.getElementById('apparent').innerText = myRealFeel;
@@ -506,7 +509,6 @@
                     
                     if (daily && daily.time) {
                         for (let i = 0; i < 7; i++) {
-                            // Using the math-based day calculator
                             const dayName = getDayName(i); 
                             const emoji = weatherMoji[daily.weather_code[i]] || "✨";
                             const maxTemp = Math.round(daily.temperature_2m_max[i]);
@@ -525,7 +527,7 @@
                     document.getElementById('loading').style.display = 'none';
                     document.getElementById('weather-content').style.display = 'block';
                 } catch (error) {
-                    document.getElementById('loading').innerText = "Oops! Network error. :(";
+                    document.getElementById('loading').innerText = "(✖╭╮✖) Network error...";
                 }
             }, (err) => {
                 document.getElementById('loading').innerText = "Please enable location! 📍";
