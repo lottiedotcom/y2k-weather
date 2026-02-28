@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🫧 MERMAID WEATHER 🫧</title>
     
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#ff85c2">
+    <link rel="apple-touch-icon" href="icon-192.png">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&display=swap" rel="stylesheet">
@@ -202,7 +206,7 @@
 
         .hourly-time { font-size: 0.85rem; color: var(--moe-pink); text-shadow: 1px 1px 0px white; margin-bottom: 3px; font-weight: 700;}
         .hourly-icon { font-size: 1.3rem; filter: drop-shadow(2px 2px 0px white); margin: 3px 0; }
-        .hourly-temp { font-size: 1.1rem; font-weight: 700; color: var(--mermaid-aqua); text-shadow: 1px 1px 0px white; }
+        .hourly-temp { font-size: 1.1rem; font-weight: 700; color: var(--mermaid-aqua); text-shadow: 1px 1px 0px white; margin-top: 3px; }
         .hourly-precip { font-size: 0.75rem; color: var(--deep-sea); font-weight: 700; margin-top: 3px; text-shadow: 1px 1px 0px white;}
 
         .forecast-title {
@@ -488,7 +492,7 @@
                     if (hourly && hourly.temperature_2m) {
                         const currentHourIndex = new Date().getHours();
 
-                        // Looping 24 times now!
+                        // Looping 24 times for a full day outlook
                         for(let i=0; i < 24; i++) {
                             const dataIdx = currentHourIndex + i;
                             
@@ -498,15 +502,14 @@
                             const hTemp = Math.round(hourly.temperature_2m[dataIdx]);
                             const hIcon = weatherMoji[hourly.weather_code[dataIdx]] || "✨";
                             
-                            // Check the precip data
                             const hPop = hourly.precipitation_probability[dataIdx];
                             const hPrecip = hourly.precipitation[dataIdx];
                             
                             let precipText = "";
                             if (hPrecip > 0) {
-                                precipText = `💧 ${hPrecip}"`; // Shows exact inches if it's raining
+                                precipText = `💧 ${hPrecip}"`; 
                             } else {
-                                precipText = `💧 ${hPop}%`; // Just shows the probability otherwise
+                                precipText = `💧 ${hPop}%`; 
                             }
                             
                             hourlyList.innerHTML += `
@@ -550,7 +553,14 @@
             }, geoOptions);
         }
 
-        fetchWeather();
+        // --- PWA Service Worker Registration ---
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(registration => console.log('ServiceWorker registered! 🫧'))
+                    .catch(err => console.log('ServiceWorker failed: ', err));
+            });
+        }
     </script>
 </body>
 </html>
