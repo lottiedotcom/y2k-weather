@@ -370,7 +370,6 @@
             return d.toLocaleDateString('en-US', { weekday: 'short' });
         }
 
-        // PERFECT HOUR MATH CALC
         function getMathematicalHour(offset) {
             if (offset === 0) return "Now";
             const d = new Date();
@@ -396,15 +395,27 @@
             return "Extreme! Stay in the shade! (ﾟДﾟ;)";
         }
 
+        // PERFECTED ASTRONOMY ALGORITHM (Synced to official almanac phases)
         function getMoonPhase() {
             const date = new Date();
-            let year = date.getFullYear(), month = date.getMonth() + 1, day = date.getDate();
-            if (month < 3) { year--; month += 12; }
-            ++month;
-            let jd = 365.25 * year + 30.6 * month + day - 694039.09;
-            jd /= 29.5305882;
-            let b = Math.round((jd - parseInt(jd)) * 8);
-            if (b >= 8) b = 0;
+            // Known absolute New Moon: Jan 6, 2000, 18:14 UTC
+            const newMoon2000 = new Date(Date.UTC(2000, 0, 6, 18, 14, 0));
+            const diff = date - newMoon2000;
+            const days = diff / (1000 * 60 * 60 * 24);
+            const lunarCycle = 29.53058867; // The exact synodic month
+            const phase = (days % lunarCycle) / lunarCycle;
+
+            let b = 0;
+            // Strict cutoffs based on exact visual phases
+            if (phase < 0.02 || phase >= 0.98) b = 0; // New Moon
+            else if (phase < 0.23) b = 1; // Waxing Cres
+            else if (phase < 0.27) b = 2; // 1st Quarter
+            else if (phase < 0.48) b = 3; // Waxing Gib
+            else if (phase < 0.52) b = 4; // Full Moon
+            else if (phase < 0.73) b = 5; // Waning Gib
+            else if (phase < 0.77) b = 6; // Last Quarter
+            else b = 7; // Waning Cres
+            
             const phases = [
                 { i: "🌑", n: "New Moon" }, { i: "🌒", n: "Waxing Cres" },
                 { i: "🌓", n: "1st Quarter" }, { i: "🌔", n: "Waxing Gib" },
@@ -457,7 +468,8 @@
                 }
 
                 try {
-                    const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,surface_pressure,wind_speed_10m,weather_code,uv_index&hourly=temperature_2m,weather_code,precipitation_probability,precipitation&daily=weather_code,temperature_2m_max,temperature_2m_min&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=auto&models=best_match`;
+                    // Added cloud_cover array to calculate the daily average!
+                    const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,surface_pressure,wind_speed_10m,weather_code,uv_index&hourly=temperature_2m,weather_code,precipitation_probability,precipitation,cloud_cover&daily=weather_code,temperature_2m_max,temperature_2m_min&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=auto&models=best_match`;
                     const response = await fetch(weatherUrl);
                     const data = await response.json();
                     
@@ -472,7 +484,24 @@
                     const pressureInHg = (current.surface_pressure * 0.02953).toFixed(1);
                     document.getElementById('pressure').innerText = pressureInHg;
                     
-                    document.getElementById('status').innerText = `${weatherDescriptions[current.weather_code] || "Vibing"} ${weatherMoji[current.weather_code] || "✨"}`;
+                    // ✨ THE DAILY VIBE CALCULATOR ✨
+                    let dailyVibeCode = daily.weather_code[0]; // Gets the dominant weather for the day
+                    
+                    // If it's technically a dry day, ignore temporary morning fog/clouds and average the whole day!
+                    if (dailyVibeCode <= 3 || dailyVibeCode === 45 || dailyVibeCode === 48) {
+                        let totalClouds = 0;
+                        for(let i=0; i<24; i++) {
+                            totalClouds += hourly.cloud_cover[i]; // Add up all 24 hours
+                        }
+                        const avgClouds = totalClouds / 24; // Find the exact mathematical average
+                        
+                        if (avgClouds < 20) dailyVibeCode = 0; // Totally Sunny
+                        else if (avgClouds < 50) dailyVibeCode = 1; // Cute & Clear
+                        else if (avgClouds < 80) dailyVibeCode = 2; // A Bit Cloudy
+                        else dailyVibeCode = 3; // Overcast Bummer
+                    }
+
+                    document.getElementById('status').innerText = `${weatherDescriptions[dailyVibeCode] || "Vibing"} ${weatherMoji[dailyVibeCode] || "✨"}`;
 
                     const myRealFeel = customRealFeel(current.temperature_2m, current.wind_speed_10m, current.relative_humidity_2m);
                     document.getElementById('apparent').innerText = myRealFeel;
@@ -491,7 +520,6 @@
                     if (hourly && hourly.temperature_2m) {
                         const currentHourIndex = new Date().getHours();
 
-                        // Looping 24 times for a full day outlook
                         for(let i=0; i < 24; i++) {
                             const dataIdx = currentHourIndex + i;
                             
@@ -562,3 +590,4 @@
     </script>
 </body>
 </html>
+
