@@ -219,26 +219,56 @@
             padding-bottom: 5px;
         }
 
+        /* 🫧 NEW FORECAST ACCORDION STYLES 🫧 */
+        .forecast-item {
+            display: flex;
+            flex-direction: column;
+            background: var(--inner-bubble);
+            margin-bottom: 10px;
+            border-radius: 25px;
+            border: 2px solid white;
+            box-shadow: 2px 2px 8px rgba(0, 240, 255, 0.1);
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        
+        .forecast-item:active {
+            transform: scale(0.98);
+        }
+
         .forecast-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: var(--inner-bubble);
-            margin-bottom: 10px;
             padding: 12px 18px;
-            border-radius: 25px;
-            border: 2px solid white;
             font-size: 1rem;
             font-weight: 700;
             color: var(--deep-sea);
             text-shadow: 1px 1px 0px white;
-            box-shadow: 2px 2px 8px rgba(0, 240, 255, 0.1);
         }
 
         .forecast-day { width: 55px; text-align: left; color: var(--moe-pink); font-weight: 700;}
         .forecast-icon { font-size: 1.3rem; filter: drop-shadow(2px 2px 0px white); }
+        .forecast-rain { font-size: 0.85rem; color: var(--mermaid-aqua); width: 45px; text-align: center; }
         .forecast-temps { width: 80px; text-align: right; }
         .min-temp { color: var(--mermaid-aqua); font-size: 0.9rem; margin-left: 5px;}
+
+        .forecast-details {
+            display: none;
+            padding: 0 18px 15px 18px;
+            font-size: 0.85rem;
+            text-align: left;
+            border-top: 2px dotted rgba(255, 255, 255, 0.5);
+            margin-top: 5px;
+            padding-top: 10px;
+        }
+
+        .forecast-details p { 
+            margin: 4px 0; 
+            color: var(--moe-pink); 
+            text-shadow: 1px 1px 0px white;
+        }
+        .forecast-details span { color: var(--deep-sea); }
 
         #loading {
             font-size: 1.2rem;
@@ -349,18 +379,24 @@
     </div>
 
     <script>
+        // EXPANDED EMOJIS: Now includes freezing rain, snow grains, and precise storm types
         const weatherMoji = {
             0: "☀️", 1: "🌤️", 2: "⛅", 3: "☁️",
-            45: "🌫️", 48: "🌫️", 51: "💧", 53: "💧", 55: "🌧️",
-            61: "🎀", 63: "🌧️", 65: "☔", 71: "❄️", 73: "❄️", 75: "⛄",
-            80: "🌧️", 81: "☔", 82: "☔", 95: "⚡", 96: "🌩️", 99: "🌩️"
+            45: "🌫️", 48: "🌫️", 
+            51: "💧", 53: "💧", 55: "🌧️", 56: "🥶", 57: "🥶",
+            61: "🎀", 63: "🌧️", 65: "☔", 66: "🧊", 67: "🧊",
+            71: "❄️", 73: "❄️", 75: "⛄", 77: "🌨️",
+            80: "🌧️", 81: "☔", 82: "🌊", 85: "🌨️", 86: "⛄",
+            95: "⚡", 96: "🌩️", 99: "🌩️"
         };
 
         const weatherDescriptions = {
             0: "Totally Sunny", 1: "Cute & Clear", 2: "A Bit Cloudy", 3: "Overcast Bummer",
             45: "Foggy Mystery", 48: "Foggy Mystery", 51: "Light Drizzle", 53: "Drizzle", 55: "Heavy Drizzle",
-            61: "Rainy Day", 63: "Steady Rain", 65: "Heavy Rain", 71: "Snowy Sparkles", 73: "Snowing", 75: "Heavy Snow",
-            80: "Sparkly Showers", 81: "Heavy Showers", 82: "Pouring", 95: "Stormy Energy", 96: "Thunderstorm", 99: "Crazy Storm"
+            56: "Freezing Drizzle", 57: "Icy Drizzle", 61: "Rainy Day", 63: "Steady Rain", 65: "Heavy Rain", 
+            66: "Freezing Rain", 67: "Heavy Ice Rain", 71: "Snowy Sparkles", 73: "Snowing", 75: "Heavy Snow", 
+            77: "Snow Grains", 80: "Sparkly Showers", 81: "Heavy Showers", 82: "Pouring", 
+            85: "Snow Showers", 86: "Heavy Snow Showers", 95: "Stormy Energy", 96: "Thunderstorm", 99: "Crazy Storm"
         };
 
         function getDayName(index) {
@@ -395,25 +431,24 @@
             return "Extreme! Stay in the shade! (ﾟДﾟ;)";
         }
 
-        // PERFECTED ASTRONOMY ALGORITHM (Synced to official almanac phases)
+        // PERFECTED ASTRONOMY ALGORITHM (Uses Julian Dates for zero drift)
         function getMoonPhase() {
-            const date = new Date();
-            // Known absolute New Moon: Jan 6, 2000, 18:14 UTC
-            const newMoon2000 = new Date(Date.UTC(2000, 0, 6, 18, 14, 0));
-            const diff = date - newMoon2000;
-            const days = diff / (1000 * 60 * 60 * 24);
-            const lunarCycle = 29.53058867; // The exact synodic month
-            const phase = (days % lunarCycle) / lunarCycle;
+            const now = new Date();
+            // Convert current Unix time to Julian Date
+            const julian = (now.getTime() / 86400000) + 2440587.5;
+            // 2451550.1 is the exact Julian date of the first new moon of the year 2000
+            const lunarDays = julian - 2451550.1; 
+            const phase = (lunarDays / 29.53058867) % 1; // 29.53058867 is the synodic month length
+            const normalizedPhase = phase < 0 ? phase + 1 : phase;
 
             let b = 0;
-            // Strict cutoffs based on exact visual phases
-            if (phase < 0.02 || phase >= 0.98) b = 0; // New Moon
-            else if (phase < 0.23) b = 1; // Waxing Cres
-            else if (phase < 0.27) b = 2; // 1st Quarter
-            else if (phase < 0.48) b = 3; // Waxing Gib
-            else if (phase < 0.52) b = 4; // Full Moon
-            else if (phase < 0.73) b = 5; // Waning Gib
-            else if (phase < 0.77) b = 6; // Last Quarter
+            if (normalizedPhase < 0.03 || normalizedPhase >= 0.97) b = 0; // New Moon
+            else if (normalizedPhase < 0.22) b = 1; // Waxing Cres
+            else if (normalizedPhase < 0.28) b = 2; // 1st Quarter
+            else if (normalizedPhase < 0.47) b = 3; // Waxing Gib
+            else if (normalizedPhase < 0.53) b = 4; // Full Moon
+            else if (normalizedPhase < 0.72) b = 5; // Waning Gib
+            else if (normalizedPhase < 0.78) b = 6; // Last Quarter
             else b = 7; // Waning Cres
             
             const phases = [
@@ -434,6 +469,15 @@
                 return Math.round(heat);
             }
             return Math.round(temp);
+        }
+
+        function toggleDetails(element) {
+            const detailsDiv = element.querySelector('.forecast-details');
+            if (detailsDiv.style.display === 'block') {
+                detailsDiv.style.display = 'none';
+            } else {
+                detailsDiv.style.display = 'block';
+            }
         }
 
         async function fetchWeather() {
@@ -468,8 +512,8 @@
                 }
 
                 try {
-                    // Added cloud_cover array to calculate the daily average!
-                    const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,surface_pressure,wind_speed_10m,weather_code,uv_index&hourly=temperature_2m,weather_code,precipitation_probability,precipitation,cloud_cover&daily=weather_code,temperature_2m_max,temperature_2m_min&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=auto&models=best_match`;
+                    // UPDATED API: Now fetching precipitation_sum, wind_speed_10m_max, and uv_index_max for the daily drops!
+                    const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,surface_pressure,wind_speed_10m,weather_code,uv_index&hourly=temperature_2m,weather_code,precipitation_probability,precipitation,cloud_cover&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,uv_index_max,wind_speed_10m_max&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=auto&models=best_match`;
                     const response = await fetch(weatherUrl);
                     const data = await response.json();
                     
@@ -484,21 +528,19 @@
                     const pressureInHg = (current.surface_pressure * 0.02953).toFixed(1);
                     document.getElementById('pressure').innerText = pressureInHg;
                     
-                    // ✨ THE DAILY VIBE CALCULATOR ✨
-                    let dailyVibeCode = daily.weather_code[0]; // Gets the dominant weather for the day
+                    let dailyVibeCode = daily.weather_code[0]; 
                     
-                    // If it's technically a dry day, ignore temporary morning fog/clouds and average the whole day!
                     if (dailyVibeCode <= 3 || dailyVibeCode === 45 || dailyVibeCode === 48) {
                         let totalClouds = 0;
                         for(let i=0; i<24; i++) {
-                            totalClouds += hourly.cloud_cover[i]; // Add up all 24 hours
+                            totalClouds += hourly.cloud_cover[i]; 
                         }
-                        const avgClouds = totalClouds / 24; // Find the exact mathematical average
+                        const avgClouds = totalClouds / 24; 
                         
-                        if (avgClouds < 20) dailyVibeCode = 0; // Totally Sunny
-                        else if (avgClouds < 50) dailyVibeCode = 1; // Cute & Clear
-                        else if (avgClouds < 80) dailyVibeCode = 2; // A Bit Cloudy
-                        else dailyVibeCode = 3; // Overcast Bummer
+                        if (avgClouds < 20) dailyVibeCode = 0; 
+                        else if (avgClouds < 50) dailyVibeCode = 1; 
+                        else if (avgClouds < 80) dailyVibeCode = 2; 
+                        else dailyVibeCode = 3; 
                     }
 
                     document.getElementById('status').innerText = `${weatherDescriptions[dailyVibeCode] || "Vibing"} ${weatherMoji[dailyVibeCode] || "✨"}`;
@@ -559,12 +601,29 @@
                             const emoji = weatherMoji[daily.weather_code[i]] || "✨";
                             const maxTemp = Math.round(daily.temperature_2m_max[i]);
                             const minTemp = Math.round(daily.temperature_2m_min[i]);
+                            
+                            // NEW: Grabbing extended data for the dropdowns
+                            const rainTotal = daily.precipitation_sum[i];
+                            const rainPop = daily.precipitation_probability_max[i];
+                            const uvMax = Math.round(daily.uv_index_max[i] || 0);
+                            const windMax = Math.round(daily.wind_speed_10m_max[i] || 0);
+
+                            // Format the rain string for the main row
+                            let rainDisplay = rainTotal > 0 ? `${rainTotal}"` : `${rainPop}%`;
 
                             forecastList.innerHTML += `
-                                <div class="forecast-row">
-                                    <div class="forecast-day">${dayName}</div>
-                                    <div class="forecast-icon">${emoji}</div>
-                                    <div class="forecast-temps">${maxTemp}° <span class="min-temp">${minTemp}°</span></div>
+                                <div class="forecast-item" onclick="toggleDetails(this)">
+                                    <div class="forecast-row">
+                                        <div class="forecast-day">${dayName}</div>
+                                        <div class="forecast-icon">${emoji}</div>
+                                        <div class="forecast-rain">💧 ${rainDisplay}</div>
+                                        <div class="forecast-temps">${maxTemp}° <span class="min-temp">${minTemp}°</span></div>
+                                    </div>
+                                    <div class="forecast-details">
+                                        <p>🌧️ <span>Max Chance of Rain:</span> ${rainPop}%</p>
+                                        <p>🌬️ <span>Highest Wind:</span> ${windMax} mph</p>
+                                        <p>🧴 <span>Peak UV Index:</span> ${uvMax}</p>
+                                    </div>
                                 </div>
                             `;
                         }
@@ -590,4 +649,3 @@
     </script>
 </body>
 </html>
-
