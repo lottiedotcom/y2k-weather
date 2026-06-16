@@ -219,7 +219,6 @@
             padding-bottom: 5px;
         }
 
-        /* 🫧 NEW FORECAST ACCORDION STYLES 🫧 */
         .forecast-item {
             display: flex;
             flex-direction: column;
@@ -379,7 +378,6 @@
     </div>
 
     <script>
-        // EXPANDED EMOJIS: Now includes freezing rain, snow grains, and precise storm types
         const weatherMoji = {
             0: "☀️", 1: "🌤️", 2: "⛅", 3: "☁️",
             45: "🌫️", 48: "🌫️", 
@@ -431,24 +429,23 @@
             return "Extreme! Stay in the shade! (ﾟДﾟ;)";
         }
 
-        // PERFECTED ASTRONOMY ALGORITHM (Uses Julian Dates for zero drift)
+        // TIGHTENED MOON MATH TO MATCH ALMANAC'S DAILY SHIFTS
         function getMoonPhase() {
             const now = new Date();
-            // Convert current Unix time to Julian Date
             const julian = (now.getTime() / 86400000) + 2440587.5;
-            // 2451550.1 is the exact Julian date of the first new moon of the year 2000
-            const lunarDays = julian - 2451550.1; 
-            const phase = (lunarDays / 29.53058867) % 1; // 29.53058867 is the synodic month length
+            const lunarDays = julian - 2451550.26; 
+            const phase = (lunarDays / 29.53058867) % 1; 
             const normalizedPhase = phase < 0 ? phase + 1 : phase;
 
             let b = 0;
-            if (normalizedPhase < 0.03 || normalizedPhase >= 0.97) b = 0; // New Moon
-            else if (normalizedPhase < 0.22) b = 1; // Waxing Cres
-            else if (normalizedPhase < 0.28) b = 2; // 1st Quarter
-            else if (normalizedPhase < 0.47) b = 3; // Waxing Gib
-            else if (normalizedPhase < 0.53) b = 4; // Full Moon
-            else if (normalizedPhase < 0.72) b = 5; // Waning Gib
-            else if (normalizedPhase < 0.78) b = 6; // Last Quarter
+            // The bounds are much smaller so "New Moon" only shows on the exact day
+            if (normalizedPhase < 0.015 || normalizedPhase > 0.985) b = 0; // New Moon
+            else if (normalizedPhase < 0.235) b = 1; // Waxing Cres
+            else if (normalizedPhase < 0.265) b = 2; // 1st Quarter
+            else if (normalizedPhase < 0.485) b = 3; // Waxing Gib
+            else if (normalizedPhase < 0.515) b = 4; // Full Moon
+            else if (normalizedPhase < 0.735) b = 5; // Waning Gib
+            else if (normalizedPhase < 0.765) b = 6; // Last Quarter
             else b = 7; // Waning Cres
             
             const phases = [
@@ -512,7 +509,6 @@
                 }
 
                 try {
-                    // UPDATED API: Now fetching precipitation_sum, wind_speed_10m_max, and uv_index_max for the daily drops!
                     const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,surface_pressure,wind_speed_10m,weather_code,uv_index&hourly=temperature_2m,weather_code,precipitation_probability,precipitation,cloud_cover&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,uv_index_max,wind_speed_10m_max&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=auto&models=best_match`;
                     const response = await fetch(weatherUrl);
                     const data = await response.json();
@@ -564,7 +560,6 @@
 
                         for(let i=0; i < 24; i++) {
                             const dataIdx = currentHourIndex + i;
-                            
                             if(dataIdx >= hourly.temperature_2m.length) break;
 
                             const hTime = getMathematicalHour(i);
@@ -602,13 +597,11 @@
                             const maxTemp = Math.round(daily.temperature_2m_max[i]);
                             const minTemp = Math.round(daily.temperature_2m_min[i]);
                             
-                            // NEW: Grabbing extended data for the dropdowns
                             const rainTotal = daily.precipitation_sum[i];
                             const rainPop = daily.precipitation_probability_max[i];
                             const uvMax = Math.round(daily.uv_index_max[i] || 0);
                             const windMax = Math.round(daily.wind_speed_10m_max[i] || 0);
 
-                            // Format the rain string for the main row
                             let rainDisplay = rainTotal > 0 ? `${rainTotal}"` : `${rainPop}%`;
 
                             forecastList.innerHTML += `
@@ -639,13 +632,16 @@
             }, geoOptions);
         }
 
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
+        // AUTO LOAD WEATHER ON STARTUP
+        window.addEventListener('load', () => {
+            fetchWeather();
+            
+            if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.register('sw.js')
                     .then(registration => console.log('ServiceWorker registered! 🫧'))
                     .catch(err => console.log('ServiceWorker failed: ', err));
-            });
-        }
+            }
+        });
     </script>
 </body>
 </html>
