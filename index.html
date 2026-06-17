@@ -30,7 +30,8 @@
             justify-content: center;
             align-items: flex-start;
             min-height: 100vh;
-            background: url('https://i.postimg.cc/4xnNBjtt/94c7a4e74274f16f137ec827f2730270.jpg') no-repeat center center fixed;
+            /* Updated to your new cute background! */
+            background: url('https://i.postimg.cc/K8WLGzPT/684495e309f1e7a6b1d1609f033f905c.jpg') no-repeat center center fixed;
             background-size: cover;
             font-family: 'Fredoka', sans-serif;
             overflow-y: auto;
@@ -142,6 +143,22 @@
             letter-spacing: 2px;
             border-bottom: 2px dotted var(--mermaid-aqua);
             padding-bottom: 5px;
+        }
+
+        /* 🫧 NEW PRODUCTIVITY INDEX STYLES 🫧 */
+        .vibe-title {
+            color: var(--mermaid-aqua);
+            font-weight: 700;
+            font-size: 1.05rem;
+            margin: 5px 0;
+            text-shadow: 1px 1px 0px white;
+        }
+        
+        .vibe-desc {
+            font-size: 0.85rem;
+            color: var(--deep-sea);
+            line-height: 1.4;
+            padding: 0 5px;
         }
 
         .celestial-grid {
@@ -262,11 +279,7 @@
             padding-top: 10px;
         }
 
-        .forecast-details p { 
-            margin: 4px 0; 
-            color: var(--moe-pink); 
-            text-shadow: 1px 1px 0px white;
-        }
+        .forecast-details p { margin: 4px 0; color: var(--moe-pink); text-shadow: 1px 1px 0px white; }
         .forecast-details span { color: var(--deep-sea); }
 
         #loading {
@@ -283,13 +296,21 @@
             50% { transform: translateY(-5px); }
         }
 
+        .btn-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            width: 100%;
+        }
+
         .refresh-btn {
+            flex: 1;
             background: linear-gradient(135deg, var(--mermaid-aqua), var(--moe-pink));
             border: 3px solid white;
-            padding: 12px 25px;
+            padding: 12px 10px;
             border-radius: 50px;
             color: white;
-            font-size: 1.2rem;
+            font-size: 1rem;
             font-family: 'Fredoka', sans-serif;
             font-weight: 700;
             letter-spacing: 1px;
@@ -297,13 +318,54 @@
             box-shadow: 0 6px 15px rgba(0, 240, 255, 0.3), inset 0 -3px 0 rgba(0,0,0,0.1);
             transition: 0.2s;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-            margin-top: 10px;
-            width: 100%;
         }
 
         .refresh-btn:active {
             box-shadow: 0 2px 5px rgba(0, 240, 255, 0.3);
             transform: translateY(4px);
+        }
+
+        /* 📡 LIVE RADAR MODAL STYLES 📡 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: var(--bubble-glass);
+            border: 4px dotted var(--pearl-glow);
+            border-radius: 30px;
+            width: 90%;
+            max-width: 400px;
+            height: 70%;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 0 25px rgba(0, 240, 255, 0.6);
+        }
+
+        .close-radar-btn {
+            background: var(--moe-pink);
+            color: white;
+            text-align: center;
+            padding: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-bottom: 2px dashed white;
+        }
+
+        #radar-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
         }
     </style>
 </head>
@@ -339,6 +401,12 @@
             </div>
 
             <div class="wide-box">
+                <div class="celestial-title">💻 Code & Vibe Index 💻</div>
+                <div class="vibe-title" id="vibe-title">Loading Vibes...</div>
+                <div class="vibe-desc" id="vibe-desc">...</div>
+            </div>
+
+            <div class="wide-box">
                 <div class="stat-icon">🧴</div>
                 <div class="stat-label">UV Index: <span id="uv-number">--</span></div>
                 <div class="uv-message" id="uv-text">Checking the rays...</div>
@@ -366,18 +434,30 @@
             </div>
 
             <div class="forecast-title">🫧 Next 24 Hours 🫧</div>
-            <div class="hourly-container" id="hourly-list">
-                </div>
+            <div class="hourly-container" id="hourly-list"></div>
 
             <div class="forecast-title">🫧 7-Day Outlook 🫧</div>
-            <div id="forecast-list">
-                </div>
+            <div id="forecast-list"></div>
         </div>
 
-        <button class="refresh-btn" onclick="fetchWeather()">REFRESH 🎀</button>
+        <div class="btn-container">
+            <button class="refresh-btn" onclick="fetchWeather()">REFRESH 🎀</button>
+            <button class="refresh-btn" onclick="openRadar()">📡 LIVE RADAR</button>
+        </div>
+    </div>
+
+    <div id="radar-modal" class="modal">
+        <div class="modal-content">
+            <div class="close-radar-btn" onclick="closeRadar()">🎀 CLOSE RADAR 🎀</div>
+            <iframe id="radar-frame" src=""></iframe>
+        </div>
     </div>
 
     <script>
+        // Global variables to store your location for the radar
+        let myLat = 0;
+        let myLon = 0;
+
         const weatherMoji = {
             0: "☀️", 1: "🌤️", 2: "⛅", 3: "☁️",
             45: "🌫️", 48: "🌫️", 
@@ -429,7 +509,6 @@
             return "Extreme! Stay in the shade! (ﾟДﾟ;)";
         }
 
-        // TIGHTENED MOON MATH TO MATCH ALMANAC'S DAILY SHIFTS
         function getMoonPhase() {
             const now = new Date();
             const julian = (now.getTime() / 86400000) + 2440587.5;
@@ -438,15 +517,14 @@
             const normalizedPhase = phase < 0 ? phase + 1 : phase;
 
             let b = 0;
-            // The bounds are much smaller so "New Moon" only shows on the exact day
-            if (normalizedPhase < 0.015 || normalizedPhase > 0.985) b = 0; // New Moon
-            else if (normalizedPhase < 0.235) b = 1; // Waxing Cres
-            else if (normalizedPhase < 0.265) b = 2; // 1st Quarter
-            else if (normalizedPhase < 0.485) b = 3; // Waxing Gib
-            else if (normalizedPhase < 0.515) b = 4; // Full Moon
-            else if (normalizedPhase < 0.735) b = 5; // Waning Gib
-            else if (normalizedPhase < 0.765) b = 6; // Last Quarter
-            else b = 7; // Waning Cres
+            if (normalizedPhase < 0.015 || normalizedPhase > 0.985) b = 0; 
+            else if (normalizedPhase < 0.235) b = 1; 
+            else if (normalizedPhase < 0.265) b = 2; 
+            else if (normalizedPhase < 0.485) b = 3; 
+            else if (normalizedPhase < 0.515) b = 4; 
+            else if (normalizedPhase < 0.735) b = 5; 
+            else if (normalizedPhase < 0.765) b = 6; 
+            else b = 7; 
             
             const phases = [
                 { i: "🌑", n: "New Moon" }, { i: "🌒", n: "Waxing Cres" },
@@ -477,6 +555,62 @@
             }
         }
 
+        // Radar functions to open and close the window
+        function openRadar() {
+            const frame = document.getElementById('radar-frame');
+            frame.src = `https://www.rainviewer.com/map.html?loc=${myLat},${myLon},10&o=1&c=1&g=1&s=1&o=80&v=site`;
+            document.getElementById('radar-modal').style.display = 'flex';
+        }
+
+        function closeRadar() {
+            document.getElementById('radar-modal').style.display = 'none';
+            document.getElementById('radar-frame').src = ""; 
+        }
+
+        // Logic for the Productivity Vibe Index
+        function setVibeIndex(temp) {
+            let title = "";
+            let desc = "";
+
+            if (temp < 10) {
+                title = "❄️ Hibernation Overdrive ❄️";
+                desc = "Way too freezing to function. Wrap up like a burrito, turn the space heater all the way up, and just stay under the blankets. Coding is paused unless your laptop keys are warm!";
+            } else if (temp < 20) {
+                title = "🧊 Shivering Server Energy 🧊";
+                desc = "Everything is frozen outside! The cat is definitely glued to the heater. It's the perfect excuse to hide under three blankets and work on offline text layouts where it's cozy.";
+            } else if (temp < 30) {
+                title = "🌨️ Cozy Glitch Matrix 🌨️";
+                desc = "Ice on the window panes. Total quiet isolation mode. Put on your favorite headphones, make a giant mug of hot tea, and tinker with your local server files all day.";
+            } else if (temp < 40) {
+                title = "🌬️ Frosty Wire-Core Mood 🌬️";
+                desc = "Crisp, cold, and quiet. The room is chilled and perfect for keeping a clear head while hunting down annoying syntax bugs or reorganizing your digital archives.";
+            } else if (temp < 50) {
+                title = "🍂 Sweater & Scripting Weather 🍂";
+                desc = "Big oversized sweater weather! Open the door for just a second to breathe the freezing air, then rush right back inside to fix up your CSS design grids.";
+            } else if (temp < 60) {
+                title = "🌸 Tiny Breeze, Big Focus 🌸";
+                desc = "Crack the window open just a tiny bit! The cool air keeps you awake and hyper-focused. Perfect atmosphere for propagating plant cuttings or designing custom templates.";
+            } else if (temp < 70) {
+                title = "🍃 Absolute Goldilocks Zone 🍃";
+                desc = "Windows wide open! The breeze is immaculate, the computer setup isn’t overheating, and your productivity is at 100%. Everything feels completely balanced.";
+            } else if (temp < 80) {
+                title = "☀️ Sparkly Sunshine Motivation ☀️";
+                desc = "Warm and bright! The plants are loving life, energy is super high, and it's the absolute best day to push fresh, clean code updates to GitHub or build fun interactive layouts.";
+            } else if (temp < 90) {
+                title = "🧋 Iced Coffee & Chill Design 🧋";
+                desc = "Getting a bit toasty! Time to turn on the desk fan, grab a massive iced drink, and stick to low-stress, fun styling stuff instead of heavy code logic.";
+            } else if (temp < 100) {
+                title = "🥵 Meltdown Prevention Zone 🥵";
+                desc = "Total thermal throttling! Close the blinds to keep the sun out, dim your monitor brightness, and stay strictly inside where the air conditioning can protect your setup.";
+            } else {
+                title = "🔥 System Overload! Stay Inside 🔥";
+                desc = "Code red! The air outside feels like a literal furnace. Complete digital bunker mode—fans blasting on maximum speed, lots of hydration, and zero outdoor activity.";
+            }
+
+            document.getElementById('vibe-title').innerText = title;
+            document.getElementById('vibe-desc').innerText = desc;
+        }
+
         async function fetchWeather() {
             document.getElementById('loading').style.display = 'block';
             document.getElementById('weather-content').style.display = 'none';
@@ -486,6 +620,10 @@
             navigator.geolocation.getCurrentPosition(async (position) => {
                 const { latitude, longitude } = position.coords;
                 
+                // Store globally for radar
+                myLat = latitude;
+                myLon = longitude;
+
                 try {
                     const geoUrl = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=14`;
                     const geoRes = await fetch(geoUrl);
@@ -517,9 +655,13 @@
                     const daily = data.daily;
                     const hourly = data.hourly;
 
-                    document.getElementById('temp').innerText = Math.round(current.temperature_2m) + "°";
+                    const currentTemp = Math.round(current.temperature_2m);
+                    document.getElementById('temp').innerText = currentTemp + "°";
                     document.getElementById('wind').innerText = Math.round(current.wind_speed_10m);
                     document.getElementById('humidity').innerText = current.relative_humidity_2m;
+                    
+                    // Set the Vibe Index based on the current temp!
+                    setVibeIndex(currentTemp);
                     
                     const pressureInHg = (current.surface_pressure * 0.02953).toFixed(1);
                     document.getElementById('pressure').innerText = pressureInHg;
@@ -632,7 +774,6 @@
             }, geoOptions);
         }
 
-        // AUTO LOAD WEATHER ON STARTUP
         window.addEventListener('load', () => {
             fetchWeather();
             
