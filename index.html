@@ -30,7 +30,8 @@
             justify-content: center;
             align-items: flex-start;
             min-height: 100vh;
-            background: url('https://i.postimg.cc/K8WLGzPT/684495e309f1e7a6b1d1609f033f905c.jpg') no-repeat center center fixed;
+            /* Restored the original cute background! */
+            background: url('https://i.postimg.cc/4xnNBjtt/94c7a4e74274f16f137ec827f2730270.jpg') no-repeat center center fixed;
             background-size: cover;
             font-family: 'Fredoka', sans-serif;
             overflow-y: auto;
@@ -107,6 +108,7 @@
             border: 2px solid var(--mermaid-aqua);
         }
 
+        /* Expanded to a 3x2 Grid */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -144,227 +146,59 @@
             padding-bottom: 5px;
         }
 
-        .vibe-title {
-            color: var(--mermaid-aqua);
-            font-weight: 700;
-            font-size: 1.05rem;
-            margin: 5px 0;
-            text-shadow: 1px 1px 0px white;
-        }
-        
-        .vibe-desc {
-            font-size: 0.85rem;
-            color: var(--deep-sea);
-            line-height: 1.4;
-            padding: 0 5px;
-        }
+        /* Custom Box Titles */
+        .vibe-title { color: var(--mermaid-aqua); font-weight: 700; font-size: 1.05rem; margin: 5px 0; text-shadow: 1px 1px 0px white; }
+        .vibe-desc { font-size: 0.85rem; color: var(--deep-sea); line-height: 1.4; padding: 0 5px; }
 
-        .celestial-grid {
-            display: flex;
-            justify-content: space-around;
-            width: 100%;
-        }
+        .celestial-grid { display: flex; justify-content: space-around; width: 100%; }
+        .celestial-item { display: flex; flex-direction: column; align-items: center; }
 
-        .celestial-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+        .stat-icon { font-size: 1.6rem; margin-bottom: 2px; filter: drop-shadow(2px 2px 0px white); }
+        .custom-icon { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; margin-bottom: 4px; box-shadow: 0 0 8px var(--mermaid-aqua); border: 2px solid white; }
 
-        .stat-icon {
-            font-size: 1.6rem;
-            margin-bottom: 2px;
-            filter: drop-shadow(2px 2px 0px white);
-        }
-        
-        .custom-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%; 
-            object-fit: cover;
-            margin-bottom: 4px;
-            box-shadow: 0 0 8px var(--mermaid-aqua);
-            border: 2px solid white;
-        }
-
-        .stat-label {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            color: var(--moe-pink);
-            letter-spacing: 1px;
-            text-align: center;
-            font-weight: 700;
-        }
-
+        .stat-label { font-size: 0.75rem; text-transform: uppercase; color: var(--moe-pink); letter-spacing: 1px; text-align: center; font-weight: 700; }
         .stat-value { font-size: 1rem; margin-top: 2px; text-align: center; color: var(--deep-sea);}
         .uv-message { font-size: 0.9rem; color: var(--moe-pink); margin-top: 5px; font-weight: 700;}
 
-        .hourly-container {
-            display: flex;
-            overflow-x: auto;
-            gap: 10px;
-            padding-bottom: 10px;
-            margin-bottom: 15px;
-        }
+        /* Minutely 15-Min Graph Styles */
+        .minutely-grid { display: flex; width: 100%; justify-content: space-between; gap: 5px; margin-top: 5px; }
+        .minutely-col { flex: 1; background: var(--bubble-glass); border-radius: 10px; padding: 8px 2px; font-size: 0.75rem; border: 1px dotted white; box-shadow: inset 1px 1px 5px rgba(255,255,255,0.5); }
+        .minutely-time { font-weight: 700; color: var(--moe-pink); margin-bottom: 3px; text-shadow: 1px 1px 0px white;}
+        .minutely-val { font-weight: 700; text-shadow: 1px 1px 0px white; }
 
-        .hourly-box {
-            min-width: 65px;
-            background: var(--inner-bubble);
-            border: 2px solid white;
-            border-radius: 20px;
-            padding: 10px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            box-shadow: 2px 2px 8px rgba(0, 240, 255, 0.15);
-        }
-
+        .hourly-container { display: flex; overflow-x: auto; gap: 10px; padding-bottom: 10px; margin-bottom: 15px; }
+        .hourly-box { min-width: 65px; background: var(--inner-bubble); border: 2px solid white; border-radius: 20px; padding: 10px; display: flex; flex-direction: column; align-items: center; box-shadow: 2px 2px 8px rgba(0, 240, 255, 0.15); }
         .hourly-time { font-size: 0.85rem; color: var(--moe-pink); text-shadow: 1px 1px 0px white; margin-bottom: 3px; font-weight: 700;}
         .hourly-icon { font-size: 1.3rem; filter: drop-shadow(2px 2px 0px white); margin: 3px 0; }
         .hourly-temp { font-size: 1.1rem; font-weight: 700; color: var(--mermaid-aqua); text-shadow: 1px 1px 0px white; margin-top: 3px; }
         .hourly-precip { font-size: 0.75rem; color: var(--deep-sea); font-weight: 700; margin-top: 3px; text-shadow: 1px 1px 0px white;}
 
-        .forecast-title {
-            font-size: 1.3rem;
-            margin: 15px 0 10px 0;
-            color: white;
-            font-weight: 700;
-            text-shadow: 2px 2px var(--mermaid-aqua), -1px -1px var(--moe-pink);
-            border-bottom: 3px dotted white;
-            padding-bottom: 5px;
-        }
+        .forecast-title { font-size: 1.3rem; margin: 15px 0 10px 0; color: white; font-weight: 700; text-shadow: 2px 2px var(--mermaid-aqua), -1px -1px var(--moe-pink); border-bottom: 3px dotted white; padding-bottom: 5px; }
 
-        .forecast-item {
-            display: flex;
-            flex-direction: column;
-            background: var(--inner-bubble);
-            margin-bottom: 10px;
-            border-radius: 25px;
-            border: 2px solid white;
-            box-shadow: 2px 2px 8px rgba(0, 240, 255, 0.1);
-            cursor: pointer;
-            transition: transform 0.2s ease;
-        }
-        
-        .forecast-item:active {
-            transform: scale(0.98);
-        }
-
-        .forecast-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 18px;
-            font-size: 1rem;
-            font-weight: 700;
-            color: var(--deep-sea);
-            text-shadow: 1px 1px 0px white;
-        }
-
+        .forecast-item { display: flex; flex-direction: column; background: var(--inner-bubble); margin-bottom: 10px; border-radius: 25px; border: 2px solid white; box-shadow: 2px 2px 8px rgba(0, 240, 255, 0.1); cursor: pointer; transition: transform 0.2s ease; }
+        .forecast-item:active { transform: scale(0.98); }
+        .forecast-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 18px; font-size: 1rem; font-weight: 700; color: var(--deep-sea); text-shadow: 1px 1px 0px white; }
         .forecast-day { width: 55px; text-align: left; color: var(--moe-pink); font-weight: 700;}
         .forecast-icon { font-size: 1.3rem; filter: drop-shadow(2px 2px 0px white); }
         .forecast-rain { font-size: 0.85rem; color: var(--mermaid-aqua); width: 45px; text-align: center; }
         .forecast-temps { width: 80px; text-align: right; }
         .min-temp { color: var(--mermaid-aqua); font-size: 0.9rem; margin-left: 5px;}
-
-        .forecast-details {
-            display: none;
-            padding: 0 18px 15px 18px;
-            font-size: 0.85rem;
-            text-align: left;
-            border-top: 2px dotted rgba(255, 255, 255, 0.5);
-            margin-top: 5px;
-            padding-top: 10px;
-        }
-
+        .forecast-details { display: none; padding: 0 18px 15px 18px; font-size: 0.85rem; text-align: left; border-top: 2px dotted rgba(255, 255, 255, 0.5); margin-top: 5px; padding-top: 10px; }
         .forecast-details p { margin: 4px 0; color: var(--moe-pink); text-shadow: 1px 1px 0px white; }
         .forecast-details span { color: var(--deep-sea); }
 
-        #loading {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: white;
-            animation: bounce 1.5s infinite;
-            text-shadow: 2px 2px var(--mermaid-aqua);
-            margin: 20px 0;
-        }
+        #loading { font-size: 1.2rem; font-weight: 700; color: white; animation: bounce 1.5s infinite; text-shadow: 2px 2px var(--mermaid-aqua); margin: 20px 0; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
 
-        @keyframes bounce { 
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
-        }
-
-        .btn-container {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
-            width: 100%;
-        }
-
-        .refresh-btn {
-            flex: 1;
-            background: linear-gradient(135deg, var(--mermaid-aqua), var(--moe-pink));
-            border: 3px solid white;
-            padding: 12px 10px;
-            border-radius: 50px;
-            color: white;
-            font-size: 1rem;
-            font-family: 'Fredoka', sans-serif;
-            font-weight: 700;
-            letter-spacing: 1px;
-            cursor: pointer;
-            box-shadow: 0 6px 15px rgba(0, 240, 255, 0.3), inset 0 -3px 0 rgba(0,0,0,0.1);
-            transition: 0.2s;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-        }
-
-        .refresh-btn:active {
-            box-shadow: 0 2px 5px rgba(0, 240, 255, 0.3);
-            transform: translateY(4px);
-        }
+        .btn-container { display: flex; gap: 10px; margin-top: 10px; width: 100%; }
+        .refresh-btn { flex: 1; background: linear-gradient(135deg, var(--mermaid-aqua), var(--moe-pink)); border: 3px solid white; padding: 12px 10px; border-radius: 50px; color: white; font-size: 1rem; font-family: 'Fredoka', sans-serif; font-weight: 700; letter-spacing: 1px; cursor: pointer; box-shadow: 0 6px 15px rgba(0, 240, 255, 0.3), inset 0 -3px 0 rgba(0,0,0,0.1); transition: 0.2s; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); }
+        .refresh-btn:active { box-shadow: 0 2px 5px rgba(0, 240, 255, 0.3); transform: translateY(4px); }
 
         /* 📡 LIVE RADAR MODAL STYLES 📡 */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(8px);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-content {
-            background: var(--bubble-glass);
-            border: 4px dotted var(--pearl-glow);
-            border-radius: 30px;
-            width: 90%;
-            max-width: 400px;
-            height: 70%;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            box-shadow: 0 0 25px rgba(0, 240, 255, 0.6);
-        }
-
-        .close-radar-btn {
-            background: var(--moe-pink);
-            color: white;
-            text-align: center;
-            padding: 12px;
-            font-weight: 700;
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            border-bottom: 2px dashed white;
-        }
-
-        #radar-frame {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(8px); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-content { background: var(--bubble-glass); border: 4px dotted var(--pearl-glow); border-radius: 30px; width: 90%; max-width: 400px; height: 70%; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 0 25px rgba(0, 240, 255, 0.6); }
+        .close-radar-btn { background: var(--moe-pink); color: white; text-align: center; padding: 12px; font-weight: 700; cursor: pointer; text-transform: uppercase; letter-spacing: 2px; border-bottom: 2px dashed white; }
+        #radar-frame { width: 100%; height: 100%; border: none; }
     </style>
 </head>
 <body>
@@ -387,15 +221,42 @@
                     <div class="stat-value"><span id="wind">--</span> mph</div>
                 </div>
                 <div class="stat-box">
+                    <div class="stat-icon">⚠️</div>
+                    <div class="stat-label">Gusts</div>
+                    <div class="stat-value"><span id="gusts">--</span> mph</div>
+                </div>
+                <div class="stat-box">
                     <div class="stat-icon">🌊</div>
                     <div class="stat-label">Humidity</div>
                     <div class="stat-value"><span id="humidity">--</span>%</div>
                 </div>
                 <div class="stat-box">
+                    <div class="stat-icon">💧</div>
+                    <div class="stat-label">Dew Pt</div>
+                    <div class="stat-value"><span id="dewpoint">--</span>°</div>
+                </div>
+                <div class="stat-box">
                     <div class="stat-icon">🪸</div>
                     <div class="stat-label">Pressure</div>
-                    <div class="stat-value"><span id="pressure">--</span> in</div>
+                    <div class="stat-value" style="font-size:0.85rem;"><span id="pressure">--</span></div>
                 </div>
+                <div class="stat-box">
+                    <div class="stat-icon">🩺</div>
+                    <div class="stat-label">AQI</div>
+                    <div class="stat-value"><span id="aqi-score">--</span></div>
+                </div>
+            </div>
+
+            <div class="wide-box" style="padding-bottom: 5px;">
+                <div class="celestial-title" style="border:none; margin-bottom: 0;">💧 Next 60 Mins 💧</div>
+                <div class="minutely-grid" id="minutely-list">
+                    </div>
+            </div>
+
+            <div class="wide-box">
+                <div class="celestial-title">🩺 Clinical Air Purity 🩺</div>
+                <div class="vibe-title" id="aqi-status">Scanning...</div>
+                <div class="vibe-desc">PM2.5: <span id="pm25">--</span> | PM10: <span id="pm10">--</span></div>
             </div>
 
             <div class="wide-box">
@@ -552,7 +413,6 @@
             }
         }
 
-        // FIXED: Switched to Windy.com API for reliable iframes and live lightning tracking!
         function openRadar() {
             const frame = document.getElementById('radar-frame');
             frame.src = `https://embed.windy.com/embed2.html?lat=${myLat}&lon=${myLon}&zoom=8&level=surface&overlay=radar&product=radar&menu=&message=true&marker=true&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=mph&metricTemp=%C2%B0F&radarRange=-1`;
@@ -567,7 +427,6 @@
         function setVibeIndex(temp) {
             let title = "";
             let desc = "";
-
             if (temp < 10) {
                 title = "❄️ Hibernation Overdrive ❄️";
                 desc = "Way too freezing to function. Wrap up like a burrito, turn the space heater all the way up, and just stay under the blankets. Coding is paused unless your laptop keys are warm!";
@@ -602,7 +461,6 @@
                 title = "🔥 System Overload! Stay Inside 🔥";
                 desc = "Code red! The air outside feels like a literal furnace. Complete digital bunker mode—fans blasting on maximum speed, lots of hydration, and zero outdoor activity.";
             }
-
             document.getElementById('vibe-title').innerText = title;
             document.getElementById('vibe-desc').innerText = desc;
         }
@@ -615,7 +473,6 @@
 
             navigator.geolocation.getCurrentPosition(async (position) => {
                 const { latitude, longitude } = position.coords;
-                
                 myLat = latitude;
                 myLon = longitude;
 
@@ -642,25 +499,57 @@
                 }
 
                 try {
-                    const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,surface_pressure,wind_speed_10m,weather_code,uv_index&hourly=temperature_2m,weather_code,precipitation_probability,precipitation,cloud_cover&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,uv_index_max,wind_speed_10m_max&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=auto&models=best_match`;
+                    // 1. FETCH OPEN-METEO WEATHER (Now including Dew Point, Gusts, and Minutely_15)
+                    const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,dew_point_2m,surface_pressure,wind_speed_10m,wind_gusts_10m,weather_code,uv_index&hourly=temperature_2m,weather_code,precipitation_probability,precipitation,cloud_cover,surface_pressure&minutely_15=precipitation&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,uv_index_max,wind_speed_10m_max,wind_gusts_10m_max&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=auto&models=best_match`;
                     const response = await fetch(weatherUrl);
                     const data = await response.json();
                     
+                    // 2. FETCH OPEN-METEO AIR QUALITY
+                    const aqiUrl = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${latitude}&longitude=${longitude}&current=us_aqi,pm10,pm2_5&timezone=auto`;
+                    const aqiRes = await fetch(aqiUrl);
+                    const aqiData = await aqiRes.json();
+
                     const current = data.current;
                     const daily = data.daily;
                     const hourly = data.hourly;
 
+                    // POPULATE 6-POINT STATS GRID
                     const currentTemp = Math.round(current.temperature_2m);
                     document.getElementById('temp').innerText = currentTemp + "°";
                     document.getElementById('wind').innerText = Math.round(current.wind_speed_10m);
+                    document.getElementById('gusts').innerText = Math.round(current.wind_gusts_10m);
                     document.getElementById('humidity').innerText = current.relative_humidity_2m;
+                    document.getElementById('dewpoint').innerText = Math.round(current.dew_point_2m);
                     
+                    // PRESSURE TREND CALCULATOR
+                    const currentHourIndex = new Date().getHours();
+                    const pastPressureIndex = Math.max(0, currentHourIndex - 3); // Look back 3 hours
+                    const pastPressure = hourly.surface_pressure[pastPressureIndex];
+                    const pressureDiff = current.surface_pressure - pastPressure;
+                    
+                    let trendIcon = "〰️"; // Steady
+                    if (pressureDiff <= -2.0) trendIcon = "📉 (Storm Drop!)";
+                    else if (pressureDiff <= -0.5) trendIcon = "📉";
+                    else if (pressureDiff >= 2.0) trendIcon = "📈 (Clearing!)";
+                    else if (pressureDiff >= 0.5) trendIcon = "📈";
+                    
+                    const pressureInHg = (current.surface_pressure * 0.02953).toFixed(2);
+                    document.getElementById('pressure').innerText = `${pressureInHg} ${trendIcon}`;
+
+                    // POPULATE AQI & CLINICAL DATA
+                    const aqi = aqiData.current.us_aqi;
+                    document.getElementById('aqi-score').innerText = aqi;
+                    document.getElementById('pm25').innerText = aqiData.current.pm2_5;
+                    document.getElementById('pm10').innerText = aqiData.current.pm10;
+                    
+                    let aqiStatus = "Pure & Clear 🫧";
+                    if (aqi > 50) aqiStatus = "Moderate Particulates 🩺";
+                    if (aqi > 100) aqiStatus = "Unhealthy for Sensitive Groups ⚠️";
+                    if (aqi > 150) aqiStatus = "Hazardous Air (Mask Up) 🚫";
+                    document.getElementById('aqi-status').innerText = aqiStatus;
+
                     setVibeIndex(currentTemp);
                     
-                    const pressureInHg = (current.surface_pressure * 0.02953).toFixed(1);
-                    document.getElementById('pressure').innerText = pressureInHg;
-                    
-                    // FIXED: Now properly checking the current real-time weather code instead of the daily average!
                     const currentCode = current.weather_code;
                     document.getElementById('status').innerText = `${weatherDescriptions[currentCode] || "Vibing"} ${weatherMoji[currentCode] || "✨"}`;
 
@@ -675,12 +564,39 @@
                     document.getElementById('moon-icon').innerText = moon.i;
                     document.getElementById('moon-phase').innerText = moon.n;
 
+                    // BUILD 15-MINUTE RAIN GRAPH
+                    const minList = document.getElementById('minutely-list');
+                    minList.innerHTML = '';
+                    const nowMs = Date.now();
+                    let minStartIndex = 0;
+                    
+                    // Find the closest timestamp to right now in the 15-min array
+                    for(let i=0; i < data.minutely_15.time.length; i++) {
+                        if(new Date(data.minutely_15.time[i]).getTime() >= nowMs - (15 * 60000)) { 
+                            minStartIndex = i;
+                            break;
+                        }
+                    }
+
+                    // Generate the next 4 blocks (60 minutes)
+                    for(let i=0; i<4; i++){
+                        let pVal = data.minutely_15.precipitation[minStartIndex + i] || 0;
+                        let timeLabel = `+${(i+1)*15}m`;
+                        let valText = pVal > 0 ? `${pVal}"` : '0"';
+                        let textColor = pVal > 0 ? 'var(--mermaid-aqua)' : 'var(--deep-sea)';
+                        
+                        minList.innerHTML += `
+                            <div class="minutely-col">
+                                <div class="minutely-time">${timeLabel}</div>
+                                <div class="minutely-val" style="color: ${textColor}">${valText}</div>
+                            </div>
+                        `;
+                    }
+
+                    // BUILD HOURLY FORECAST
                     const hourlyList = document.getElementById('hourly-list');
                     hourlyList.innerHTML = '';
-                    
                     if (hourly && hourly.temperature_2m) {
-                        const currentHourIndex = new Date().getHours();
-
                         for(let i=0; i < 24; i++) {
                             const dataIdx = currentHourIndex + i;
                             if(dataIdx >= hourly.temperature_2m.length) break;
@@ -688,16 +604,10 @@
                             const hTime = getMathematicalHour(i);
                             const hTemp = Math.round(hourly.temperature_2m[dataIdx]);
                             const hIcon = weatherMoji[hourly.weather_code[dataIdx]] || "✨";
-                            
                             const hPop = hourly.precipitation_probability[dataIdx];
                             const hPrecip = hourly.precipitation[dataIdx];
                             
-                            let precipText = "";
-                            if (hPrecip > 0) {
-                                precipText = `💧 ${hPrecip}"`; 
-                            } else {
-                                precipText = `💧 ${hPop}%`; 
-                            }
+                            let precipText = hPrecip > 0 ? `💧 ${hPrecip}"` : `💧 ${hPop}%`; 
                             
                             hourlyList.innerHTML += `
                                 <div class="hourly-box">
@@ -710,16 +620,15 @@
                         }
                     }
 
+                    // BUILD DAILY FORECAST
                     const forecastList = document.getElementById('forecast-list');
                     forecastList.innerHTML = ''; 
-                    
                     if (daily && daily.weather_code) {
                         for (let i = 0; i < 7; i++) {
                             const dayName = getDayName(i); 
                             const emoji = weatherMoji[daily.weather_code[i]] || "✨";
                             const maxTemp = Math.round(daily.temperature_2m_max[i]);
                             const minTemp = Math.round(daily.temperature_2m_min[i]);
-                            
                             const rainTotal = daily.precipitation_sum[i];
                             const rainPop = daily.precipitation_probability_max[i];
                             const uvMax = Math.round(daily.uv_index_max[i] || 0);
@@ -757,7 +666,6 @@
 
         window.addEventListener('load', () => {
             fetchWeather();
-            
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.register('sw.js')
                     .then(registration => console.log('ServiceWorker registered! 🫧'))
