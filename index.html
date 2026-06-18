@@ -147,7 +147,18 @@
         .vibe-title { color: var(--mermaid-aqua); font-weight: 700; font-size: 1.15rem; margin: 5px 0; text-shadow: 1px 1px 0px white; }
         .vibe-desc { font-size: 0.9rem; color: var(--deep-sea); line-height: 1.4; padding: 0 5px; }
         
-        .aqi-highlight { font-weight: 900; font-size: 1.1rem; color: var(--mermaid-aqua); text-shadow: 1px 1px 0px white; }
+        .aqi-row {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            padding: 5px 10px;
+            box-sizing: border-box;
+            border-bottom: 1px dotted rgba(255,255,255,0.5);
+            font-size: 0.85rem;
+        }
+        .aqi-row:last-child { border-bottom: none; }
+        .aqi-label { color: var(--deep-sea); text-shadow: 1px 1px 0px white; text-align: left; }
+        .aqi-val { font-weight: 900; color: var(--moe-pink); text-shadow: 1px 1px 0px white; text-align: right; }
 
         .celestial-grid { display: flex; justify-content: space-around; width: 100%; }
         .celestial-item { display: flex; flex-direction: column; align-items: center; }
@@ -232,10 +243,15 @@
                     <div class="stat-label">Dew Pt</div>
                     <div class="stat-value"><span id="dewpoint">--</span>°</div>
                 </div>
-                <div class="stat-box" style="grid-column: span 2;">
+                <div class="stat-box">
+                    <div class="stat-icon">👁️</div>
+                    <div class="stat-label">Visibility</div>
+                    <div class="stat-value"><span id="visibility">--</span> mi</div>
+                </div>
+                <div class="stat-box">
                     <div class="stat-icon">🪸</div>
-                    <div class="stat-label">Barometric Pressure</div>
-                    <div class="stat-value"><span id="pressure">--</span></div>
+                    <div class="stat-label">Pressure</div>
+                    <div class="stat-value" style="font-size: 0.85rem;"><span id="pressure">--</span></div>
                 </div>
             </div>
 
@@ -245,9 +261,23 @@
             </div>
 
             <div class="wide-box">
-                <div class="celestial-title">🫧 Air Quality 🫧</div>
-                <div class="vibe-title" id="aqi-status">Scanning...</div>
-                <div class="vibe-desc">AQI Score: <span id="aqi-score" class="aqi-highlight">--</span> <br> Fine Particles (PM2.5): <span id="pm25">--</span></div>
+                <div class="celestial-title">🫧 Air & Allergy Report 🫧</div>
+                <div class="aqi-row">
+                    <span class="aqi-label">Overall AQI:</span>
+                    <span class="aqi-val" id="aqi-score">Scanning...</span>
+                </div>
+                <div class="aqi-row">
+                    <span class="aqi-label">Fine Particles (PM2.5):</span>
+                    <span class="aqi-val" id="aqi-pm25">--</span>
+                </div>
+                <div class="aqi-row">
+                    <span class="aqi-label">Dust (PM10):</span>
+                    <span class="aqi-val" id="aqi-pm10">--</span>
+                </div>
+                <div class="aqi-row">
+                    <span class="aqi-label">Ozone / Smog:</span>
+                    <span class="aqi-val" id="aqi-ozone">--</span>
+                </div>
             </div>
 
             <div class="wide-box">
@@ -276,7 +306,12 @@
                         <div class="stat-value" id="sunset">--:--</div>
                     </div>
                     <div class="celestial-item">
-                        <div class="stat-icon" id="moon-icon">🌙</div>
+                        <div class="stat-icon" style="font-size: 1.4rem; padding-top: 5px;">🌅</div>
+                        <div class="stat-label">Golden Hr</div>
+                        <div class="stat-value" id="golden-hour">--:--</div>
+                    </div>
+                    <div class="celestial-item">
+                        <div class="stat-icon" id="moon-icon" style="font-size: 1.4rem; padding-top: 5px;">🌙</div>
                         <div class="stat-label">Phase</div>
                         <div class="stat-value" id="moon-phase" style="font-size:0.75rem;">--</div>
                     </div>
@@ -350,6 +385,14 @@
             } catch(e) { return "--:--"; }
         }
 
+        function getGoldenHour(sunsetUtcString) {
+            try {
+                const d = new Date(sunsetUtcString);
+                d.setHours(d.getHours() - 1);
+                return d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+            } catch(e) { return "--:--"; }
+        }
+
         function getUVSpeech(uv) {
             if (uv <= 2) return "Low rays! Ur safe to glow! (≧◡≦)";
             if (uv <= 5) return "Moderate! Grab some SPF! 🌸";
@@ -404,7 +447,6 @@
             }
         }
 
-        // ✨ UPDATED: Now points to the "rain" forecast overlay to show future predictions ✨
         function openRadar() {
             const frame = document.getElementById('radar-frame');
             frame.src = `https://embed.windy.com/embed2.html?lat=${myLat}&lon=${myLon}&zoom=8&level=surface&overlay=rain&product=ecmwf&menu=&message=true&marker=true&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=mph&metricTemp=%C2%B0F&radarRange=-1`;
@@ -430,13 +472,13 @@
                 desc = "Ice on the window panes. Total quiet isolation. Put on your favorite headphones and make a giant mug of hot tea.";
             } else if (temp < 40) {
                 title = "🌬️ Crisp & Chill 🌬️";
-                desc = "Crisp, cold, and quiet. The room is chilled and perfect for keeping a clear head while reorganizing your digital archives or cleaning up your space.";
+                desc = "Crisp, cold, and quiet. The room is chilled and perfect for keeping a clear head while reorganizing or cleaning up your space.";
             } else if (temp < 50) {
                 title = "🍂 Sweater Weather 🍂";
                 desc = "Big oversized sweater weather! Open the door for just a second to breathe the freezing air, then rush right back inside.";
             } else if (temp < 60) {
                 title = "🌸 Tiny Breeze, Big Focus 🌸";
-                desc = "Crack the window open just a tiny bit! The cool air keeps you awake and hyper-focused. Perfect atmosphere for propagating plant cuttings.";
+                desc = "Crack the window open just a tiny bit! The cool air keeps you awake and hyper-focused. Perfect atmosphere for reading or enjoying a warm drink.";
             } else if (temp < 70) {
                 title = "🍃 Absolute Goldilocks Zone 🍃";
                 desc = "Windows wide open! The breeze is immaculate, and your energy is at 100%. Everything feels completely balanced and perfect.";
@@ -444,13 +486,13 @@
                 title = "☀️ Sparkly Sunshine ☀️";
                 desc = "Warm and bright! The plants are loving life, energy is super high, and it's the absolute best day to go outside or start a fun project.";
             } else if (temp < 90) {
-                title = "🧋 Iced Coffee & Chill 🧋";
+                title = "🧋 Iced Drink & Chill 🧋";
                 desc = "Getting a bit toasty! Time to turn on the fan, grab a massive iced drink, and stick to low-stress, relaxing hobbies indoors.";
             } else if (temp < 100) {
                 title = "🥵 Meltdown Prevention 🥵";
                 desc = "Too hot! Close the blinds to keep the sun out, dim your screen brightness, and stay strictly inside where the AC can protect you.";
             } else {
-                title = "🔥 System Overload! Stay Inside 🔥";
+                title = "🔥 Extreme Heat Warning 🔥";
                 desc = "Code red! The air outside feels like a literal furnace. Fans blasting on maximum speed, lots of hydration, and zero outdoor activity.";
             }
             document.getElementById('vibe-title').innerText = title;
@@ -485,17 +527,20 @@
                     const sunData = await sunRes.json();
                     document.getElementById('sunrise').innerText = formatSunTime(sunData.results.sunrise);
                     document.getElementById('sunset').innerText = formatSunTime(sunData.results.sunset);
+                    document.getElementById('golden-hour').innerText = getGoldenHour(sunData.results.sunset);
                 } catch (e) {
                     document.getElementById('sunrise').innerText = "--:--";
                     document.getElementById('sunset').innerText = "--:--";
+                    document.getElementById('golden-hour').innerText = "--:--";
                 }
 
                 try {
-                    const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,dew_point_2m,surface_pressure,wind_speed_10m,wind_gusts_10m,weather_code,uv_index&hourly=temperature_2m,weather_code,precipitation_probability,precipitation,cloud_cover,surface_pressure&minutely_15=precipitation&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,uv_index_max,wind_speed_10m_max,wind_gusts_10m_max&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=auto&models=best_match`;
+                    const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,dew_point_2m,surface_pressure,wind_speed_10m,wind_gusts_10m,weather_code,uv_index,visibility&hourly=temperature_2m,weather_code,precipitation_probability,precipitation,cloud_cover,surface_pressure&minutely_15=precipitation&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,uv_index_max,wind_speed_10m_max,wind_gusts_10m_max&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=auto&models=best_match`;
                     const response = await fetch(weatherUrl);
                     const data = await response.json();
                     
-                    const aqiUrl = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${latitude}&longitude=${longitude}&current=us_aqi,pm10,pm2_5&timezone=auto`;
+                    // UPDATED API: Now pulling exact scientific particle numbers
+                    const aqiUrl = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${latitude}&longitude=${longitude}&current=us_aqi,pm10,pm2_5,ozone&timezone=auto`;
                     const aqiRes = await fetch(aqiUrl);
                     const aqiData = await aqiRes.json();
 
@@ -509,6 +554,9 @@
                     document.getElementById('gusts').innerText = Math.round(current.wind_gusts_10m);
                     document.getElementById('humidity').innerText = current.relative_humidity_2m;
                     document.getElementById('dewpoint').innerText = Math.round(current.dew_point_2m);
+                    
+                    const visMiles = (current.visibility / 1609.34).toFixed(1);
+                    document.getElementById('visibility').innerText = visMiles;
                     
                     const currentHourIndex = new Date().getHours();
                     const pastPressureIndex = Math.max(0, currentHourIndex - 3); 
@@ -524,15 +572,32 @@
                     const pressureInHg = (current.surface_pressure * 0.02953).toFixed(2);
                     document.getElementById('pressure').innerText = `${pressureInHg} ${trendIcon}`;
 
+                    // NEW SCIENTIFIC AQI LOGIC WITH PLAIN ENGLISH ATTACHED
                     const aqi = aqiData.current.us_aqi;
-                    document.getElementById('aqi-score').innerText = aqi;
-                    document.getElementById('pm25').innerText = aqiData.current.pm2_5;
-                    
-                    let aqiStatus = "Fresh & Clean 🫧";
-                    if (aqi > 50) aqiStatus = "Moderate (A Bit Dusty) 🍂";
-                    if (aqi > 100) aqiStatus = "Unhealthy for Sensitive Groups ⚠️";
-                    if (aqi > 150) aqiStatus = "Hazardous Air (Mask Up) 🚫";
-                    document.getElementById('aqi-status').innerText = aqiStatus;
+                    const pm25 = aqiData.current.pm2_5;
+                    const pm10 = aqiData.current.pm10;
+                    const ozone = aqiData.current.ozone;
+
+                    let aqiStatus = `${aqi} (Good 🫧)`;
+                    if (aqi > 50) aqiStatus = `${aqi} (Moderate 🍂)`;
+                    if (aqi > 100) aqiStatus = `${aqi} (Poor ⚠️)`;
+                    if (aqi > 150) aqiStatus = `${aqi} (Hazardous 🚫)`;
+                    document.getElementById('aqi-score').innerText = aqiStatus;
+
+                    let pm25Status = "Low 🍃";
+                    if (pm25 > 12) pm25Status = "Moderate 🍂";
+                    if (pm25 > 35) pm25Status = "High ⚠️";
+                    document.getElementById('aqi-pm25').innerText = `${pm25} μg/m³ (${pm25Status})`;
+
+                    let pm10Status = "Low 🍃";
+                    if (pm10 > 54) pm10Status = "Moderate 🍂";
+                    if (pm10 > 154) pm10Status = "High ⚠️";
+                    document.getElementById('aqi-pm10').innerText = `${pm10} μg/m³ (${pm10Status})`;
+
+                    let ozoneStatus = "Low 🌸";
+                    if (ozone > 60) ozoneStatus = "Moderate ☁️";
+                    if (ozone > 120) ozoneStatus = "High ⚠️";
+                    document.getElementById('aqi-ozone').innerText = `${ozone} μg/m³ (${ozoneStatus})`;
 
                     setVibeIndex(currentTemp);
                     
