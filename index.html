@@ -30,7 +30,6 @@
             justify-content: center;
             align-items: flex-start;
             min-height: 100vh;
-            /* Update to your pastel background! */
             background: url('https://i.postimg.cc/K8WLGzPT/684495e309f1e7a6b1d1609f033f905c.jpg') no-repeat center center fixed;
             background-size: cover;
             font-family: 'Fredoka', sans-serif;
@@ -110,7 +109,6 @@
             border: 2px solid var(--mermaid-aqua);
         }
 
-        /* 🎀 TAB SECTION STYLES 🎀 */
         .tab-section {
             display: none;
             animation: fadeIn 0.4s ease;
@@ -178,9 +176,6 @@
         .aqi-label { color: var(--deep-sea); text-shadow: 1px 1px 0px white; text-align: left; }
         .aqi-val { font-weight: 900; color: var(--moe-pink); text-shadow: 1px 1px 0px white; text-align: right; }
 
-        .celestial-grid { display: flex; justify-content: space-around; width: 100%; }
-        
-        /* ✨ UPGRADED 2x2 GRID FOR SKY TAB ✨ */
         .celestial-grid-v2 {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -192,9 +187,6 @@
         .celestial-item { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; }
 
         .stat-icon { font-size: 1.6rem; margin-bottom: 2px; filter: drop-shadow(2px 2px 0px white); }
-        .custom-icon { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; margin-bottom: 4px; box-shadow: 0 0 8px var(--mermaid-aqua); border: 2px solid white; }
-
-        /* ✨ SQUARE PIXEL STAMP STYLE ✨ */
         .pixel-stamp {
             width: 99px;
             height: 99px;
@@ -208,7 +200,6 @@
         .stat-label { font-size: 0.75rem; text-transform: uppercase; color: var(--moe-pink); letter-spacing: 1px; text-align: center; font-weight: 700; }
         .stat-value { font-size: 1rem; margin-top: 2px; text-align: center; color: var(--deep-sea);}
         
-        /* Lunar Botanical Text placement */
         #lunar-botanical-guide {
             font-size: 0.8rem;
             color: var(--deep-sea);
@@ -219,72 +210,18 @@
             text-align: center;
         }
 
-        /* ☁️ ATMOSPHERE SCANNER STYLES ☁️ */
-        .atmosphere-scanner {
-            margin-bottom: 15px;
-        }
-
-        .cloud-bars-container {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            margin-top: 10px;
-        }
-
-        .cloud-bar-wrapper {
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            gap: 8px;
-            width: 100%;
-            background: rgba(255,255,255,0.2);
-            border-radius: 15px;
-            padding: 5px 10px;
-            border: 1px dotted white;
-            box-sizing: border-box;
-        }
-
-        .cloud-label-sm {
-            font-size: 0.75rem;
-            color: var(--moe-pink);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-weight: 700;
-            width: 45px;
-            text-align: right;
-            text-shadow: 1px 1px 0px white;
-        }
-
-        .bar-bg {
-            flex: 1;
-            height: 10px;
-            background: rgba(255,255,255,0.4);
-            border-radius: 5px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .bar-fill {
-            height: 100%;
-            border-radius: 5px;
-            position: absolute;
-            top: 0; left: 0;
-            transition: width 0.5s ease-out;
-        }
+        .atmosphere-scanner { margin-bottom: 15px; }
+        .cloud-bars-container { width: 100%; display: flex; flex-direction: column; gap: 5px; margin-top: 10px; }
+        .cloud-bar-wrapper { display: flex; align-items: center; justify-content: flex-start; gap: 8px; width: 100%; background: rgba(255,255,255,0.2); border-radius: 15px; padding: 5px 10px; border: 1px dotted white; box-sizing: border-box; }
+        .cloud-label-sm { font-size: 0.75rem; color: var(--moe-pink); text-transform: uppercase; letter-spacing: 1px; font-weight: 700; width: 45px; text-align: right; text-shadow: 1px 1px 0px white; }
+        .bar-bg { flex: 1; height: 10px; background: rgba(255,255,255,0.4); border-radius: 5px; overflow: hidden; position: relative; }
+        .bar-fill { height: 100%; border-radius: 5px; position: absolute; top: 0; left: 0; transition: width 0.5s ease-out; }
 
         #low-clouds-bar { background: var(--deep-sea); }
         #mid-clouds-bar { background: var(--moe-pink); }
         #high-clouds-bar { background: var(--mermaid-aqua); }
 
-        .cloud-val-sm {
-            font-size: 0.75rem;
-            color: var(--deep-sea);
-            font-weight: 700;
-            width: 30px;
-            text-align: left;
-            text-shadow: 1px 1px 0px white;
-        }
+        .cloud-val-sm { font-size: 0.75rem; color: var(--deep-sea); font-weight: 700; width: 30px; text-align: left; text-shadow: 1px 1px 0px white; }
 
         #cloud-scanner-output {
             font-size: 0.85rem;
@@ -328,7 +265,6 @@
         #loading { font-size: 1.2rem; font-weight: 700; color: white; animation: bounce 1.5s infinite; text-shadow: 2px 2px var(--mermaid-aqua); margin: 20px 0; }
         @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
 
-        /* 🎀 BOTTOM NAVIGATION TABS 🎀 */
         .bottom-nav {
             display: flex;
             justify-content: space-between;
@@ -383,11 +319,13 @@
         <div id="loading">Locating... 🫧</div>
         
         <div id="weather-content" style="display:none;">
-            <div id="temp">--°</div>
-            <div id="feels-like">My RealFeel: <span id="apparent">--</span>°</div>
-            <div id="status">(>ω<) VIBING</div>
             
             <div id="tab-now" class="tab-section active">
+                
+                <div id="temp">--°</div>
+                <div id="feels-like">My RealFeel: <span id="apparent">--</span>°</div>
+                <div id="status">(>ω<) VIBING</div>
+
                 <div class="stats-grid" id="main-stats">
                     <div class="stat-box">
                         <div class="stat-icon">🫧</div>
@@ -463,8 +401,7 @@
 
             <div id="tab-sky" class="tab-section">
                 <div class="wide-box atmosphere-scanner">
-                    <div class="celestial-title">🧴 UV Index Banner 🧴</div>
-                    <div class="stat-icon">🧴</div>
+                    <div class="celestial-title">🧴 Sun & UV 🧴</div>
                     <div class="stat-label">UV Index: <span id="uv-number">--</span></div>
                     <div class="uv-message" id="uv-text">Checking the rays...</div>
                 </div>
@@ -485,7 +422,7 @@
                         </div>
 
                         <div class="celestial-item">
-                            <img class="pixel-stamp" src="https://i.postimg.cc/028g0M6M/3b6149f779ec5e6827f5eb7fdc0b73af.jpg" alt="Set Stamp">
+                            <img class="pixel-stamp" src="https://i.postimg.cc/028g0G6M/3b6149f779ec5e6827f5eb7fdc0b73af.jpg" alt="Set Stamp">
                             <div class="stat-label">Set</div>
                             <div class="stat-value" id="sunset">--:--</div>
                         </div>
@@ -559,7 +496,6 @@
         let myLat = 0;
         let myLon = 0;
 
-        // ✨ TAB SWITCHING LOGIC ✨
         function switchTab(tabId, btnElement) {
             document.querySelectorAll('.tab-section').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
@@ -627,7 +563,6 @@
             return "Extreme! Stay in the shade! (ﾟДﾟ;)";
         }
 
-        // Updated Moon Phase Calculator with Lunar Guide data output
         function getMoonPhaseData() {
             const now = new Date();
             const julian = (now.getTime() / 86400000) + 2440587.5;
@@ -636,15 +571,14 @@
             const normalizedPhase = phase < 0 ? phase + 1 : phase;
 
             let b = 0;
-            // Phase Breakdown
-            if (normalizedPhase < 0.015 || normalizedPhase > 0.985) b = 0; // New
-            else if (normalizedPhase < 0.235) b = 1; // Waxing Cres
-            else if (normalizedPhase < 0.265) b = 2; // First Qtr
-            else if (normalizedPhase < 0.485) b = 3; // Waxing Gib
-            else if (normalizedPhase < 0.515) b = 4; // Full
-            else if (normalizedPhase < 0.735) b = 5; // Waning Gib
-            else if (normalizedPhase < 0.765) b = 6; // Last Qtr
-            else b = 7; // Waning Cres
+            if (normalizedPhase < 0.015 || normalizedPhase > 0.985) b = 0; 
+            else if (normalizedPhase < 0.235) b = 1; 
+            else if (normalizedPhase < 0.265) b = 2; 
+            else if (normalizedPhase < 0.485) b = 3; 
+            else if (normalizedPhase < 0.515) b = 4; 
+            else if (normalizedPhase < 0.735) b = 5; 
+            else if (normalizedPhase < 0.765) b = 6; 
+            else b = 7; 
             
             const phases = [
                 { i: "🌑", n: "New Moon" }, { i: "🌒", n: "Waxing Cres" },
@@ -653,7 +587,6 @@
                 { i: "🌗", n: "Last Quarter" }, { i: "🌘", n: "Waning Cres" }
             ];
 
-            // ✨ LUNAR BOTANICAL GUIDE LOGIC ✨
             let botanicalGuide = "...";
             if (normalizedPhase >= 0.015 && normalizedPhase < 0.485) {
                 botanicalGuide = "Moisture pulling UP ⬆️ | Optimal for fertilizing and new leaf growth.";
@@ -661,7 +594,7 @@
                 botanicalGuide = "Peak lunar gravity 🌕 | High ambient soil moisture.";
             } else if (normalizedPhase >= 0.515 && normalizedPhase < 0.985) {
                 botanicalGuide = "Energy pulling DOWN ⬇️ | Optimal window for transplanting water cuttings to soil.";
-            } else { // Dark Moon / Rest
+            } else {
                 botanicalGuide = "Dormant energy phase 🌑 | Safest time to take fresh cuttings or prune.";
             }
 
@@ -740,7 +673,6 @@
             document.getElementById('vibe-desc').innerText = desc;
         }
 
-        // ✨ NEW: Night Sky Clarity Logic 🌌 ✨
         function setNightSkyClarity(isNight, cloudCoverTotal) {
             const stargazerTitle = document.getElementById('stargazer-title');
             const stargazerDesc = document.getElementById('stargazer-desc');
@@ -751,7 +683,6 @@
                 return;
             }
 
-            // Stargazing Logic
             if (cloudCoverTotal < 10) {
                 stargazerTitle.innerText = "Void Scanner: ABSOLUTE CLARITY 🌌";
                 stargazerDesc.innerText = "Maximum visibility. Entire constellations are plain as day.";
@@ -770,9 +701,7 @@
             }
         }
 
-        // ✨ UPDATED: CLOUD SCANNER (CHART + TEXT VIBE) ✨
         function setAtmosphereScanner(low, mid, high, totalCover) {
-            // 1. Visual Chart update
             document.getElementById('low-clouds-bar').style.width = low + "%";
             document.getElementById('low-clouds-val').innerText = low + "%";
 
@@ -782,7 +711,6 @@
             document.getElementById('high-clouds-bar').style.width = high + "%";
             document.getElementById('high-clouds-val').innerText = high + "%";
 
-            // 2. Text Diagnostic Vibe update
             const scannerOutput = document.getElementById('cloud-scanner-output');
             
             if (totalCover < 10) {
@@ -790,14 +718,14 @@
                 return;
             }
 
-            // Find dominant layer
             const max = Math.max(low, mid, high);
             if (max === low) {
-                scannerOutput.innerText = "Diagnostic: Dominant Low Overcast Blanket 🌫️ | blocks flat light. Dreary or foggy vibe perfect for indoor focus.";
+                // Removed the word "Diagnostic"
+                scannerOutput.innerText = "Dominant Low Overcast Blanket 🌫️ | Blocks flat light. Dreary or foggy vibe perfect for indoor focus.";
             } else if (max === mid) {
-                scannerOutput.innerText = "Diagnostic: Dominant Middle-Altitude Cumulus ⛅ | Standard Partly Sunny day. Moving shadows across the terrain.";
+                scannerOutput.innerText = "Dominant Middle-Altitude Cumulus ⛅ | Standard Partly Sunny day. Moving shadows across the terrain.";
             } else if (max === high) {
-                scannerOutput.innerText = "Diagnostic: Dominant High-Altitude Ice Crystals detected ❄️ | Wispy, thin formations. Sunlight cuts through; glowing halos around Moon; potential for insane neon sunsets 🌅.";
+                scannerOutput.innerText = "Dominant High-Altitude Ice Crystals ❄️ | Wispy, thin formations. Sunlight cuts through; glowing halos around the Moon; potential for insane neon sunsets 🌅.";
             }
         }
 
@@ -823,7 +751,6 @@
                     document.getElementById('location-name').innerText = `📍 Lost in the waves`;
                 }
 
-                // Celestial Fetch (added Golden Hour)
                 let sunsetUtc = null;
                 try {
                     const sunUrl = `https://api.sunrise-sunset.org/json?lat=${latitude}&lng=${longitude}&formatted=0`;
@@ -840,7 +767,6 @@
                 }
 
                 try {
-                    // Added: visibility, cloud_cover_low, cloud_cover_mid, cloud_cover_high, is_day
                     const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,dew_point_2m,surface_pressure,wind_speed_10m,wind_gusts_10m,weather_code,uv_index,visibility,cloud_cover_low,cloud_cover_mid,cloud_cover_high,is_day&hourly=temperature_2m,weather_code,precipitation_probability,precipitation,cloud_cover,surface_pressure&minutely_15=precipitation&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,uv_index_max,wind_speed_10m_max,wind_gusts_10m_max&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=auto&models=best_match`;
                     const response = await fetch(weatherUrl);
                     const data = await response.json();
@@ -915,25 +841,19 @@
                     document.getElementById('uv-number').innerText = currentUV;
                     document.getElementById('uv-text').innerText = getUVSpeech(currentUV);
 
-                    // Updated: Moon Phase + ✨ Lunar Botanical Guide ✨
                     const moonData = getMoonPhaseData();
                     document.getElementById('moon-icon').innerText = moonData.phaseInfo.i;
                     document.getElementById('moon-phase').innerText = moonData.phaseInfo.n;
-                    // ✨ Set botanical guide text underneath the stamp detail ✨
                     document.getElementById('lunar-botanical-guide').innerText = moonData.botanicalGuide;
 
-                    // ✨ NEW: Atmosphere Cloud Scanner (Chart + Text Vibe) ✨
                     setAtmosphereScanner(
                         current.cloud_cover_low,
                         current.cloud_cover_mid,
                         current.cloud_cover_high,
-                        // total cover is average of 3 layers for vibe purposes here
                         Math.round((current.cloud_cover_low + current.cloud_cover_mid + current.cloud_cover_high)/3)
                     );
 
-                    // ✨ NEW: Night Sky Clarity Tracker 🌌 ✨
                     const isNight = current.is_day === 0;
-                    // Calculate total average cover just for night clarity vibe
                     const avgCloudCover = Math.round((current.cloud_cover_low + current.cloud_cover_mid + current.cloud_cover_high)/3);
                     setNightSkyClarity(isNight, avgCloudCover);
 
