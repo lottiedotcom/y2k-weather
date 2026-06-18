@@ -158,6 +158,7 @@
             letter-spacing: 2px;
             border-bottom: 2px dotted var(--mermaid-aqua);
             padding-bottom: 5px;
+            width: 100%;
         }
 
         .vibe-title { color: var(--mermaid-aqua); font-weight: 700; font-size: 1.15rem; margin: 5px 0; text-shadow: 1px 1px 0px white; }
@@ -199,39 +200,32 @@
 
         .stat-label { font-size: 0.75rem; text-transform: uppercase; color: var(--moe-pink); letter-spacing: 1px; text-align: center; font-weight: 700; }
         .stat-value { font-size: 1rem; margin-top: 2px; text-align: center; color: var(--deep-sea);}
-        
-        #lunar-botanical-guide {
-            font-size: 0.8rem;
-            color: var(--deep-sea);
-            margin-top: 3px;
-            text-shadow: 1px 1px 0px white;
-            line-height: 1.2;
-            width: 100%;
-            text-align: center;
-        }
 
         .atmosphere-scanner { margin-bottom: 15px; }
-        .cloud-bars-container { width: 100%; display: flex; flex-direction: column; gap: 5px; margin-top: 10px; }
-        .cloud-bar-wrapper { display: flex; align-items: center; justify-content: flex-start; gap: 8px; width: 100%; background: rgba(255,255,255,0.2); border-radius: 15px; padding: 5px 10px; border: 1px dotted white; box-sizing: border-box; }
-        .cloud-label-sm { font-size: 0.75rem; color: var(--moe-pink); text-transform: uppercase; letter-spacing: 1px; font-weight: 700; width: 45px; text-align: right; text-shadow: 1px 1px 0px white; }
-        .bar-bg { flex: 1; height: 10px; background: rgba(255,255,255,0.4); border-radius: 5px; overflow: hidden; position: relative; }
-        .bar-fill { height: 100%; border-radius: 5px; position: absolute; top: 0; left: 0; transition: width 0.5s ease-out; }
+        .cloud-bars-container { width: 100%; display: flex; flex-direction: column; gap: 8px; margin-top: 5px; }
+        .cloud-bar-wrapper { display: flex; flex-direction: column; align-items: flex-start; width: 100%; background: rgba(255,255,255,0.2); border-radius: 15px; padding: 8px 12px; border: 1px dotted white; box-sizing: border-box; }
+        
+        /* New Cloud Scanner Labels */
+        .cloud-header { display: flex; justify-content: space-between; width: 100%; margin-bottom: 5px; }
+        .cloud-label-txt { font-size: 0.8rem; color: var(--deep-sea); font-weight: 700; text-shadow: 1px 1px 0px white; }
+        .cloud-val-sm { font-size: 0.8rem; color: var(--moe-pink); font-weight: 900; text-shadow: 1px 1px 0px white; }
+
+        .bar-bg { width: 100%; height: 12px; background: rgba(255,255,255,0.5); border-radius: 6px; overflow: hidden; position: relative; }
+        .bar-fill { height: 100%; border-radius: 6px; position: absolute; top: 0; left: 0; transition: width 0.5s ease-out; }
 
         #low-clouds-bar { background: var(--deep-sea); }
         #mid-clouds-bar { background: var(--moe-pink); }
         #high-clouds-bar { background: var(--mermaid-aqua); }
 
-        .cloud-val-sm { font-size: 0.75rem; color: var(--deep-sea); font-weight: 700; width: 30px; text-align: left; text-shadow: 1px 1px 0px white; }
-
         #cloud-scanner-output {
             font-size: 0.85rem;
             color: var(--deep-sea);
-            margin-top: 10px;
-            line-height: 1.3;
+            margin-top: 12px;
+            line-height: 1.4;
             width: 100%;
             text-align: center;
-            border-top: 1px dotted rgba(255,255,255,0.5);
-            padding-top: 5px;
+            border-top: 2px dotted rgba(255,255,255,0.5);
+            padding-top: 8px;
         }
 
         .uv-message { font-size: 0.9rem; color: var(--moe-pink); margin-top: 5px; font-weight: 700;}
@@ -249,7 +243,6 @@
         .hourly-precip { font-size: 0.75rem; color: var(--deep-sea); font-weight: 700; margin-top: 3px; text-shadow: 1px 1px 0px white;}
 
         .forecast-title { font-size: 1.3rem; margin: 15px 0 10px 0; color: white; font-weight: 700; text-shadow: 2px 2px var(--mermaid-aqua), -1px -1px var(--moe-pink); border-bottom: 3px dotted white; padding-bottom: 5px; }
-
         .forecast-item { display: flex; flex-direction: column; background: var(--inner-bubble); margin-bottom: 10px; border-radius: 25px; border: 2px solid white; box-shadow: 2px 2px 8px rgba(0, 240, 255, 0.1); cursor: pointer; transition: transform 0.2s ease; }
         .forecast-item:active { transform: scale(0.98); }
         .forecast-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 18px; font-size: 1rem; font-weight: 700; color: var(--deep-sea); text-shadow: 1px 1px 0px white; }
@@ -265,15 +258,17 @@
         #loading { font-size: 1.2rem; font-weight: 700; color: white; animation: bounce 1.5s infinite; text-shadow: 2px 2px var(--mermaid-aqua); margin: 20px 0; }
         @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
 
+        /* 🎀 UPDATED BOTTOM NAVIGATION TABS (4 Buttons) 🎀 */
         .bottom-nav {
             display: flex;
             justify-content: space-between;
             background: var(--inner-bubble);
             border: 2px dotted white;
             border-radius: 30px;
-            padding: 8px;
+            padding: 6px;
             margin-top: 15px;
             box-shadow: 2px 2px 8px rgba(0, 240, 255, 0.15);
+            gap: 4px;
         }
         
         .nav-btn {
@@ -283,8 +278,8 @@
             color: var(--deep-sea);
             font-family: 'Fredoka', sans-serif;
             font-weight: 700;
-            font-size: 0.9rem;
-            padding: 10px 5px;
+            font-size: 0.75rem; /* Slightly smaller to fit 4 tabs cleanly */
+            padding: 10px 2px;
             cursor: pointer;
             text-transform: uppercase;
             letter-spacing: 1px;
@@ -414,55 +409,51 @@
                             <div class="stat-label">Rise</div>
                             <div class="stat-value" id="sunrise">--:--</div>
                         </div>
-                        
                         <div class="celestial-item">
                             <img class="pixel-stamp" src="https://i.postimg.cc/pX2NJQ9m/fe1fc3ebfafb9d2d765ccfd84af051fa.jpg" alt="Golden Hour Stamp">
                             <div class="stat-label">Golden Hr</div>
                             <div class="stat-value" id="golden-hour">--:--</div>
                         </div>
-
                         <div class="celestial-item">
                             <img class="pixel-stamp" src="https://i.postimg.cc/028g0G6M/3b6149f779ec5e6827f5eb7fdc0b73af.jpg" alt="Set Stamp">
                             <div class="stat-label">Set</div>
                             <div class="stat-value" id="sunset">--:--</div>
                         </div>
-                        
                         <div class="celestial-item">
                             <img class="pixel-stamp" src="https://i.postimg.cc/Fs9tVbff/d1fbe1c35c32494c9290ebf699c16fc6.jpg" alt="Phase Stamp">
                             <div class="stat-label">Phase</div>
                             <div class="stat-value" id="moon-phase">Scanning...</div>
                             <div class="stat-icon" id="moon-icon" style="font-size: 1.2rem; margin-top: 2px;">🌙</div>
-                            <div id="lunar-botanical-guide">...</div>
                         </div>
                     </div>
                 </div>
 
                 <div class="wide-box atmosphere-scanner">
-                    <div class="celestial-title">☁️ Atmosphere Cloud Scanner ☁️</div>
+                    <div class="celestial-title">☁️ What's in the Sky? ☁️</div>
                     <div class="cloud-bars-container">
                         <div class="cloud-bar-wrapper">
-                            <div class="cloud-label-sm">High</div>
-                            <div class="bar-bg">
-                                <div class="bar-fill" id="high-clouds-bar" style="width: 0%;"></div>
+                            <div class="cloud-header">
+                                <span class="cloud-label-txt">High (Wispy Ice Clouds)</span>
+                                <span class="cloud-val-sm" id="high-clouds-val">0%</span>
                             </div>
-                            <div class="cloud-val-sm" id="high-clouds-val">0%</div>
+                            <div class="bar-bg"><div class="bar-fill" id="high-clouds-bar" style="width: 0%;"></div></div>
                         </div>
                         <div class="cloud-bar-wrapper">
-                            <div class="cloud-label-sm">Mid</div>
-                            <div class="bar-bg">
-                                <div class="bar-fill" id="mid-clouds-bar" style="width: 0%;"></div>
+                            <div class="cloud-header">
+                                <span class="cloud-label-txt">Mid (Puffy Day Clouds)</span>
+                                <span class="cloud-val-sm" id="mid-clouds-val">0%</span>
                             </div>
-                            <div class="cloud-val-sm" id="mid-clouds-val">0%</div>
+                            <div class="bar-bg"><div class="bar-fill" id="mid-clouds-bar" style="width: 0%;"></div></div>
                         </div>
                         <div class="cloud-bar-wrapper">
-                            <div class="cloud-label-sm">Low</div>
-                            <div class="bar-bg">
-                                <div class="bar-fill" id="low-clouds-bar" style="width: 0%;"></div>
+                            <div class="cloud-header">
+                                <span class="cloud-label-txt">Low (Fog & Rain Clouds)</span>
+                                <span class="cloud-val-sm" id="low-clouds-val">0%</span>
                             </div>
-                            <div class="cloud-val-sm" id="low-clouds-val">0%</div>
+                            <div class="bar-bg"><div class="bar-fill" id="low-clouds-bar" style="width: 0%;"></div></div>
                         </div>
                     </div>
-                    <div id="cloud-scanner-output">Atmosphere scanning active...</div>
+                    <div id="cloud-scanner-output">Looking up at the sky...</div>
                 </div>
 
                 <div class="wide-box">
@@ -472,10 +463,23 @@
                 </div>
             </div>
 
+            <div id="tab-flora" class="tab-section">
+                <div class="wide-box">
+                    <div class="celestial-title">🌱 Botanical Station 🌱</div>
+                    
+                    <div class="vibe-title" style="margin-top: 15px; font-size: 1rem;">🌕 Lunar Cycle Action</div>
+                    <div class="vibe-desc" id="lunar-botanical-guide">Calculating gravity...</div>
+
+                    <div class="vibe-title" style="margin-top: 15px; font-size: 1rem;">💧 Ambient Air Check</div>
+                    <div class="vibe-desc" id="flora-humidity-guide">Checking moisture...</div>
+                </div>
+            </div>
+
             <div class="bottom-nav">
                 <button class="nav-btn active" onclick="switchTab('tab-now', this)">🎀 NOW</button>
                 <button class="nav-btn" onclick="switchTab('tab-future', this)">🔮 FUTURE</button>
                 <button class="nav-btn" onclick="switchTab('tab-sky', this)">✨ SKY</button>
+                <button class="nav-btn" onclick="switchTab('tab-flora', this)">🌱 FLORA</button>
             </div>
         </div>
 
@@ -589,16 +593,28 @@
 
             let botanicalGuide = "...";
             if (normalizedPhase >= 0.015 && normalizedPhase < 0.485) {
-                botanicalGuide = "Moisture pulling UP ⬆️ | Optimal for fertilizing and new leaf growth.";
+                botanicalGuide = "The Moon is Waxing. Moisture is pulling UP into the leaves ⬆️. This is the optimal time for fertilizing and encouraging new leaf growth.";
             } else if (normalizedPhase >= 0.485 && normalizedPhase < 0.515) {
-                botanicalGuide = "Peak lunar gravity 🌕 | High ambient soil moisture.";
+                botanicalGuide = "Full Moon Peak! 🌕 Ambient soil moisture is extremely high. Great for soaking seeds, but hold off on pruning.";
             } else if (normalizedPhase >= 0.515 && normalizedPhase < 0.985) {
-                botanicalGuide = "Energy pulling DOWN ⬇️ | Optimal window for transplanting water cuttings to soil.";
+                botanicalGuide = "The Moon is Waning. Energy is pulling DOWN to the roots ⬇️. This is the absolute perfect window for transplanting water cuttings into soil.";
             } else {
-                botanicalGuide = "Dormant energy phase 🌑 | Safest time to take fresh cuttings or prune.";
+                botanicalGuide = "New Moon Rest Phase 🌑. Sap flow is slow and plants are dormant. This is the safest time to take fresh cuttings or prune dead leaves.";
             }
 
             return { phaseInfo: phases[b], botanicalGuide: botanicalGuide };
+        }
+
+        function setFloraVibe(humidity) {
+            let humidityGuide = "";
+            if (humidity < 30) {
+                humidityGuide = `Current humidity is only ${humidity}%. The air is incredibly dry! Make sure to give your indoor jungle a good misting today, and keep delicate aroid cuttings away from dry heat drafts.`;
+            } else if (humidity < 50) {
+                humidityGuide = `Current humidity is ${humidity}%. The air is decent, but tropical plants might want a little extra moisture. A great day to top off any water propagation jars.`;
+            } else {
+                humidityGuide = `Current humidity is high at ${humidity}%! Excellent conditions for transitioning tropical aroid cuttings from water to soil without shocking their roots.`;
+            }
+            document.getElementById('flora-humidity-guide').innerText = humidityGuide;
         }
 
         function customRealFeel(temp, wind, humidity) {
@@ -701,6 +717,7 @@
             }
         }
 
+        // ✨ COMPLETELY REWORDED CLOUD SCANNER ✨
         function setAtmosphereScanner(low, mid, high, totalCover) {
             document.getElementById('low-clouds-bar').style.width = low + "%";
             document.getElementById('low-clouds-val').innerText = low + "%";
@@ -714,18 +731,17 @@
             const scannerOutput = document.getElementById('cloud-scanner-output');
             
             if (totalCover < 10) {
-                scannerOutput.innerText = "Atmosphere: ABSOLUTELY PURE 🫧 | Zero standard clouds detected. Unobstructed view of the deep blue or void.";
+                scannerOutput.innerText = "Not a single cloud in sight. The sky is perfectly clear! 🫧";
                 return;
             }
 
             const max = Math.max(low, mid, high);
             if (max === low) {
-                // Removed the word "Diagnostic"
-                scannerOutput.innerText = "Dominant Low Overcast Blanket 🌫️ | Blocks flat light. Dreary or foggy vibe perfect for indoor focus.";
+                scannerOutput.innerText = "Looks like a thick, heavy overcast blanket right above you. Perfect cozy, dreary vibes. 🌫️";
             } else if (max === mid) {
-                scannerOutput.innerText = "Dominant Middle-Altitude Cumulus ⛅ | Standard Partly Sunny day. Moving shadows across the terrain.";
+                scannerOutput.innerText = "Lots of standard puffy daytime clouds floating by, giving you nice moving shadows. ⛅";
             } else if (max === high) {
-                scannerOutput.innerText = "Dominant High-Altitude Ice Crystals ❄️ | Wispy, thin formations. Sunlight cuts through; glowing halos around the Moon; potential for insane neon sunsets 🌅.";
+                scannerOutput.innerText = "High, thin wispy streaks in the sky. The sun shines right through them, and you might get a crazy neon sunset! 🌅";
             }
         }
 
@@ -783,7 +799,13 @@
                     document.getElementById('temp').innerText = currentTemp + "°";
                     document.getElementById('wind').innerText = Math.round(current.wind_speed_10m);
                     document.getElementById('gusts').innerText = Math.round(current.wind_gusts_10m);
-                    document.getElementById('humidity').innerText = current.relative_humidity_2m;
+                    
+                    const currentHumidity = current.relative_humidity_2m;
+                    document.getElementById('humidity').innerText = currentHumidity + "%";
+                    
+                    // Run the Flora Humidity Logic
+                    setFloraVibe(currentHumidity);
+                    
                     document.getElementById('dewpoint').innerText = Math.round(current.dew_point_2m);
                     
                     const visMiles = (current.visibility / 1609.34).toFixed(1);
@@ -841,9 +863,12 @@
                     document.getElementById('uv-number').innerText = currentUV;
                     document.getElementById('uv-text').innerText = getUVSpeech(currentUV);
 
+                    // Moon Logic
                     const moonData = getMoonPhaseData();
                     document.getElementById('moon-icon').innerText = moonData.phaseInfo.i;
                     document.getElementById('moon-phase').innerText = moonData.phaseInfo.n;
+                    
+                    // Flora Tab Logic
                     document.getElementById('lunar-botanical-guide').innerText = moonData.botanicalGuide;
 
                     setAtmosphereScanner(
