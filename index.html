@@ -30,7 +30,6 @@
             justify-content: center;
             align-items: flex-start;
             min-height: 100vh;
-            /* Restored the original cute background! */
             background: url('https://i.postimg.cc/4xnNBjtt/94c7a4e74274f16f137ec827f2730270.jpg') no-repeat center center fixed;
             background-size: cover;
             font-family: 'Fredoka', sans-serif;
@@ -108,7 +107,6 @@
             border: 2px solid var(--mermaid-aqua);
         }
 
-        /* Expanded to a 3x2 Grid */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -146,9 +144,10 @@
             padding-bottom: 5px;
         }
 
-        /* Custom Box Titles */
-        .vibe-title { color: var(--mermaid-aqua); font-weight: 700; font-size: 1.05rem; margin: 5px 0; text-shadow: 1px 1px 0px white; }
-        .vibe-desc { font-size: 0.85rem; color: var(--deep-sea); line-height: 1.4; padding: 0 5px; }
+        .vibe-title { color: var(--mermaid-aqua); font-weight: 700; font-size: 1.15rem; margin: 5px 0; text-shadow: 1px 1px 0px white; }
+        .vibe-desc { font-size: 0.9rem; color: var(--deep-sea); line-height: 1.4; padding: 0 5px; }
+        
+        .aqi-highlight { font-weight: 900; font-size: 1.1rem; color: var(--mermaid-aqua); text-shadow: 1px 1px 0px white; }
 
         .celestial-grid { display: flex; justify-content: space-around; width: 100%; }
         .celestial-item { display: flex; flex-direction: column; align-items: center; }
@@ -160,7 +159,6 @@
         .stat-value { font-size: 1rem; margin-top: 2px; text-align: center; color: var(--deep-sea);}
         .uv-message { font-size: 0.9rem; color: var(--moe-pink); margin-top: 5px; font-weight: 700;}
 
-        /* Minutely 15-Min Graph Styles */
         .minutely-grid { display: flex; width: 100%; justify-content: space-between; gap: 5px; margin-top: 5px; }
         .minutely-col { flex: 1; background: var(--bubble-glass); border-radius: 10px; padding: 8px 2px; font-size: 0.75rem; border: 1px dotted white; box-shadow: inset 1px 1px 5px rgba(255,255,255,0.5); }
         .minutely-time { font-weight: 700; color: var(--moe-pink); margin-bottom: 3px; text-shadow: 1px 1px 0px white;}
@@ -194,7 +192,6 @@
         .refresh-btn { flex: 1; background: linear-gradient(135deg, var(--mermaid-aqua), var(--moe-pink)); border: 3px solid white; padding: 12px 10px; border-radius: 50px; color: white; font-size: 1rem; font-family: 'Fredoka', sans-serif; font-weight: 700; letter-spacing: 1px; cursor: pointer; box-shadow: 0 6px 15px rgba(0, 240, 255, 0.3), inset 0 -3px 0 rgba(0,0,0,0.1); transition: 0.2s; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); }
         .refresh-btn:active { box-shadow: 0 2px 5px rgba(0, 240, 255, 0.3); transform: translateY(4px); }
 
-        /* 📡 LIVE RADAR MODAL STYLES 📡 */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(8px); z-index: 1000; justify-content: center; align-items: center; }
         .modal-content { background: var(--bubble-glass); border: 4px dotted var(--pearl-glow); border-radius: 30px; width: 90%; max-width: 400px; height: 70%; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 0 25px rgba(0, 240, 255, 0.6); }
         .close-radar-btn { background: var(--moe-pink); color: white; text-align: center; padding: 12px; font-weight: 700; cursor: pointer; text-transform: uppercase; letter-spacing: 2px; border-bottom: 2px dashed white; }
@@ -214,7 +211,7 @@
             <div id="feels-like">My RealFeel: <span id="apparent">--</span>°</div>
             <div id="status">(>ω<) VIBING</div>
             
-            <div class="stats-grid">
+            <div class="stats-grid" id="main-stats">
                 <div class="stat-box">
                     <div class="stat-icon">🫧</div>
                     <div class="stat-label">Wind</div>
@@ -235,32 +232,26 @@
                     <div class="stat-label">Dew Pt</div>
                     <div class="stat-value"><span id="dewpoint">--</span>°</div>
                 </div>
-                <div class="stat-box">
+                <div class="stat-box" style="grid-column: span 2;">
                     <div class="stat-icon">🪸</div>
-                    <div class="stat-label">Pressure</div>
-                    <div class="stat-value" style="font-size:0.85rem;"><span id="pressure">--</span></div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-icon">🩺</div>
-                    <div class="stat-label">AQI</div>
-                    <div class="stat-value"><span id="aqi-score">--</span></div>
+                    <div class="stat-label">Barometric Pressure</div>
+                    <div class="stat-value"><span id="pressure">--</span></div>
                 </div>
             </div>
 
             <div class="wide-box" style="padding-bottom: 5px;">
                 <div class="celestial-title" style="border:none; margin-bottom: 0;">💧 Next 60 Mins 💧</div>
-                <div class="minutely-grid" id="minutely-list">
-                    </div>
+                <div class="minutely-grid" id="minutely-list"></div>
             </div>
 
             <div class="wide-box">
-                <div class="celestial-title">🩺 Clinical Air Purity 🩺</div>
+                <div class="celestial-title">🫧 Air Quality 🫧</div>
                 <div class="vibe-title" id="aqi-status">Scanning...</div>
-                <div class="vibe-desc">PM2.5: <span id="pm25">--</span> | PM10: <span id="pm10">--</span></div>
+                <div class="vibe-desc">AQI Score: <span id="aqi-score" class="aqi-highlight">--</span> <br> Fine Particles (PM2.5): <span id="pm25">--</span></div>
             </div>
 
             <div class="wide-box">
-                <div class="celestial-title">💻 Code & Vibe Index 💻</div>
+                <div class="celestial-title">🎀 Daily Vibe Index 🎀</div>
                 <div class="vibe-title" id="vibe-title">Loading Vibes...</div>
                 <div class="vibe-desc" id="vibe-desc">...</div>
             </div>
@@ -413,9 +404,10 @@
             }
         }
 
+        // ✨ UPDATED: Now points to the "rain" forecast overlay to show future predictions ✨
         function openRadar() {
             const frame = document.getElementById('radar-frame');
-            frame.src = `https://embed.windy.com/embed2.html?lat=${myLat}&lon=${myLon}&zoom=8&level=surface&overlay=radar&product=radar&menu=&message=true&marker=true&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=mph&metricTemp=%C2%B0F&radarRange=-1`;
+            frame.src = `https://embed.windy.com/embed2.html?lat=${myLat}&lon=${myLon}&zoom=8&level=surface&overlay=rain&product=ecmwf&menu=&message=true&marker=true&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=mph&metricTemp=%C2%B0F&radarRange=-1`;
             document.getElementById('radar-modal').style.display = 'flex';
         }
 
@@ -429,37 +421,37 @@
             let desc = "";
             if (temp < 10) {
                 title = "❄️ Hibernation Overdrive ❄️";
-                desc = "Way too freezing to function. Wrap up like a burrito, turn the space heater all the way up, and just stay under the blankets. Coding is paused unless your laptop keys are warm!";
+                desc = "Way too freezing to function. Wrap up like a burrito, turn the heater up, and just stay under the blankets.";
             } else if (temp < 20) {
-                title = "🧊 Shivering Server Energy 🧊";
-                desc = "Everything is frozen outside! The cat is definitely glued to the heater. It's the perfect excuse to hide under three blankets and work on offline text layouts where it's cozy.";
+                title = "🧊 Frosty Comfort 🧊";
+                desc = "Everything is frozen outside! Hide under three blankets and stick to indoor hobbies where it's warm and cozy.";
             } else if (temp < 30) {
-                title = "🌨️ Cozy Glitch Matrix 🌨️";
-                desc = "Ice on the window panes. Total quiet isolation mode. Put on your favorite headphones, make a giant mug of hot tea, and tinker with your local server files all day.";
+                title = "🌨️ Quiet Isolation Mode 🌨️";
+                desc = "Ice on the window panes. Total quiet isolation. Put on your favorite headphones and make a giant mug of hot tea.";
             } else if (temp < 40) {
-                title = "🌬️ Frosty Wire-Core Mood 🌬️";
-                desc = "Crisp, cold, and quiet. The room is chilled and perfect for keeping a clear head while hunting down annoying syntax bugs or reorganizing your digital archives.";
+                title = "🌬️ Crisp & Chill 🌬️";
+                desc = "Crisp, cold, and quiet. The room is chilled and perfect for keeping a clear head while reorganizing your digital archives or cleaning up your space.";
             } else if (temp < 50) {
-                title = "🍂 Sweater & Scripting Weather 🍂";
-                desc = "Big oversized sweater weather! Open the door for just a second to breathe the freezing air, then rush right back inside to fix up your CSS design grids.";
+                title = "🍂 Sweater Weather 🍂";
+                desc = "Big oversized sweater weather! Open the door for just a second to breathe the freezing air, then rush right back inside.";
             } else if (temp < 60) {
                 title = "🌸 Tiny Breeze, Big Focus 🌸";
-                desc = "Crack the window open just a tiny bit! The cool air keeps you awake and hyper-focused. Perfect atmosphere for propagating plant cuttings or designing custom templates.";
+                desc = "Crack the window open just a tiny bit! The cool air keeps you awake and hyper-focused. Perfect atmosphere for propagating plant cuttings.";
             } else if (temp < 70) {
                 title = "🍃 Absolute Goldilocks Zone 🍃";
-                desc = "Windows wide open! The breeze is immaculate, the computer setup isn’t overheating, and your productivity is at 100%. Everything feels completely balanced.";
+                desc = "Windows wide open! The breeze is immaculate, and your energy is at 100%. Everything feels completely balanced and perfect.";
             } else if (temp < 80) {
-                title = "☀️ Sparkly Sunshine Motivation ☀️";
-                desc = "Warm and bright! The plants are loving life, energy is super high, and it's the absolute best day to push fresh, clean code updates to GitHub or build fun interactive layouts.";
+                title = "☀️ Sparkly Sunshine ☀️";
+                desc = "Warm and bright! The plants are loving life, energy is super high, and it's the absolute best day to go outside or start a fun project.";
             } else if (temp < 90) {
-                title = "🧋 Iced Coffee & Chill Design 🧋";
-                desc = "Getting a bit toasty! Time to turn on the desk fan, grab a massive iced drink, and stick to low-stress, fun styling stuff instead of heavy code logic.";
+                title = "🧋 Iced Coffee & Chill 🧋";
+                desc = "Getting a bit toasty! Time to turn on the fan, grab a massive iced drink, and stick to low-stress, relaxing hobbies indoors.";
             } else if (temp < 100) {
-                title = "🥵 Meltdown Prevention Zone 🥵";
-                desc = "Total thermal throttling! Close the blinds to keep the sun out, dim your monitor brightness, and stay strictly inside where the air conditioning can protect your setup.";
+                title = "🥵 Meltdown Prevention 🥵";
+                desc = "Too hot! Close the blinds to keep the sun out, dim your screen brightness, and stay strictly inside where the AC can protect you.";
             } else {
                 title = "🔥 System Overload! Stay Inside 🔥";
-                desc = "Code red! The air outside feels like a literal furnace. Complete digital bunker mode—fans blasting on maximum speed, lots of hydration, and zero outdoor activity.";
+                desc = "Code red! The air outside feels like a literal furnace. Fans blasting on maximum speed, lots of hydration, and zero outdoor activity.";
             }
             document.getElementById('vibe-title').innerText = title;
             document.getElementById('vibe-desc').innerText = desc;
@@ -499,12 +491,10 @@
                 }
 
                 try {
-                    // 1. FETCH OPEN-METEO WEATHER (Now including Dew Point, Gusts, and Minutely_15)
                     const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,dew_point_2m,surface_pressure,wind_speed_10m,wind_gusts_10m,weather_code,uv_index&hourly=temperature_2m,weather_code,precipitation_probability,precipitation,cloud_cover,surface_pressure&minutely_15=precipitation&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,uv_index_max,wind_speed_10m_max,wind_gusts_10m_max&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=auto&models=best_match`;
                     const response = await fetch(weatherUrl);
                     const data = await response.json();
                     
-                    // 2. FETCH OPEN-METEO AIR QUALITY
                     const aqiUrl = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${latitude}&longitude=${longitude}&current=us_aqi,pm10,pm2_5&timezone=auto`;
                     const aqiRes = await fetch(aqiUrl);
                     const aqiData = await aqiRes.json();
@@ -513,7 +503,6 @@
                     const daily = data.daily;
                     const hourly = data.hourly;
 
-                    // POPULATE 6-POINT STATS GRID
                     const currentTemp = Math.round(current.temperature_2m);
                     document.getElementById('temp').innerText = currentTemp + "°";
                     document.getElementById('wind').innerText = Math.round(current.wind_speed_10m);
@@ -521,13 +510,12 @@
                     document.getElementById('humidity').innerText = current.relative_humidity_2m;
                     document.getElementById('dewpoint').innerText = Math.round(current.dew_point_2m);
                     
-                    // PRESSURE TREND CALCULATOR
                     const currentHourIndex = new Date().getHours();
-                    const pastPressureIndex = Math.max(0, currentHourIndex - 3); // Look back 3 hours
+                    const pastPressureIndex = Math.max(0, currentHourIndex - 3); 
                     const pastPressure = hourly.surface_pressure[pastPressureIndex];
                     const pressureDiff = current.surface_pressure - pastPressure;
                     
-                    let trendIcon = "〰️"; // Steady
+                    let trendIcon = "〰️"; 
                     if (pressureDiff <= -2.0) trendIcon = "📉 (Storm Drop!)";
                     else if (pressureDiff <= -0.5) trendIcon = "📉";
                     else if (pressureDiff >= 2.0) trendIcon = "📈 (Clearing!)";
@@ -536,14 +524,12 @@
                     const pressureInHg = (current.surface_pressure * 0.02953).toFixed(2);
                     document.getElementById('pressure').innerText = `${pressureInHg} ${trendIcon}`;
 
-                    // POPULATE AQI & CLINICAL DATA
                     const aqi = aqiData.current.us_aqi;
                     document.getElementById('aqi-score').innerText = aqi;
                     document.getElementById('pm25').innerText = aqiData.current.pm2_5;
-                    document.getElementById('pm10').innerText = aqiData.current.pm10;
                     
-                    let aqiStatus = "Pure & Clear 🫧";
-                    if (aqi > 50) aqiStatus = "Moderate Particulates 🩺";
+                    let aqiStatus = "Fresh & Clean 🫧";
+                    if (aqi > 50) aqiStatus = "Moderate (A Bit Dusty) 🍂";
                     if (aqi > 100) aqiStatus = "Unhealthy for Sensitive Groups ⚠️";
                     if (aqi > 150) aqiStatus = "Hazardous Air (Mask Up) 🚫";
                     document.getElementById('aqi-status').innerText = aqiStatus;
@@ -564,13 +550,11 @@
                     document.getElementById('moon-icon').innerText = moon.i;
                     document.getElementById('moon-phase').innerText = moon.n;
 
-                    // BUILD 15-MINUTE RAIN GRAPH
                     const minList = document.getElementById('minutely-list');
                     minList.innerHTML = '';
                     const nowMs = Date.now();
                     let minStartIndex = 0;
                     
-                    // Find the closest timestamp to right now in the 15-min array
                     for(let i=0; i < data.minutely_15.time.length; i++) {
                         if(new Date(data.minutely_15.time[i]).getTime() >= nowMs - (15 * 60000)) { 
                             minStartIndex = i;
@@ -578,7 +562,6 @@
                         }
                     }
 
-                    // Generate the next 4 blocks (60 minutes)
                     for(let i=0; i<4; i++){
                         let pVal = data.minutely_15.precipitation[minStartIndex + i] || 0;
                         let timeLabel = `+${(i+1)*15}m`;
@@ -593,7 +576,6 @@
                         `;
                     }
 
-                    // BUILD HOURLY FORECAST
                     const hourlyList = document.getElementById('hourly-list');
                     hourlyList.innerHTML = '';
                     if (hourly && hourly.temperature_2m) {
@@ -620,7 +602,6 @@
                         }
                     }
 
-                    // BUILD DAILY FORECAST
                     const forecastList = document.getElementById('forecast-list');
                     forecastList.innerHTML = ''; 
                     if (daily && daily.weather_code) {
