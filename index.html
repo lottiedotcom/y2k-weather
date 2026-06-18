@@ -200,22 +200,66 @@
 
         .stat-label { font-size: 0.75rem; text-transform: uppercase; color: var(--moe-pink); letter-spacing: 1px; text-align: center; font-weight: 700; }
         .stat-value { font-size: 1rem; margin-top: 2px; text-align: center; color: var(--deep-sea);}
+        
+        #lunar-botanical-guide {
+            font-size: 0.8rem;
+            color: var(--deep-sea);
+            margin-top: 3px;
+            text-shadow: 1px 1px 0px white;
+            line-height: 1.2;
+            width: 100%;
+            text-align: center;
+        }
 
         .atmosphere-scanner { margin-bottom: 15px; }
-        .cloud-bars-container { width: 100%; display: flex; flex-direction: column; gap: 8px; margin-top: 5px; }
-        .cloud-bar-wrapper { display: flex; flex-direction: column; align-items: flex-start; width: 100%; background: rgba(255,255,255,0.2); border-radius: 15px; padding: 8px 12px; border: 1px dotted white; box-sizing: border-box; }
+
+        /* ✨ NEW VERTICAL CLOUD SCANNER VISUAL ✨ */
+        .sky-visual-container { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 8px; 
+            width: 100%; 
+            margin-top: 10px; 
+        }
         
-        /* New Cloud Scanner Labels */
-        .cloud-header { display: flex; justify-content: space-between; width: 100%; margin-bottom: 5px; }
-        .cloud-label-txt { font-size: 0.8rem; color: var(--deep-sea); font-weight: 700; text-shadow: 1px 1px 0px white; }
-        .cloud-val-sm { font-size: 0.8rem; color: var(--moe-pink); font-weight: 900; text-shadow: 1px 1px 0px white; }
-
-        .bar-bg { width: 100%; height: 12px; background: rgba(255,255,255,0.5); border-radius: 6px; overflow: hidden; position: relative; }
-        .bar-fill { height: 100%; border-radius: 6px; position: absolute; top: 0; left: 0; transition: width 0.5s ease-out; }
-
-        #low-clouds-bar { background: var(--deep-sea); }
-        #mid-clouds-bar { background: var(--moe-pink); }
-        #high-clouds-bar { background: var(--mermaid-aqua); }
+        .sky-layer { 
+            display: flex; 
+            align-items: center; 
+            background: rgba(255,255,255,0.3); 
+            border-radius: 20px; 
+            padding: 10px 15px; 
+            border: 2px solid white; 
+            box-shadow: inset 1px 1px 8px rgba(0,240,255,0.15); 
+        }
+        
+        .layer-emoji { 
+            font-size: 2rem; 
+            margin-right: 15px; 
+            filter: drop-shadow(2px 2px 0px white); 
+            transition: opacity 0.5s ease; 
+        }
+        
+        .layer-info { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: flex-start; 
+        }
+        
+        .layer-name { 
+            font-size: 0.85rem; 
+            font-weight: 700; 
+            color: var(--deep-sea); 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+            text-shadow: 1px 1px 0px white;
+        }
+        
+        .layer-pct { 
+            font-size: 1.1rem; 
+            font-weight: 900; 
+            color: var(--moe-pink); 
+            text-shadow: 1px 1px 0px white; 
+        }
 
         #cloud-scanner-output {
             font-size: 0.85rem;
@@ -258,7 +302,7 @@
         #loading { font-size: 1.2rem; font-weight: 700; color: white; animation: bounce 1.5s infinite; text-shadow: 2px 2px var(--mermaid-aqua); margin: 20px 0; }
         @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
 
-        /* 🎀 UPDATED BOTTOM NAVIGATION TABS (4 Buttons) 🎀 */
+        /* 🎀 FIXED PERFECTLY CENTERED BOTTOM TABS 🎀 */
         .bottom-nav {
             display: flex;
             justify-content: space-between;
@@ -268,24 +312,28 @@
             padding: 6px;
             margin-top: 15px;
             box-shadow: 2px 2px 8px rgba(0, 240, 255, 0.15);
-            gap: 4px;
+            gap: 6px;
         }
         
         .nav-btn {
             flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             background: none;
             border: none;
             color: var(--deep-sea);
             font-family: 'Fredoka', sans-serif;
             font-weight: 700;
-            font-size: 0.75rem; /* Slightly smaller to fit 4 tabs cleanly */
-            padding: 10px 2px;
+            font-size: 0.75rem;
+            padding: 12px 0;
             cursor: pointer;
             text-transform: uppercase;
             letter-spacing: 1px;
             transition: 0.3s ease;
             text-shadow: 1px 1px 0px white;
             border-radius: 20px;
+            white-space: nowrap;
         }
 
         .nav-btn.active {
@@ -430,29 +478,31 @@
 
                 <div class="wide-box atmosphere-scanner">
                     <div class="celestial-title">☁️ What's in the Sky? ☁️</div>
-                    <div class="cloud-bars-container">
-                        <div class="cloud-bar-wrapper">
-                            <div class="cloud-header">
-                                <span class="cloud-label-txt">High (Wispy Ice Clouds)</span>
-                                <span class="cloud-val-sm" id="high-clouds-val">0%</span>
+                    
+                    <div class="sky-visual-container">
+                        <div class="sky-layer">
+                            <div class="layer-emoji" id="vis-high">❄️</div>
+                            <div class="layer-info">
+                                <div class="layer-name">High (Ice/Wispy)</div>
+                                <div class="layer-pct" id="vis-high-val">0%</div>
                             </div>
-                            <div class="bar-bg"><div class="bar-fill" id="high-clouds-bar" style="width: 0%;"></div></div>
                         </div>
-                        <div class="cloud-bar-wrapper">
-                            <div class="cloud-header">
-                                <span class="cloud-label-txt">Mid (Puffy Day Clouds)</span>
-                                <span class="cloud-val-sm" id="mid-clouds-val">0%</span>
+                        <div class="sky-layer">
+                            <div class="layer-emoji" id="vis-mid">⛅</div>
+                            <div class="layer-info">
+                                <div class="layer-name">Mid (Puffy)</div>
+                                <div class="layer-pct" id="vis-mid-val">0%</div>
                             </div>
-                            <div class="bar-bg"><div class="bar-fill" id="mid-clouds-bar" style="width: 0%;"></div></div>
                         </div>
-                        <div class="cloud-bar-wrapper">
-                            <div class="cloud-header">
-                                <span class="cloud-label-txt">Low (Fog & Rain Clouds)</span>
-                                <span class="cloud-val-sm" id="low-clouds-val">0%</span>
+                        <div class="sky-layer">
+                            <div class="layer-emoji" id="vis-low">🌫️</div>
+                            <div class="layer-info">
+                                <div class="layer-name">Low (Fog/Rain)</div>
+                                <div class="layer-pct" id="vis-low-val">0%</div>
                             </div>
-                            <div class="bar-bg"><div class="bar-fill" id="low-clouds-bar" style="width: 0%;"></div></div>
                         </div>
                     </div>
+
                     <div id="cloud-scanner-output">Looking up at the sky...</div>
                 </div>
 
@@ -717,16 +767,18 @@
             }
         }
 
-        // ✨ COMPLETELY REWORDED CLOUD SCANNER ✨
+        // ✨ VERTICAL VISUAL CLOUD SCANNER ✨
         function setAtmosphereScanner(low, mid, high, totalCover) {
-            document.getElementById('low-clouds-bar').style.width = low + "%";
-            document.getElementById('low-clouds-val').innerText = low + "%";
+            // Update textual percentages
+            document.getElementById('vis-low-val').innerText = low + "%";
+            document.getElementById('vis-mid-val').innerText = mid + "%";
+            document.getElementById('vis-high-val').innerText = high + "%";
 
-            document.getElementById('mid-clouds-bar').style.width = mid + "%";
-            document.getElementById('mid-clouds-val').innerText = mid + "%";
-
-            document.getElementById('high-clouds-bar').style.width = high + "%";
-            document.getElementById('high-clouds-val').innerText = high + "%";
+            // Visual Opacity Trick: The emoji becomes transparent if there are no clouds!
+            // We use Math.max to keep a tiny bit of visibility (0.15) so the icon doesn't completely disappear.
+            document.getElementById('vis-low').style.opacity = Math.max(0.15, low / 100);
+            document.getElementById('vis-mid').style.opacity = Math.max(0.15, mid / 100);
+            document.getElementById('vis-high').style.opacity = Math.max(0.15, high / 100);
 
             const scannerOutput = document.getElementById('cloud-scanner-output');
             
@@ -801,9 +853,9 @@
                     document.getElementById('gusts').innerText = Math.round(current.wind_gusts_10m);
                     
                     const currentHumidity = current.relative_humidity_2m;
-                    document.getElementById('humidity').innerText = currentHumidity + "%";
+                    // Extra percent sign fixed!
+                    document.getElementById('humidity').innerText = currentHumidity; 
                     
-                    // Run the Flora Humidity Logic
                     setFloraVibe(currentHumidity);
                     
                     document.getElementById('dewpoint').innerText = Math.round(current.dew_point_2m);
@@ -863,12 +915,9 @@
                     document.getElementById('uv-number').innerText = currentUV;
                     document.getElementById('uv-text').innerText = getUVSpeech(currentUV);
 
-                    // Moon Logic
                     const moonData = getMoonPhaseData();
                     document.getElementById('moon-icon').innerText = moonData.phaseInfo.i;
                     document.getElementById('moon-phase').innerText = moonData.phaseInfo.n;
-                    
-                    // Flora Tab Logic
                     document.getElementById('lunar-botanical-guide').innerText = moonData.botanicalGuide;
 
                     setAtmosphereScanner(
