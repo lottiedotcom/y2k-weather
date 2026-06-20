@@ -109,26 +109,11 @@
             border: 2px solid var(--mermaid-aqua);
         }
 
-        .tab-section {
-            display: none;
-            animation: fadeIn 0.4s ease;
-        }
-        
-        .tab-section.active {
-            display: block;
-        }
+        .tab-section { display: none; animation: fadeIn 0.4s ease; }
+        .tab-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(5px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-bottom: 15px;
-        }
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 15px; }
 
         .stat-box, .wide-box, .celestial-box {
             background: var(--inner-bubble);
@@ -177,17 +162,10 @@
         .aqi-label { color: var(--deep-sea); text-shadow: 1px 1px 0px white; text-align: left; }
         .aqi-val { font-weight: 900; color: var(--moe-pink); text-shadow: 1px 1px 0px white; text-align: right; }
 
-        .celestial-grid-v2 {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            width: 100%;
-            margin-bottom: 15px;
-        }
-
+        .celestial-grid-v2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; width: 100%; margin-bottom: 15px; }
         .celestial-item { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; }
-
         .stat-icon { font-size: 1.6rem; margin-bottom: 2px; filter: drop-shadow(2px 2px 0px white); }
+        
         .pixel-stamp {
             width: 99px;
             height: 99px;
@@ -201,77 +179,37 @@
         .stat-label { font-size: 0.75rem; text-transform: uppercase; color: var(--moe-pink); letter-spacing: 1px; text-align: center; font-weight: 700; }
         .stat-value { font-size: 1rem; margin-top: 2px; text-align: center; color: var(--deep-sea);}
         
-        #lunar-botanical-guide {
-            font-size: 0.8rem;
-            color: var(--deep-sea);
-            margin-top: 3px;
-            text-shadow: 1px 1px 0px white;
-            line-height: 1.2;
-            width: 100%;
-            text-align: center;
-        }
+        #lunar-botanical-guide { font-size: 0.8rem; color: var(--deep-sea); margin-top: 3px; text-shadow: 1px 1px 0px white; line-height: 1.2; width: 100%; text-align: center; }
 
-        /* ☁️ THE NEW DYNAMIC SKY BOX ☁️ */
-        .atmosphere-scanner { margin-bottom: 15px; }
+        /* ✨ FULLY INTEGRATED DIORAMA BOX ✨ */
+        .atmosphere-scanner { margin-bottom: 15px; overflow: hidden; }
         
-        .sky-window-container {
-            display: flex;
-            align-items: center;
+        #diorama-box {
             width: 100%;
-            height: 160px; /* Tall box so the graphic has room to travel */
-            margin-top: 10px;
-            gap: 15px;
-        }
-
-        .sky-y-axis {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            height: 100%;
-            padding: 15px 0;
-            box-sizing: border-box;
-        }
-
-        .y-label {
-            font-size: 0.8rem;
-            font-weight: 700;
-            color: var(--moe-pink);
-            text-transform: uppercase;
-            text-shadow: 1px 1px 0px white;
-            letter-spacing: 1px;
-        }
-
-        .sky-box {
-            flex: 1;
-            height: 100%;
-            background: linear-gradient(to bottom, rgba(255,255,255,0.4), rgba(255, 255, 255, 0.1));
-            border: 2px solid white;
-            border-radius: 20px;
+            height: 180px;
+            border: 3px solid white;
+            border-radius: 15px;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.2);
             position: relative;
-            box-shadow: inset 2px 2px 10px rgba(0,240,255,0.15);
             overflow: hidden;
+            background-size: cover;
+            background-position: center;
+            transition: background-image 0.5s ease;
+            margin-top: 10px;
         }
 
-        .floating-icon {
-            font-size: 3.5rem;
+        .sprite {
             position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            /* Smooth bouncing transition when moving layers */
-            transition: top 0.7s cubic-bezier(0.68, -0.55, 0.265, 1.55); 
-            filter: drop-shadow(2px 2px 0px white);
+            animation: drift linear infinite;
         }
 
-        #cloud-scanner-output {
-            font-size: 0.85rem;
-            color: var(--deep-sea);
-            margin-top: 15px;
-            line-height: 1.4;
-            width: 100%;
-            text-align: center;
-            border-top: 2px dotted rgba(255,255,255,0.5);
-            padding-top: 10px;
+        @keyframes drift {
+            0% { transform: translateX(-20px); }
+            50% { transform: translateX(20px); }
+            100% { transform: translateX(-20px); }
         }
+
+        #cloud-scanner-output { font-size: 0.85rem; color: var(--deep-sea); margin-top: 15px; line-height: 1.4; width: 100%; text-align: center; border-top: 2px dotted rgba(255,255,255,0.5); padding-top: 10px; }
 
         .uv-message { font-size: 0.9rem; color: var(--moe-pink); margin-top: 5px; font-weight: 700;}
 
@@ -478,16 +416,7 @@
                 <div class="wide-box atmosphere-scanner">
                     <div class="celestial-title">☁️ Sky Window ☁️</div>
                     
-                    <div class="sky-window-container">
-                        <div class="sky-y-axis">
-                            <span class="y-label">High</span>
-                            <span class="y-label">Mid</span>
-                            <span class="y-label">Low</span>
-                        </div>
-                        <div class="sky-box">
-                            <div id="floating-sky-icon" class="floating-icon">☀️</div>
-                        </div>
-                    </div>
+                    <div id="diorama-box"></div>
 
                     <div id="cloud-scanner-output">Scanning the horizon...</div>
                 </div>
@@ -753,32 +682,46 @@
             }
         }
 
-        // ✨ THE NEW DYNAMIC SKY BOX LOGIC ✨
-        function setAtmosphereScanner(low, mid, high, totalCover, isDay) {
-            const iconEl = document.getElementById('floating-sky-icon');
+        // ✨ THE NEW SPRITE DIORAMA LOGIC ✨
+        function setAtmosphereScanner(totalCover, isDay) {
+            const box = document.getElementById('diorama-box');
             const scannerOutput = document.getElementById('cloud-scanner-output');
+
+            // 1. Swap the background based on the time
+            box.style.backgroundImage = isDay ? "url('day.jpg')" : "url('night.jpg')";
             
-            // If total cloud cover is below 20%, show the Sun/Moon at the top!
-            if (totalCover < 20) {
-                iconEl.innerText = isDay ? "☀️" : "✨";
-                iconEl.style.top = "10%"; 
-                scannerOutput.innerText = "The sky is perfectly clear! (Under 20% cloud cover).";
-                return;
+            // Clear any old sprites
+            box.innerHTML = '';
+
+            const maxSprites = 24; 
+            const spritesToSpawn = Math.ceil(maxSprites * (totalCover / 100));
+
+            // 2. Generate and layer the sprites
+            for (let i = 0; i < spritesToSpawn; i++) {
+                const sprite = document.createElement('img');
+                
+                // Swap the injected sprite based on day/night
+                sprite.src = isDay ? 'cloud.png' : 'star.png';
+                sprite.className = 'sprite';
+
+                const size = Math.floor(Math.random() * 40) + 40;
+                sprite.style.width = size + 'px';
+
+                sprite.style.left = Math.floor(Math.random() * 90) + '%';
+                sprite.style.top = Math.floor(Math.random() * 80) + '%';
+                sprite.style.opacity = (Math.random() * 0.4) + 0.5;
+                sprite.style.animationDuration = Math.floor(Math.random() * 15 + 10) + 's';
+
+                box.appendChild(sprite);
             }
 
-            // Find dominant cloud layer and move the cloud icon
-            const max = Math.max(low, mid, high);
-            iconEl.innerText = "☁️";
-
-            if (max === low) {
-                iconEl.style.top = "75%"; // Moves to bottom
-                scannerOutput.innerText = "Dominant Low Clouds. Heavy overcast, fog, or a dreary ceiling.";
-            } else if (max === mid) {
-                iconEl.style.top = "42%"; // Moves to middle
-                scannerOutput.innerText = "Dominant Mid Clouds. Standard puffy daytime clouds passing by.";
-            } else if (max === high) {
-                iconEl.style.top = "10%"; // Moves to top
-                scannerOutput.innerText = "Dominant High Clouds. Wispy ice crystals way up high!";
+            // 3. Output the text vibe
+            if (totalCover < 20) {
+                scannerOutput.innerText = isDay ? "The sky is perfectly clear! ☀️" : "The void is perfectly clear! 🌌";
+            } else if (totalCover < 60) {
+                scannerOutput.innerText = "Partially covered sky. Sprites are drifting! ⛅";
+            } else {
+                scannerOutput.innerText = "Heavy cloud cover detected. Maximum sprites spawned! ☁️";
             }
         }
 
@@ -820,7 +763,6 @@
                 }
 
                 try {
-                    // Added total `cloud_cover` to the API pull
                     const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,dew_point_2m,surface_pressure,wind_speed_10m,wind_gusts_10m,weather_code,uv_index,visibility,cloud_cover,cloud_cover_low,cloud_cover_mid,cloud_cover_high,is_day&hourly=temperature_2m,weather_code,precipitation_probability,precipitation,cloud_cover,surface_pressure&minutely_15=precipitation&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,uv_index_max,wind_speed_10m_max,wind_gusts_10m_max&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=auto&models=best_match`;
                     const response = await fetch(weatherUrl);
                     const data = await response.json();
@@ -905,15 +847,9 @@
                     document.getElementById('moon-phase').innerText = moonData.phaseInfo.n;
                     document.getElementById('lunar-botanical-guide').innerText = moonData.botanicalGuide;
 
-                    // Pass the accurate variables to the new box
+                    // Trigger the Diorama Logic
                     const isDaytime = current.is_day === 1;
-                    setAtmosphereScanner(
-                        current.cloud_cover_low,
-                        current.cloud_cover_mid,
-                        current.cloud_cover_high,
-                        current.cloud_cover,
-                        isDaytime
-                    );
+                    setAtmosphereScanner(current.cloud_cover, isDaytime);
 
                     const isNight = current.is_day === 0;
                     setNightSkyClarity(isNight, current.cloud_cover);
