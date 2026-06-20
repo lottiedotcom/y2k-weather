@@ -186,13 +186,15 @@
         
         #diorama-box {
             width: 100%;
-            height: 180px;
+            height: 200px; /* Slightly taller to accommodate pixel art properly */
             border: 3px solid white;
             border-radius: 15px;
             box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.2);
             position: relative;
             overflow: hidden;
-            background-size: cover;
+            /* Updated to force the full image to show without cropping */
+            background-size: 100% 100%; 
+            background-repeat: no-repeat;
             background-position: center;
             transition: background-image 0.5s ease;
             margin-top: 10px;
