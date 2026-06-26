@@ -257,7 +257,7 @@
         #cloud-scanner-output { font-size: 0.85rem; color: var(--deep-sea); margin-top: 15px; line-height: 1.4; width: 100%; text-align: center; border-top: 2px dotted rgba(255,255,255,0.5); padding-top: 10px; }
         .uv-message { font-size: 0.9rem; color: var(--moe-pink); margin-top: 5px; font-weight: 700;}
 
-        /* ✨ NEW AGRONOMY LIST STYLES WITH TAP-TO-EXPAND ✨ */
+        /* ✨ AGRONOMY LIST STYLES ✨ */
         .zone-header {
             font-size: 0.85rem;
             color: var(--moe-pink);
@@ -275,13 +275,13 @@
             padding: 12px;
             margin-bottom: 10px;
             display: flex;
-            align-items: flex-start; /* Anchors the image to the top */
+            align-items: flex-start;
             gap: 12px;
             text-align: left;
             box-shadow: 2px 2px 8px rgba(0, 240, 255, 0.15);
             transition: transform 0.2s ease, box-shadow 0.2s ease;
-            cursor: pointer; /* Makes it look clickable */
-            flex-wrap: wrap; /* Allows inner details to wrap beneath */
+            cursor: pointer;
+            flex-wrap: wrap;
         }
         
         .agronomy-card:active { transform: scale(0.98); }
@@ -299,7 +299,7 @@
 
         .plant-info {
             flex: 1;
-            min-width: 0; /* Prevents long text from breaking the layout */
+            min-width: 0;
         }
 
         .plant-name {
@@ -344,7 +344,6 @@
             text-shadow: 1px 1px 0px rgba(255,255,255,0.8);
         }
 
-        /* The hidden expansion block */
         .plant-details-hidden {
             display: none;
             width: 100%;
@@ -355,7 +354,6 @@
             color: var(--deep-sea);
         }
 
-        /* When the 'expanded' class is toggled on, show the block */
         .agronomy-card.expanded .plant-details-hidden {
             display: block;
             animation: fadeIn 0.3s ease;
@@ -922,7 +920,7 @@
             }
         }
 
-        // ✨ THE AGRONOMY RENDERER WITH TAP-TO-EXPAND ✨
+        // ✨ THE AGRONOMY RENDERER WITH EXPANSION ✨
         function renderAgronomy(engineData) {
             const container = document.getElementById('agronomy-list');
             
@@ -958,7 +956,6 @@
             });
         }
 
-        // ✨ THE TRUE MAIN FETCHING ENGINE (NO TRUNCATION) ✨
         async function fetchWeatherData(latitude, longitude) {
             try {
                 let sunsetUtc = null;
@@ -980,9 +977,40 @@
                 const response = await fetch(weatherUrl);
                 const data = await response.json();
                 
-                const aqiUrl = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${latitude}&longitude=${longitude}&current=us_aqi,pm10,pm2_5,ozone&timezone=auto`;
-                const aqiRes = await fetch(aqiUrl);
-                const aqiData = await aqiRes.json();
+                // ✨ FAILSAFE 1: Handle Missing AQI Data Safely
+                let aqiData = null;
+                let aqiStatus = "-- (No Data)", pm25Status = "--", pm10Status = "--", ozoneStatus = "--";
+                try {
+                    const aqiUrl = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${latitude}&longitude=${longitude}&current=us_aqi,pm10,pm2_5,ozone&timezone=auto`;
+                    const aqiRes = await fetch(aqiUrl);
+                    aqiData = await aqiRes.json();
+                    
+                    if (aqiData && aqiData.current) {
+                        const aqi = aqiData.current.us_aqi || "--";
+                        if (aqi !== "--") {
+                            aqiStatus = `${aqi} (Good 🫧)`;
+                            if (aqi > 50) aqiStatus = `${aqi} (Moderate 🍂)`;
+                            if (aqi > 100) aqiStatus = `${aqi} (Poor ⚠️)`;
+                            if (aqi > 150) aqiStatus = `${aqi} (Hazardous 🚫)`;
+                        }
+
+                        const pm25 = aqiData.current.pm2_5 || "--";
+                        if (pm25 !== "--") pm25Status = pm25 > 35 ? "High ⚠️" : pm25 > 12 ? "Moderate 🍂" : "Low 🍃";
+
+                        const pm10 = aqiData.current.pm10 || "--";
+                        if (pm10 !== "--") pm10Status = pm10 > 154 ? "High ⚠️" : pm10 > 54 ? "Moderate 🍂" : "Low 🍃";
+
+                        const ozone = aqiData.current.ozone || "--";
+                        if (ozone !== "--") ozoneStatus = ozone > 120 ? "High ⚠️" : ozone > 60 ? "Moderate ☁️" : "Low 🌸";
+                        
+                        document.getElementById('aqi-pm25').innerText = pm25 !== "--" ? `${pm25} μg/m³ (${pm25Status})` : "--";
+                        document.getElementById('aqi-pm10').innerText = pm10 !== "--" ? `${pm10} μg/m³ (${pm10Status})` : "--";
+                        document.getElementById('aqi-ozone').innerText = ozone !== "--" ? `${ozone} μg/m³ (${ozoneStatus})` : "--";
+                    }
+                } catch (e) {
+                    console.log("AQI data unavailable for this location.");
+                }
+                document.getElementById('aqi-score').innerText = aqiStatus;
 
                 const current = data.current;
                 const daily = data.daily;
@@ -1015,32 +1043,6 @@
                 const pressureInHg = (current.surface_pressure * 0.02953).toFixed(2);
                 document.getElementById('pressure').innerText = `${pressureInHg} ${trendIcon}`;
 
-                const aqi = aqiData.current.us_aqi;
-                const pm25 = aqiData.current.pm2_5;
-                const pm10 = aqiData.current.pm10;
-                const ozone = aqiData.current.ozone;
-
-                let aqiStatus = `${aqi} (Good 🫧)`;
-                if (aqi > 50) aqiStatus = `${aqi} (Moderate 🍂)`;
-                if (aqi > 100) aqiStatus = `${aqi} (Poor ⚠️)`;
-                if (aqi > 150) aqiStatus = `${aqi} (Hazardous 🚫)`;
-                document.getElementById('aqi-score').innerText = aqiStatus;
-
-                let pm25Status = "Low 🍃";
-                if (pm25 > 12) pm25Status = "Moderate 🍂";
-                if (pm25 > 35) pm25Status = "High ⚠️";
-                document.getElementById('aqi-pm25').innerText = `${pm25} μg/m³ (${pm25Status})`;
-
-                let pm10Status = "Low 🍃";
-                if (pm10 > 54) pm10Status = "Moderate 🍂";
-                if (pm10 > 154) pm10Status = "High ⚠️";
-                document.getElementById('aqi-pm10').innerText = `${pm10} μg/m³ (${pm10Status})`;
-
-                let ozoneStatus = "Low 🌸";
-                if (ozone > 60) ozoneStatus = "Moderate ☁️";
-                if (ozone > 120) ozoneStatus = "High ⚠️";
-                document.getElementById('aqi-ozone').innerText = `${ozone} μg/m³ (${ozoneStatus})`;
-
                 setVibeIndex(currentTemp);
                 
                 const currentCode = current.weather_code;
@@ -1070,30 +1072,36 @@
                 const isNight = current.is_day === 0;
                 setNightSkyClarity(isNight, current.cloud_cover);
 
+                // ✨ FAILSAFE 2: Safe handling of missing Minutely Precipitation Data
                 const minList = document.getElementById('minutely-list');
                 minList.innerHTML = '';
-                const nowMs = Date.now();
-                let minStartIndex = 0;
                 
-                for(let i=0; i < data.minutely_15.time.length; i++) {
-                    if(new Date(data.minutely_15.time[i]).getTime() >= nowMs - (15 * 60000)) { 
-                        minStartIndex = i;
-                        break;
-                    }
-                }
-
-                for(let i=0; i<4; i++){
-                    let pVal = data.minutely_15.precipitation[minStartIndex + i] || 0;
-                    let timeLabel = `+${(i+1)*15}m`;
-                    let valText = pVal > 0 ? `${pVal}"` : '0"';
-                    let textColor = pVal > 0 ? 'var(--mermaid-aqua)' : 'var(--deep-sea)';
+                if (data.minutely_15 && data.minutely_15.time && data.minutely_15.time.length > 0) {
+                    const nowMs = Date.now();
+                    let minStartIndex = 0;
                     
-                    minList.innerHTML += `
-                        <div class="minutely-col">
-                            <div class="minutely-time">${timeLabel}</div>
-                            <div class="minutely-val" style="color: ${textColor}">${valText}</div>
-                        </div>
-                    `;
+                    for(let i=0; i < data.minutely_15.time.length; i++) {
+                        if(new Date(data.minutely_15.time[i]).getTime() >= nowMs - (15 * 60000)) { 
+                            minStartIndex = i;
+                            break;
+                        }
+                    }
+
+                    for(let i=0; i<4; i++){
+                        let pVal = data.minutely_15.precipitation[minStartIndex + i] || 0;
+                        let timeLabel = `+${(i+1)*15}m`;
+                        let valText = pVal > 0 ? `${pVal}"` : '0"';
+                        let textColor = pVal > 0 ? 'var(--mermaid-aqua)' : 'var(--deep-sea)';
+                        
+                        minList.innerHTML += `
+                            <div class="minutely-col">
+                                <div class="minutely-time">${timeLabel}</div>
+                                <div class="minutely-val" style="color: ${textColor}">${valText}</div>
+                            </div>
+                        `;
+                    }
+                } else {
+                    minList.innerHTML = `<div style="width:100%; text-align:center; padding:10px; color:var(--deep-sea); font-size:0.8rem; font-weight:700;">No minutely radar available for this zone 🫧</div>`;
                 }
 
                 const hourlyList = document.getElementById('hourly-list');
@@ -1122,18 +1130,25 @@
                     }
                 }
 
+                // ✨ FAILSAFE 3: Safely Default Missing Daily Data
                 const forecastList = document.getElementById('forecast-list');
                 forecastList.innerHTML = ''; 
+                
+                const safeDailyTempsMax = daily.temperature_2m_max || Array(7).fill(50);
+                const safeDailyTempsMin = daily.temperature_2m_min || Array(7).fill(50);
+                const safeDailyPrecipSum = daily.precipitation_sum || Array(7).fill(0);
+                const safeDailyGusts = daily.wind_gusts_10m_max || Array(7).fill(0);
+
                 if (daily && daily.weather_code) {
                     for (let i = 0; i < 7; i++) {
                         const dayName = getDayName(i); 
                         const emoji = weatherMoji[daily.weather_code[i]] || "✨";
-                        const maxTemp = Math.round(daily.temperature_2m_max[i]);
-                        const minTemp = Math.round(daily.temperature_2m_min[i]);
-                        const rainTotal = daily.precipitation_sum[i];
-                        const rainPop = daily.precipitation_probability_max[i];
-                        const uvMax = Math.round(daily.uv_index_max[i] || 0);
-                        const windMax = Math.round(daily.wind_speed_10m_max[i] || 0);
+                        const maxTemp = Math.round(safeDailyTempsMax[i]);
+                        const minTemp = Math.round(safeDailyTempsMin[i]);
+                        const rainTotal = safeDailyPrecipSum[i];
+                        const rainPop = daily.precipitation_probability_max ? daily.precipitation_probability_max[i] : 0;
+                        const uvMax = Math.round((daily.uv_index_max && daily.uv_index_max[i]) ? daily.uv_index_max[i] : 0);
+                        const windMax = Math.round((daily.wind_speed_10m_max && daily.wind_speed_10m_max[i]) ? daily.wind_speed_10m_max[i] : 0);
 
                         let rainDisplay = rainTotal > 0 ? `${rainTotal}"` : `${rainPop}%`;
 
@@ -1155,19 +1170,14 @@
                     }
                 }
 
-                // ✨ TRIGGER THE AGRONOMY ENGINE WITH FULL DAILY DATA ✨
                 if (window.ClimateEngine && window.floraDB) {
-                    const weekTempsMin = daily.temperature_2m_min;
-                    const weekTempsMax = daily.temperature_2m_max;
-                    const dailyGusts = daily.wind_gusts_10m_max; // Passing the full array now!
-                    const rainTotal = daily.precipitation_sum.reduce((a, b) => a + b, 0);
-                    
-                    const avgTemp = (weekTempsMin.reduce((a, b) => a + b, 0) + weekTempsMax.reduce((a, b) => a + b, 0)) / 14;
+                    const rainTotal = safeDailyPrecipSum.reduce((a, b) => a + b, 0);
+                    const avgTemp = (safeDailyTempsMin.reduce((a, b) => a + b, 0) + safeDailyTempsMax.reduce((a, b) => a + b, 0)) / 14;
                     const avgHumidity = currentHumidity; 
                     const moonPhaseStr = moonData.phaseInfo.n;
 
                     const agronomyResults = window.ClimateEngine.runAnalysis(
-                        latitude, longitude, weekTempsMin, weekTempsMax, dailyGusts, avgTemp, avgHumidity, rainTotal, moonPhaseStr
+                        latitude, longitude, safeDailyTempsMin, safeDailyTempsMax, safeDailyGusts, avgTemp, avgHumidity, rainTotal, moonPhaseStr
                     );
 
                     renderAgronomy(agronomyResults);
@@ -1178,6 +1188,7 @@
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('weather-content').style.display = 'block';
             } catch (error) {
+                console.error(error);
                 document.getElementById('loading').innerText = "(✖╭╮✖) Data loading error...";
             }
         }
