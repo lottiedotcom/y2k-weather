@@ -1,12 +1,7 @@
 // 🌍 CLIMATE & AGRONOMY ENGINE (climate_db.js) 🌍
-// This engine grabs your GPS, calculates the environment, and runs the 3-Phase survival gauntlet.
 
 const ClimateEngine = {
 
-    // ==========================================
-    // 📍 1. GEOSPATIAL ZONE CALCULATOR
-    // ==========================================
-    // Approximates your USDA Hardiness Zone based on your Latitude (Northern Hemisphere)
     getHardinessZone: function(lat) {
         const absLat = Math.abs(lat);
         if (absLat < 25) return { zone: "10-11", frostRisk: "None", season: "Tropical" };
@@ -17,72 +12,56 @@ const ClimateEngine = {
         return { zone: "1-3", frostRisk: "Extreme (Sep-May)", season: "Arctic/Sub-Arctic" };
     },
 
-    // ==========================================
-    // 🛑 2. PHASE 1: THE LETHAL GATES
-    // ==========================================
-    // Returns an instant FAIL if the environment will physically destroy the plant
     checkLethalGates: function(plant, weekTempsMin, weekTempsMax, maxWind) {
-        const lowestTemp = Math.min(...weekTempsMin);
-        const highestTemp = Math.max(...weekTempsMax);
+        // ✨ Added Math.round() to fix the ugly decimals! ✨
+        const lowestTemp = Math.round(Math.min(...weekTempsMin));
+        const highestTemp = Math.round(Math.max(...weekTempsMax));
+        const roundedWind = Math.round(maxWind);
 
-        // Gate 1: The Frost/Freezing Gate
         if (lowestTemp <= plant.temp_floor) {
             return { pass: false, tag: "Strictly Indoors", reason: `Lethal cold! Temps dropping to ${lowestTemp}°F.` };
         }
         
-        // Gate 2: The Furnace Gate
         if (highestTemp >= plant.temp_ceiling) {
             return { pass: false, tag: "Move Inside/AC", reason: `Lethal heat! Temps spiking to ${highestTemp}°F.` };
         }
 
-        // Gate 3: The Gale Gate
-        if (maxWind >= plant.wind_tolerance + 10) { // Adding a 10mph buffer for gusts
-            return { pass: false, tag: "Wind Hazard", reason: `Gusts up to ${maxWind}mph will damage structure.` };
+        if (roundedWind >= plant.wind_tolerance + 10) { 
+            return { pass: false, tag: "Wind Hazard", reason: `Gusts up to ${roundedWind} mph will damage structure.` };
         }
 
         return { pass: true };
     },
 
-    // ==========================================
-    // 🧮 3. PHASE 2: THE COMFORT SPECTRUM
-    // ==========================================
-    // Scores the plant from 0 to 100 based on how perfectly the weather matches its specs
     scoreComfort: function(plant, avgTemp, avgHumidity, rainTotal) {
-        let score = 70; // Base passing score
+        let score = 70; 
 
-        // Temperature Curve
         if (avgTemp >= plant.optimal_temp[0] && avgTemp <= plant.optimal_temp[1]) {
-            score += 15; // Perfect temp!
+            score += 15; 
         } else {
-            score -= 10; // Outside optimal range
+            score -= 10; 
         }
 
-        // Humidity Curve
         if (avgHumidity >= plant.min_humidity) {
             score += 10;
         } else {
-            score -= 15; // Too dry
+            score -= 15; 
         }
 
-        // Precipitation / Watering Logic
-        if (rainTotal > 1.0) { // Heavy rain week
-            if (plant.water_frequency === "very_low") score -= 30; // Succulents drown
-            if (plant.water_frequency === "high") score += 10; // Thirsty plants thrive
-        } else if (rainTotal < 0.1) { // Bone dry week
+        if (rainTotal > 1.0) { 
+            if (plant.water_frequency === "very_low") score -= 30; 
+            if (plant.water_frequency === "high") score += 10; 
+        } else if (rainTotal < 0.1) { 
             if (plant.water_frequency === "very_low") score += 10;
             if (plant.water_frequency === "high") score -= 20; 
         }
 
-        // Cap score bounds
         if (score > 100) score = 100;
         if (score < 0) score = 0;
 
         return score;
     },
 
-    // ==========================================
-    // 🔮 4. PHASE 3: THE CELESTIAL MULTIPLIER
-    // ==========================================
     applyLunarMultiplier: function(baseScore, plantLunarAffinity, currentMoonPhaseStr) {
         let isWaxing = currentMoonPhaseStr.includes("Waxing") || currentMoonPhaseStr.includes("New") || currentMoonPhaseStr.includes("1st Quarter");
         let isWaning = currentMoonPhaseStr.includes("Waning") || currentMoonPhaseStr.includes("Full") || currentMoonPhaseStr.includes("Last Quarter");
@@ -91,25 +70,18 @@ const ClimateEngine = {
         if (isWaxing) currentAffinity = "waxing";
         if (isWaning) currentAffinity = "waning";
 
-        // Tech-Witch Intuition: If the moon matches the plant's affinity, boost the score!
         if (plantLunarAffinity === currentAffinity) {
-            return Math.min(100, Math.round(baseScore * 1.25)); // 25% Boost
+            return Math.min(100, Math.round(baseScore * 1.25)); 
         }
         return baseScore;
     },
 
-    // ==========================================
-    // ⚙️ 5. THE MASTER RUNNER
-    // ==========================================
-    // This is the function the main app calls to get the final answers
     runAnalysis: function(lat, lon, weekTempsMin, weekTempsMax, maxWind, avgTemp, avgHumidity, rainTotal, moonPhaseStr) {
         const zoneData = this.getHardinessZone(lat);
         const results = [];
 
-        // Loop through the flora_db (which must be loaded first in the HTML)
         for (const [id, plant] of Object.entries(window.floraDB)) {
             
-            // Phase 1
             const survival = this.checkLethalGates(plant, weekTempsMin, weekTempsMax, maxWind);
             
             if (!survival.pass) {
@@ -121,16 +93,12 @@ const ClimateEngine = {
                     tag: survival.tag,
                     reason: survival.reason
                 });
-                continue; // Skip to the next plant
+                continue; 
             }
 
-            // Phase 2
             let comfortScore = this.scoreComfort(plant, avgTemp, avgHumidity, rainTotal);
-
-            // Phase 3
             let finalScore = this.applyLunarMultiplier(comfortScore, plant.lunar_affinity, moonPhaseStr);
 
-            // Assign the Temporal Action Tag
             let status = "";
             let tag = "";
             
@@ -155,11 +123,9 @@ const ClimateEngine = {
             });
         }
 
-        // Sort results from highest score to lowest
         results.sort((a, b) => b.score - a.score);
         return { zone: zoneData, recommendations: results };
     }
 };
 
-// Make it accessible to the main HTML file
 window.ClimateEngine = ClimateEngine;
