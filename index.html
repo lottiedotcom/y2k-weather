@@ -4,10 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🫧 weather 🫧</title>
-
-    <script src="flora_db.js"></script>
-<script src="climate_db.js"></script>
-
     
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#ff85c2">
@@ -16,6 +12,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&display=swap" rel="stylesheet">
+
+    <script src="flora_db.js"></script>
+    <script src="climate_db.js"></script>
 
     <style>
         :root {
@@ -259,6 +258,89 @@
         #cloud-scanner-output { font-size: 0.85rem; color: var(--deep-sea); margin-top: 15px; line-height: 1.4; width: 100%; text-align: center; border-top: 2px dotted rgba(255,255,255,0.5); padding-top: 10px; }
         .uv-message { font-size: 0.9rem; color: var(--moe-pink); margin-top: 5px; font-weight: 700;}
 
+        /* ✨ NEW AGRONOMY LIST STYLES ✨ */
+        .zone-header {
+            font-size: 0.85rem;
+            color: var(--moe-pink);
+            font-weight: 700;
+            margin: 15px 0 10px 0;
+            text-transform: uppercase;
+            border-bottom: 2px dotted white;
+            padding-bottom: 5px;
+        }
+
+        .agronomy-card {
+            background: var(--inner-bubble);
+            border: 2px solid white;
+            border-radius: 20px;
+            padding: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-align: left;
+            box-shadow: 2px 2px 8px rgba(0, 240, 255, 0.15);
+            transition: transform 0.2s ease;
+        }
+        
+        .agronomy-card:active { transform: scale(0.98); }
+
+        .plant-stamp {
+            width: 70px;
+            height: 70px;
+            border-radius: 10px;
+            border: 2px dashed white;
+            object-fit: cover;
+            background: var(--bubble-glass);
+            flex-shrink: 0;
+            box-shadow: 0 0 5px var(--mermaid-aqua);
+        }
+
+        .plant-info {
+            flex: 1;
+        }
+
+        .plant-name {
+            font-weight: 700;
+            color: var(--deep-sea);
+            font-size: 0.95rem;
+            margin-bottom: 3px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-shadow: 1px 1px 0px white;
+        }
+
+        .plant-toxicity {
+            font-size: 0.85rem;
+            filter: drop-shadow(1px 1px 0px white);
+        }
+
+        .plant-tag {
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 10px;
+            display: inline-block;
+            margin-bottom: 5px;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.5);
+        }
+
+        .tag-max { background: linear-gradient(135deg, #00f0ff, #00d084); }
+        .tag-shade { background: linear-gradient(135deg, #ffb347, #ff85c2); }
+        .tag-sanctuary { background: linear-gradient(135deg, #a8a8a8, #7a7a7a); }
+        
+        .plant-reason {
+            font-size: 0.75rem;
+            color: var(--deep-sea);
+            line-height: 1.25;
+            text-shadow: 1px 1px 0px rgba(255,255,255,0.8);
+        }
+
         .minutely-grid { display: flex; width: 100%; justify-content: space-between; gap: 5px; margin-top: 5px; }
         .minutely-col { flex: 1; background: var(--bubble-glass); border-radius: 10px; padding: 8px 2px; font-size: 0.75rem; border: 1px dotted white; box-shadow: inset 1px 1px 5px rgba(255,255,255,0.5); }
         .minutely-time { font-weight: 700; color: var(--moe-pink); margin-bottom: 3px; text-shadow: 1px 1px 0px white;}
@@ -488,6 +570,8 @@
                     <div class="vibe-title" style="margin-top: 15px; font-size: 1rem;">💧 Ambient Air Check</div>
                     <div class="vibe-desc" id="flora-humidity-guide">Checking moisture...</div>
                 </div>
+
+                <div id="agronomy-list"></div>
             </div>
 
             <div class="bottom-nav">
@@ -732,7 +816,6 @@
             }
         }
 
-        // ✨ HYPER-SENSITIVE DIORAMA LOGIC ✨
         function setAtmosphereScanner(low, mid, high, totalCover, isDay) {
             const box = document.getElementById('diorama-box');
             const scannerOutput = document.getElementById('cloud-scanner-output');
@@ -776,7 +859,6 @@
             }
         }
 
-        // ✨ SEARCH LOGIC ✨
         function handleSearchKeyPress(event) {
             if (event.key === "Enter") {
                 searchLocation();
@@ -808,7 +890,35 @@
             }
         }
 
-        // ✨ MAIN DATA FETCH FUNCTION ✨
+        // ✨ THE AGRONOMY RENDERER ✨
+        function renderAgronomy(engineData) {
+            const container = document.getElementById('agronomy-list');
+            
+            // Start with the Hardiness Zone Header
+            container.innerHTML = `<div class="zone-header">📍 Est. Hardiness Zone: ${engineData.zone.zone}</div>`;
+            
+            // Loop through all scored plants and build their cards
+            engineData.recommendations.forEach(res => {
+                let tagClass = "tag-sanctuary";
+                if (res.status === "Maximum Vibe") tagClass = "tag-max";
+                if (res.status === "Shaded Canopy") tagClass = "tag-shade";
+
+                let toxIcon = res.plant.toxic_pets ? "💀🐾" : "🌿🐾";
+
+                container.innerHTML += `
+                    <div class="agronomy-card">
+                        <img src="${res.plant.stamp_img}" alt="${res.plant.name}" class="plant-stamp" onerror="this.src='https://i.postimg.cc/Fs9tVbff/d1fbe1c35c32494c9290ebf699c16fc6.jpg'">
+                        
+                        <div class="plant-info">
+                            <div class="plant-name">${res.plant.name} <span class="plant-toxicity">${toxIcon}</span></div>
+                            <div class="plant-tag ${tagClass}">${res.tag}</div>
+                            <div class="plant-reason">${res.reason}</div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
         async function fetchWeatherData(latitude, longitude) {
             try {
                 let sunsetUtc = null;
@@ -1005,6 +1115,28 @@
                     }
                 }
 
+                // ✨ TRIGGER THE AGRONOMY ENGINE ✨
+                if (window.ClimateEngine && window.floraDB) {
+                    // Pull exact 7-day data blocks needed for the gauntlet
+                    const weekTempsMin = daily.temperature_2m_min;
+                    const weekTempsMax = daily.temperature_2m_max;
+                    const maxWind = Math.max(...daily.wind_gusts_10m_max);
+                    const rainTotal = daily.precipitation_sum.reduce((a, b) => a + b, 0);
+                    
+                    // Approximate the weekly average temp
+                    const avgTemp = (weekTempsMin.reduce((a, b) => a + b, 0) + weekTempsMax.reduce((a, b) => a + b, 0)) / 14;
+                    const avgHumidity = currentHumidity; // Using current baseline
+                    const moonPhaseStr = moonData.phaseInfo.n;
+
+                    const agronomyResults = window.ClimateEngine.runAnalysis(
+                        latitude, longitude, weekTempsMin, weekTempsMax, maxWind, avgTemp, avgHumidity, rainTotal, moonPhaseStr
+                    );
+
+                    renderAgronomy(agronomyResults);
+                } else {
+                    document.getElementById('agronomy-list').innerHTML = "<p style='font-size:0.8rem; color:var(--deep-sea); text-align:center;'>Waiting for flora_db.js and climate_db.js... 🫧</p>";
+                }
+
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('weather-content').style.display = 'block';
             } catch (error) {
@@ -1012,7 +1144,6 @@
             }
         }
 
-        // ✨ INITIAL FETCH LOGIC ✨
         async function fetchWeather(overrideLat = null, overrideLon = null, customName = null) {
             document.getElementById('loading').style.display = 'block';
             document.getElementById('weather-content').style.display = 'none';
@@ -1062,4 +1193,3 @@
     </script>
 </body>
 </html>
-
