@@ -1012,27 +1012,29 @@
                 }
                 document.getElementById('aqi-score').innerText = aqiStatus;
 
-                const current = data.current;
-                const daily = data.daily;
-                const hourly = data.hourly;
+                // Ensure data.current exists to prevent crash
+                const current = data.current || {};
+                const daily = data.daily || {};
+                const hourly = data.hourly || {};
 
-                const currentTemp = Math.round(current.temperature_2m);
+                const currentTemp = Math.round(current.temperature_2m || 50);
                 document.getElementById('temp').innerText = currentTemp + "°";
-                document.getElementById('wind').innerText = Math.round(current.wind_speed_10m);
-                document.getElementById('gusts').innerText = Math.round(current.wind_gusts_10m);
+                document.getElementById('wind').innerText = Math.round(current.wind_speed_10m || 0);
+                document.getElementById('gusts').innerText = Math.round(current.wind_gusts_10m || 0);
                 
-                const currentHumidity = current.relative_humidity_2m;
+                const currentHumidity = current.relative_humidity_2m || 50;
                 document.getElementById('humidity').innerText = currentHumidity; 
                 setFloraVibe(currentHumidity);
-                document.getElementById('dewpoint').innerText = Math.round(current.dew_point_2m);
+                document.getElementById('dewpoint').innerText = Math.round(current.dew_point_2m || 50);
                 
-                const visMiles = (current.visibility / 1609.34).toFixed(1);
+                const visMiles = current.visibility ? (current.visibility / 1609.34).toFixed(1) : "--";
                 document.getElementById('visibility').innerText = visMiles;
                 
                 const currentHourIndex = new Date().getHours();
                 const pastPressureIndex = Math.max(0, currentHourIndex - 3); 
-                const pastPressure = hourly.surface_pressure[pastPressureIndex];
-                const pressureDiff = current.surface_pressure - pastPressure;
+                const pastPressure = (hourly.surface_pressure && hourly.surface_pressure.length > pastPressureIndex) ? hourly.surface_pressure[pastPressureIndex] : 0;
+                const currentPressure = current.surface_pressure || 0;
+                const pressureDiff = currentPressure - pastPressure;
                 
                 let trendIcon = "〰️"; 
                 if (pressureDiff <= -2.0) trendIcon = "📉 (Storm Drop!)";
@@ -1040,18 +1042,18 @@
                 else if (pressureDiff >= 2.0) trendIcon = "📈 (Clearing!)";
                 else if (pressureDiff >= 0.5) trendIcon = "📈";
                 
-                const pressureInHg = (current.surface_pressure * 0.02953).toFixed(2);
+                const pressureInHg = (currentPressure * 0.02953).toFixed(2);
                 document.getElementById('pressure').innerText = `${pressureInHg} ${trendIcon}`;
 
                 setVibeIndex(currentTemp);
                 
-                const currentCode = current.weather_code;
+                const currentCode = current.weather_code || 0;
                 document.getElementById('status').innerText = `${weatherDescriptions[currentCode] || "Vibing"} ${weatherMoji[currentCode] || "✨"}`;
 
-                const myRealFeel = customRealFeel(current.temperature_2m, current.wind_speed_10m, current.relative_humidity_2m);
+                const myRealFeel = customRealFeel(currentTemp, current.wind_speed_10m || 0, currentHumidity);
                 document.getElementById('apparent').innerText = myRealFeel;
 
-                const currentUV = Math.round(current.uv_index);
+                const currentUV = Math.round(current.uv_index || 0);
                 document.getElementById('uv-number').innerText = currentUV;
                 document.getElementById('uv-text').innerText = getUVSpeech(currentUV);
 
@@ -1062,15 +1064,15 @@
 
                 const isDaytime = current.is_day === 1;
                 setAtmosphereScanner(
-                    current.cloud_cover_low, 
-                    current.cloud_cover_mid, 
-                    current.cloud_cover_high, 
-                    current.cloud_cover, 
+                    current.cloud_cover_low || 0, 
+                    current.cloud_cover_mid || 0, 
+                    current.cloud_cover_high || 0, 
+                    current.cloud_cover || 0, 
                     isDaytime
                 );
 
                 const isNight = current.is_day === 0;
-                setNightSkyClarity(isNight, current.cloud_cover);
+                setNightSkyClarity(isNight, current.cloud_cover || 0);
 
                 // ✨ FAILSAFE 2: Safe handling of missing Minutely Precipitation Data
                 const minList = document.getElementById('minutely-list');
@@ -1170,6 +1172,7 @@
                     }
                 }
 
+                // ✨ TRIGGER THE AGRONOMY ENGINE WITH FULL DAILY DATA ✨
                 if (window.ClimateEngine && window.floraDB) {
                     const rainTotal = safeDailyPrecipSum.reduce((a, b) => a + b, 0);
                     const avgTemp = (safeDailyTempsMin.reduce((a, b) => a + b, 0) + safeDailyTempsMax.reduce((a, b) => a + b, 0)) / 14;
