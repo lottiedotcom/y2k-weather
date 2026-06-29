@@ -376,22 +376,28 @@
         .minutely-time { font-weight: 700; color: var(--moe-pink); margin-bottom: 3px; text-shadow: 1px 1px 0px white;}
         .minutely-val { font-weight: 700; text-shadow: 1px 1px 0px white; }
 
+        /* ✨ UPDATED: HOURLY CARDS TO STACK PRECIPITATION ✨ */
         .hourly-container { display: flex; overflow-x: auto; gap: 10px; padding-bottom: 10px; margin-bottom: 15px; }
-        .hourly-box { min-width: 65px; background: var(--inner-bubble); border: 2px solid white; border-radius: 20px; padding: 10px; display: flex; flex-direction: column; align-items: center; box-shadow: 2px 2px 8px rgba(0, 240, 255, 0.15); }
+        .hourly-box { min-width: 65px; background: var(--inner-bubble); border: 2px solid white; border-radius: 20px; padding: 10px 5px; display: flex; flex-direction: column; align-items: center; box-shadow: 2px 2px 8px rgba(0, 240, 255, 0.15); }
         .hourly-time { font-size: 0.85rem; color: var(--moe-pink); text-shadow: 1px 1px 0px white; margin-bottom: 3px; font-weight: 700;}
         .hourly-icon { font-size: 1.3rem; filter: drop-shadow(2px 2px 0px white); margin: 3px 0; }
-        .hourly-temp { font-size: 1.1rem; font-weight: 700; color: var(--mermaid-aqua); text-shadow: 1px 1px 0px white; margin-top: 3px; }
-        .hourly-precip { font-size: 0.75rem; color: var(--deep-sea); font-weight: 700; margin-top: 3px; text-shadow: 1px 1px 0px white;}
+        .hourly-temp { font-size: 1.1rem; font-weight: 700; color: var(--mermaid-aqua); text-shadow: 1px 1px 0px white; margin-top: 3px; margin-bottom: 5px; }
+        .hourly-precip { font-size: 0.75rem; color: var(--deep-sea); font-weight: 700; line-height: 1.3; text-shadow: 1px 1px 0px white; margin-top: 2px; }
 
+        /* ✨ UPDATED: FORECAST ROWS FOR SPLIT COLUMNS ✨ */
         .forecast-title { font-size: 1.3rem; margin: 15px 0 10px 0; color: white; font-weight: 700; text-shadow: 2px 2px var(--mermaid-aqua), -1px -1px var(--moe-pink); border-bottom: 3px dotted white; padding-bottom: 5px; }
         .forecast-item { display: flex; flex-direction: column; background: var(--inner-bubble); margin-bottom: 10px; border-radius: 25px; border: 2px solid white; box-shadow: 2px 2px 8px rgba(0, 240, 255, 0.1); cursor: pointer; transition: transform 0.2s ease; }
         .forecast-item:active { transform: scale(0.98); }
-        .forecast-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 18px; font-size: 1rem; font-weight: 700; color: var(--deep-sea); text-shadow: 1px 1px 0px white; }
-        .forecast-day { width: 55px; text-align: left; color: var(--moe-pink); font-weight: 700;}
+        .forecast-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; font-size: 0.95rem; font-weight: 700; color: var(--deep-sea); text-shadow: 1px 1px 0px white; }
+        .forecast-day { width: 50px; text-align: left; color: var(--moe-pink); font-weight: 700;}
         .forecast-icon { font-size: 1.3rem; filter: drop-shadow(2px 2px 0px white); }
-        .forecast-rain { font-size: 0.85rem; color: var(--mermaid-aqua); width: 45px; text-align: center; }
-        .forecast-temps { width: 80px; text-align: right; }
-        .min-temp { color: var(--mermaid-aqua); font-size: 0.9rem; margin-left: 5px;}
+        
+        .forecast-chance { width: 50px; text-align: center; color: var(--moe-pink); font-size: 0.85rem;}
+        .forecast-volume { width: 50px; text-align: center; color: var(--mermaid-aqua); font-size: 0.85rem;}
+        
+        .forecast-temps { width: 70px; text-align: right; }
+        .min-temp { color: var(--mermaid-aqua); font-size: 0.85rem; margin-left: 5px;}
+        
         .forecast-details { display: none; padding: 0 18px 15px 18px; font-size: 0.85rem; text-align: left; border-top: 2px dotted rgba(255, 255, 255, 0.5); margin-top: 5px; padding-top: 10px; }
         .forecast-details p { margin: 4px 0; color: var(--moe-pink); text-shadow: 1px 1px 0px white; }
         .forecast-details span { color: var(--deep-sea); }
@@ -920,7 +926,6 @@
             }
         }
 
-        // ✨ THE AGRONOMY RENDERER WITH EXPANSION ✨
         function renderAgronomy(engineData) {
             const container = document.getElementById('agronomy-list');
             
@@ -977,7 +982,6 @@
                 const response = await fetch(weatherUrl);
                 const data = await response.json();
                 
-                // ✨ FAILSAFE 1: Handle Missing AQI Data Safely
                 let aqiData = null;
                 let aqiStatus = "-- (No Data)", pm25Status = "--", pm10Status = "--", ozoneStatus = "--";
                 try {
@@ -1012,7 +1016,6 @@
                 }
                 document.getElementById('aqi-score').innerText = aqiStatus;
 
-                // Ensure data.current exists to prevent crash
                 const current = data.current || {};
                 const daily = data.daily || {};
                 const hourly = data.hourly || {};
@@ -1074,7 +1077,6 @@
                 const isNight = current.is_day === 0;
                 setNightSkyClarity(isNight, current.cloud_cover || 0);
 
-                // ✨ FAILSAFE 2: Safe handling of missing Minutely Precipitation Data
                 const minList = document.getElementById('minutely-list');
                 minList.innerHTML = '';
                 
@@ -1106,6 +1108,7 @@
                     minList.innerHTML = `<div style="width:100%; text-align:center; padding:10px; color:var(--deep-sea); font-size:0.8rem; font-weight:700;">No minutely radar available for this zone 🫧</div>`;
                 }
 
+                // ✨ UPDATED: HOURLY LOOP WITH SPLIT PRECIPITATION STACK ✨
                 const hourlyList = document.getElementById('hourly-list');
                 hourlyList.innerHTML = '';
                 if (hourly && hourly.temperature_2m) {
@@ -1116,23 +1119,22 @@
                         const hTime = getMathematicalHour(i);
                         const hTemp = Math.round(hourly.temperature_2m[dataIdx]);
                         const hIcon = weatherMoji[hourly.weather_code[dataIdx]] || "✨";
-                        const hPop = hourly.precipitation_probability[dataIdx];
-                        const hPrecip = hourly.precipitation[dataIdx];
-                        
-                        let precipText = hPrecip > 0 ? `💧 ${hPrecip}"` : `💧 ${hPop}%`; 
+                        const hPop = hourly.precipitation_probability[dataIdx] || 0;
+                        const hPrecip = hourly.precipitation[dataIdx] || 0;
                         
                         hourlyList.innerHTML += `
                             <div class="hourly-box">
                                 <div class="hourly-time">${hTime}</div>
                                 <div class="hourly-icon">${hIcon}</div>
                                 <div class="hourly-temp">${hTemp}°</div>
-                                <div class="hourly-precip">${precipText}</div>
+                                <div class="hourly-precip">☂️ ${hPop}%</div>
+                                <div class="hourly-precip">💧 ${hPrecip}"</div>
                             </div>
                         `;
                     }
                 }
 
-                // ✨ FAILSAFE 3: Safely Default Missing Daily Data
+                // ✨ UPDATED: DAILY LOOP WITH DEDICATED COLUMNS & SMART TEXT ✨
                 const forecastList = document.getElementById('forecast-list');
                 forecastList.innerHTML = ''; 
                 
@@ -1152,18 +1154,26 @@
                         const uvMax = Math.round((daily.uv_index_max && daily.uv_index_max[i]) ? daily.uv_index_max[i] : 0);
                         const windMax = Math.round((daily.wind_speed_10m_max && daily.wind_speed_10m_max[i]) ? daily.wind_speed_10m_max[i] : 0);
 
-                        let rainDisplay = rainTotal > 0 ? `${rainTotal}"` : `${rainPop}%`;
+                        // Smart Text Logic for Rain Analysis
+                        let smartRainText = "No precipitation expected today.";
+                        if (rainPop > 0) {
+                            if (rainPop > 70 && rainTotal > 0.5) smartRainText = "Heavy, sustained rain expected today.";
+                            else if (rainPop < 40 && rainTotal > 0.2) smartRainText = "Low overall chance, but potential for sudden heavy downpours.";
+                            else if (rainPop > 60 && rainTotal < 0.1) smartRainText = "High chance of very light, passing mist or drizzle.";
+                            else if (rainTotal > 0) smartRainText = "Standard scattered showers expected.";
+                        }
 
                         forecastList.innerHTML += `
                             <div class="forecast-item" onclick="toggleDetails(this)">
                                 <div class="forecast-row">
                                     <div class="forecast-day">${dayName}</div>
                                     <div class="forecast-icon">${emoji}</div>
-                                    <div class="forecast-rain">💧 ${rainDisplay}</div>
+                                    <div class="forecast-chance">☂️ ${rainPop}%</div>
+                                    <div class="forecast-volume">💧 ${rainTotal}"</div>
                                     <div class="forecast-temps">${maxTemp}° <span class="min-temp">${minTemp}°</span></div>
                                 </div>
                                 <div class="forecast-details">
-                                    <p>🌧️ <span>Max Chance of Rain:</span> ${rainPop}%</p>
+                                    <p>🌧️ <span>Analysis:</span> ${smartRainText}</p>
                                     <p>🌬️ <span>Highest Wind:</span> ${windMax} mph</p>
                                     <p>🧴 <span>Peak UV Index:</span> ${uvMax}</p>
                                 </div>
@@ -1172,7 +1182,6 @@
                     }
                 }
 
-                // ✨ TRIGGER THE AGRONOMY ENGINE WITH FULL DAILY DATA ✨
                 if (window.ClimateEngine && window.floraDB) {
                     const rainTotal = safeDailyPrecipSum.reduce((a, b) => a + b, 0);
                     const avgTemp = (safeDailyTempsMin.reduce((a, b) => a + b, 0) + safeDailyTempsMax.reduce((a, b) => a + b, 0)) / 14;
