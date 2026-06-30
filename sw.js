@@ -1,7 +1,7 @@
 const CACHE_NAME = 'mermaid-weather-v1';
 const urlsToCache = [
-  '/y2k-weather/',
-  '/y2k-weather/index.html'
+  '/Weather/',
+  '/Weather/index.html'
 ];
 
 self.addEventListener('install', event => {
