@@ -244,7 +244,7 @@ const floraDB = {
     // ==========================================
     // (Add Alocasias, Philodendrons, Syngoniums here)
     "syngonium_podophyllum": {
-        name: "Arrowhead Vine",
+        name: "Arrowhead Plant - Syngonium podophyllum",
         type: "Tropical Aroid",
         temp_floor: 50,        // Leaves will suffer severe cold damage below this
         temp_ceiling: 95,      // Will wilt and stress in extreme heat
