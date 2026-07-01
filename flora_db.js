@@ -254,7 +254,7 @@ const floraDB = {
         wind_tolerance: 10,    // Thin leaves tear easily in heavy gusts
         toxic_pets: true,      // Highly toxic to cats!
         lunar_affinity: "waxing", // Responds well to upward sap flow for new leaves
-        stamp_img: "arrowhead.jpg", // The name of the stamp you'll draw for it!
+        stamp_img: "arrowhead.png", // The name of the stamp you'll draw for it!
         vpd_range: [0.8, 1.2], // Optimal drying pressure for aroids
         pest_risk: "spider_mites" // Extremely vulnerable to mites if the air gets too dry
     },
