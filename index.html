@@ -13,6 +13,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&display=swap" rel="stylesheet">
 
+    <!-- 🌿 LOAD THE AGRONOMY ENGINE & FLORA DATABASE 🌿 -->
     <script src="flora_db.js"></script>
     <script src="climate_db.js"></script>
 
@@ -257,7 +258,7 @@
         #cloud-scanner-output { font-size: 0.85rem; color: var(--deep-sea); margin-top: 15px; line-height: 1.4; width: 100%; text-align: center; border-top: 2px dotted rgba(255,255,255,0.5); padding-top: 10px; }
         .uv-message { font-size: 0.9rem; color: var(--moe-pink); margin-top: 5px; font-weight: 700;}
 
-        /* ✨ AGRONOMY LIST STYLES ✨ */
+        /* ✨ AGRONOMY LIST STYLES WITH HELP BUTTONS ✨ */
         .zone-header {
             font-size: 0.85rem;
             color: var(--moe-pink);
@@ -318,13 +319,20 @@
             filter: drop-shadow(1px 1px 0px white);
         }
 
+        .tag-container {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 6px;
+            flex-wrap: wrap;
+        }
+
         .plant-tag {
             font-size: 0.65rem;
             font-weight: 700;
             padding: 4px 8px;
             border-radius: 10px;
-            display: inline-block;
-            margin-bottom: 6px;
+            display: inline-flex;
+            align-items: center;
             color: white;
             text-transform: uppercase;
             letter-spacing: 1px;
@@ -333,9 +341,29 @@
             border: 1px solid rgba(255,255,255,0.5);
         }
 
+        /* Help Button CSS */
+        .help-btn {
+            background: rgba(255,255,255,0.4);
+            border-radius: 50%;
+            width: 15px;
+            height: 15px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.6rem;
+            cursor: help;
+            border: 1px solid white;
+            margin-left: 6px;
+            color: var(--deep-sea);
+            text-shadow: none;
+            transition: 0.2s ease;
+        }
+        .help-btn:active { background: white; transform: scale(0.9); }
+
         .tag-max { background: linear-gradient(135deg, #00f0ff, #00d084); }
         .tag-shade { background: linear-gradient(135deg, #ffb347, #ff85c2); }
         .tag-sanctuary { background: linear-gradient(135deg, #a8a8a8, #7a7a7a); }
+        .tag-action { background: linear-gradient(135deg, #ff9a9e, #fecfef); color: var(--deep-sea); text-shadow: 1px 1px 0px white; border-color: white;}
         
         .plant-reason {
             font-size: 0.75rem;
@@ -376,7 +404,6 @@
         .minutely-time { font-weight: 700; color: var(--moe-pink); margin-bottom: 3px; text-shadow: 1px 1px 0px white;}
         .minutely-val { font-weight: 700; text-shadow: 1px 1px 0px white; }
 
-        /* ✨ UPDATED: HOURLY CARDS TO STACK PRECIPITATION ✨ */
         .hourly-container { display: flex; overflow-x: auto; gap: 10px; padding-bottom: 10px; margin-bottom: 15px; }
         .hourly-box { min-width: 65px; background: var(--inner-bubble); border: 2px solid white; border-radius: 20px; padding: 10px 5px; display: flex; flex-direction: column; align-items: center; box-shadow: 2px 2px 8px rgba(0, 240, 255, 0.15); }
         .hourly-time { font-size: 0.85rem; color: var(--moe-pink); text-shadow: 1px 1px 0px white; margin-bottom: 3px; font-weight: 700;}
@@ -384,7 +411,6 @@
         .hourly-temp { font-size: 1.1rem; font-weight: 700; color: var(--mermaid-aqua); text-shadow: 1px 1px 0px white; margin-top: 3px; margin-bottom: 5px; }
         .hourly-precip { font-size: 0.75rem; color: var(--deep-sea); font-weight: 700; line-height: 1.3; text-shadow: 1px 1px 0px white; margin-top: 2px; }
 
-        /* ✨ UPDATED: FORECAST ROWS FOR SPLIT COLUMNS ✨ */
         .forecast-title { font-size: 1.3rem; margin: 15px 0 10px 0; color: white; font-weight: 700; text-shadow: 2px 2px var(--mermaid-aqua), -1px -1px var(--moe-pink); border-bottom: 3px dotted white; padding-bottom: 5px; }
         .forecast-item { display: flex; flex-direction: column; background: var(--inner-bubble); margin-bottom: 10px; border-radius: 25px; border: 2px solid white; box-shadow: 2px 2px 8px rgba(0, 240, 255, 0.1); cursor: pointer; transition: transform 0.2s ease; }
         .forecast-item:active { transform: scale(0.98); }
@@ -596,6 +622,7 @@
                 </div>
             </div>
 
+            <!-- ✨ THE FLORA TAB WITH AGRONOMY ENGINE ✨ -->
             <div id="tab-flora" class="tab-section">
                 <div class="wide-box">
                     <div class="celestial-title">🌱 Botanical Station 🌱</div>
@@ -926,8 +953,8 @@
             }
         }
 
-        // ✨ NEW LOGIC: Dynamic Tags & Split Stat Breakdowns ✨
-        function renderAgronomy(engineData, currentHumidity, currentMoon) {
+        // ✨ THE AGRONOMY RENDERER WITH DOUBLE TAGS & TOOLTIPS ✨
+        function renderAgronomy(engineData) {
             const container = document.getElementById('agronomy-list');
             
             container.innerHTML = `<div class="zone-header">📍 Est. Hardiness Zone: ${engineData.zone.zone}</div>`;
@@ -936,39 +963,9 @@
                 let toxIcon = res.plant.toxic_pets ? "💀🐾" : "🌿🐾";
                 let waterText = res.plant.water_frequency.replace('_', ' ');
 
-                let actionTag = "MONITOR"; 
-                let actionReason = res.reason; 
-
-                // 🔮 The Tech-Witch Atmosphere Scrying
-                if (currentMoon.includes("Waning") && currentHumidity > 55) {
-                    actionTag = "PLANT IN SOIL";
-                    actionReason = "High ambient moisture and a waning moon pulling energy to the roots makes this the perfect time to move rooted cuttings directly into potting mix without shocking them.";
-                } 
-                else if (currentMoon.includes("New Moon")) {
-                    actionTag = "WAIT TO PRUNE";
-                    actionReason = "Sap flow is slow and plants are resting. It's a great time to take fresh cuttings for water propagation, but wait to do any heavy pruning.";
-                }
-                else if (currentMoon.includes("Waxing") && currentHumidity < 40) {
-                    actionTag = "WATER PROPAGATION";
-                    actionReason = "Moisture is pulling up into the leaves, but the air is dry! Top off your water propagation jars and mist any delicate aerial roots.";
-                }
-                else if (currentMoon.includes("Full Moon")) {
-                    actionTag = "OPTIMAL SOWING";
-                    actionReason = "Maximum lunar pull! Soil moisture absorption is at its absolute peak. Soak your seeds and get them in the dirt today.";
-                }
-
-                let weatherTagClass = "tag-max";
-                if (res.status === "Shaded Canopy") weatherTagClass = "tag-shade";
-                if (res.status === "Sanctuary") weatherTagClass = "tag-sanctuary";
-                
-                let weatherStatus = res.status.toUpperCase();
-                if (weatherStatus === "MAXIMUM VIBE") weatherStatus = "7-DAY CLEAR";
-
-                // Temporary placeholders until your database officially outputs them!
-                let tempScore = res.temp_score || 9;
-                let moistScore = res.moisture_score || 8;
-                let lunarScore = res.lunar_score || 10;
-                let overallScore = res.score || 100;
+                // Cleanse quotes so the alert() works perfectly
+                let pTip = res.primaryTooltip.replace(/'/g, "\\'");
+                let sTip = res.secondaryTooltip.replace(/'/g, "\\'");
 
                 container.innerHTML += `
                     <div class="agronomy-card" onclick="this.classList.toggle('expanded')">
@@ -977,27 +974,26 @@
                         <div class="plant-info">
                             <div class="plant-name">${res.plant.name} <span class="plant-toxicity">${toxIcon}</span></div>
                             
-                            <div style="display: flex; gap: 6px; margin-bottom: 8px; flex-wrap: wrap;">
-                                <div class="plant-tag ${weatherTagClass}">${weatherStatus}</div>
-                                <div class="plant-tag tag-shade">${actionTag}</div>
-                            </div>
-                            
-                            <div class="plant-reason" style="margin-bottom: 6px;">
-                                <strong style="color: var(--mermaid-aqua); font-size: 0.9rem;">Overall Match: ${overallScore}/100</strong>
-                                <div style="font-size: 0.75rem; color: var(--moe-pink); font-weight: 700; margin-top: 3px; letter-spacing: 0.5px;">
-                                    🌡️ TMP: ${tempScore}/10 &nbsp;|&nbsp; 💧 MST: ${moistScore}/10 &nbsp;|&nbsp; 🌕 LNR: ${lunarScore}/10
+                            <div class="tag-container">
+                                <div class="plant-tag ${res.tagClass}">
+                                    ${res.primaryTag}
+                                    <span class="help-btn" title="${res.primaryTooltip}" onclick="event.stopPropagation(); alert('${pTip}')">?</span>
+                                </div>
+                                <div class="plant-tag tag-action">
+                                    ${res.secondaryTag}
+                                    <span class="help-btn" title="${res.secondaryTooltip}" onclick="event.stopPropagation(); alert('${sTip}')">?</span>
                                 </div>
                             </div>
                             
-                            <div class="plant-reason" style="border-top: 1px dotted rgba(255,255,255,0.5); padding-top: 6px; margin-top: 4px;">
-                                ${actionReason}
-                            </div>
+                            <div class="plant-reason">${res.reason}</div>
                             
                             <div class="plant-details-hidden">
+                                <div class="plant-stat-row"><span>💧 Live VPD:</span> ${res.liveVPD} kPa</div>
                                 <div class="plant-stat-row"><span>🌡️ Temp Limits:</span> ${res.plant.temp_floor}°F to ${res.plant.temp_ceiling}°F</div>
                                 <div class="plant-stat-row"><span>🌸 Ideal Temp:</span> ${res.plant.optimal_temp[0]}°F to ${res.plant.optimal_temp[1]}°F</div>
                                 <div class="plant-stat-row"><span>💧 Water Needs:</span> ${waterText.toUpperCase()}</div>
                                 <div class="plant-stat-row"><span>🌬️ Max Wind:</span> ${res.plant.wind_tolerance} mph</div>
+                                <div class="plant-stat-row"><span>🌕 Lunar Boost:</span> ${res.plant.lunar_affinity.toUpperCase()}</div>
                             </div>
                         </div>
                     </div>
@@ -1204,6 +1200,8 @@
                             else if (rainTotal > 0) smartRainText = "Standard scattered showers expected.";
                         }
 
+                        let rainDisplay = rainTotal > 0 ? `${rainTotal}"` : `${rainPop}%`;
+
                         forecastList.innerHTML += `
                             <div class="forecast-item" onclick="toggleDetails(this)">
                                 <div class="forecast-row">
@@ -1223,18 +1221,15 @@
                     }
                 }
 
-                // ✨ We pass the humidity and moon phase directly into renderAgronomy here!
                 if (window.ClimateEngine && window.floraDB) {
                     const rainTotal = safeDailyPrecipSum.reduce((a, b) => a + b, 0);
-                    const avgTemp = (safeDailyTempsMin.reduce((a, b) => a + b, 0) + safeDailyTempsMax.reduce((a, b) => a + b, 0)) / 14;
-                    const avgHumidity = currentHumidity; 
                     const moonPhaseStr = moonData.phaseInfo.n;
 
                     const agronomyResults = window.ClimateEngine.runAnalysis(
-                        latitude, longitude, safeDailyTempsMin, safeDailyTempsMax, safeDailyGusts, avgTemp, avgHumidity, rainTotal, moonPhaseStr
+                        latitude, longitude, safeDailyTempsMin, safeDailyTempsMax, safeDailyGusts, currentTemp, currentHumidity, rainTotal, moonPhaseStr
                     );
 
-                    renderAgronomy(agronomyResults, avgHumidity, moonPhaseStr);
+                    renderAgronomy(agronomyResults);
                 } else {
                     document.getElementById('agronomy-list').innerHTML = "<p style='font-size:0.8rem; color:var(--deep-sea); text-align:center;'>Waiting for flora_db.js and climate_db.js... 🫧</p>";
                 }
