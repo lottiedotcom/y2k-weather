@@ -12,6 +12,15 @@ const ClimateEngine = {
         return { zone: "1-3", frostRisk: "Extreme (Sep-May)", season: "Arctic/Sub-Arctic" };
     },
 
+    // 🗓️ NEW: Calendar Tracker for Seasonal Profiles (Northern Hemisphere)
+    getCurrentSeason: function() {
+        const month = new Date().getMonth(); // 0 = Jan, 11 = Dec
+        if (month >= 2 && month <= 4) return "spring";
+        if (month >= 5 && month <= 7) return "summer";
+        if (month >= 8 && month <= 10) return "fall";
+        return "winter";
+    },
+
     calculateVPD: function(tempF, humidity) {
         const tempC = (tempF - 32) * (5/9);
         const svp = 0.61078 * Math.exp((17.27 * tempC) / (tempC + 237.3));
@@ -61,33 +70,49 @@ const ClimateEngine = {
         }
 
         const zoneData = this.getHardinessZone(lat);
+        const currentSeason = this.getCurrentSeason();
         const results = [];
         const currentVPD = this.calculateVPD(currentTemp, currentHumidity);
 
-        for (const [id, plant] of Object.entries(window.floraDB)) {
+        for (const [id, originalPlant] of Object.entries(window.floraDB)) {
+            
+            // 🧬 CLONE THE PLANT: This lets us safely inject seasonal stats 
+            // without permanently overwriting the main database.
+            let activePlant = JSON.parse(JSON.stringify(originalPlant));
+
+            // 🍂 SEASONAL OVERRIDE INJECTION
+            if (activePlant.seasons && activePlant.seasons[currentSeason]) {
+                const seasonStats = activePlant.seasons[currentSeason];
+                if (seasonStats.optimal_temp) activePlant.optimal_temp = seasonStats.optimal_temp;
+                if (seasonStats.water_frequency) activePlant.water_frequency = seasonStats.water_frequency;
+                if (seasonStats.water_schedule) activePlant.water_schedule = seasonStats.water_schedule;
+                if (seasonStats.min_humidity) activePlant.min_humidity = seasonStats.min_humidity;
+                if (seasonStats.vpd_range) activePlant.vpd_range = seasonStats.vpd_range;
+            }
+
             let safeDays = [];
             dailyGusts.forEach((gust, index) => {
-                if (gust <= plant.wind_tolerance) safeDays.push(index);
+                if (gust <= activePlant.wind_tolerance) safeDays.push(index);
             });
 
             let worstGust = Math.max(...dailyGusts);
-            const survival = this.checkLethalGates(plant, weekTempsMin, weekTempsMax, worstGust);
-            let comfortScore = this.scoreComfort(plant, currentTemp, currentHumidity, rainTotal);
+            const survival = this.checkLethalGates(activePlant, weekTempsMin, weekTempsMax, worstGust);
+            let comfortScore = this.scoreComfort(activePlant, currentTemp, currentHumidity, rainTotal);
 
             let isWaxing = moonPhaseStr.includes("Waxing") || moonPhaseStr.includes("New") || moonPhaseStr.includes("1st Quarter");
             let isWaning = moonPhaseStr.includes("Waning") || moonPhaseStr.includes("Full") || moonPhaseStr.includes("Last Quarter");
             let currentAffinity = isWaxing ? "waxing" : (isWaning ? "waning" : "neutral");
 
-            if (plant.lunar_affinity === currentAffinity) {
+            if (activePlant.lunar_affinity === currentAffinity) {
                 comfortScore = Math.min(100, Math.round(comfortScore * 1.25)); 
             }
 
             // 🐛 MULTI-PEST FALLBACK LOGIC
-            let pData = plant.pest_risks || { dry: [], wet: [], general: [] };
-            if (plant.pest_risk) { 
-                if (plant.pest_risk.includes("mites") || plant.pest_risk.includes("white")) pData.dry = [plant.pest_risk];
-                else if (plant.pest_risk.includes("slugs") || plant.pest_risk.includes("gnats")) pData.wet = [plant.pest_risk];
-                else pData.general = [plant.pest_risk];
+            let pData = activePlant.pest_risks || { dry: [], wet: [], general: [] };
+            if (activePlant.pest_risk) { 
+                if (activePlant.pest_risk.includes("mites") || activePlant.pest_risk.includes("white")) pData.dry = [activePlant.pest_risk];
+                else if (activePlant.pest_risk.includes("slugs") || activePlant.pest_risk.includes("gnats")) pData.wet = [activePlant.pest_risk];
+                else pData.general = [activePlant.pest_risk];
             }
 
             // 🌍 PRIMARY TAG LOGIC
@@ -96,7 +121,7 @@ const ClimateEngine = {
             let tagClass = "";
             let reason = "";
 
-            if (!survival.pass || worstGust >= plant.wind_tolerance + 10) {
+            if (!survival.pass || worstGust >= activePlant.wind_tolerance + 10) {
                 primaryTag = "STRICTLY INDOORS!!";
                 primaryTooltip = "The outdoor environment has triggered a lethal gate (frost, severe wind, or heat). Keep strictly indoors.";
                 tagClass = "tag-sanctuary";
@@ -119,11 +144,10 @@ const ClimateEngine = {
             let secondaryTag = "";
             let secondaryTooltip = "";
 
-            if (worstGust >= plant.wind_tolerance + 10) {
+            if (worstGust >= activePlant.wind_tolerance + 10) {
                 secondaryTag = "WIND HAZARD";
                 secondaryTooltip = "It's too gusty. The leaves will tear or the pot will blow over.";
-            } else if (currentVPD < plant.vpd_range[0] || rainTotal > 1.0) {
-                // TOO WET TRIGGER
+            } else if (currentVPD < activePlant.vpd_range[0] || rainTotal > 1.0) {
                 if (pData.wet.length > 0) {
                     secondaryTag = "TOO WET / PEST RISK";
                     secondaryTooltip = `Cold/damp conditions! Watch out for: ${pData.wet.join(", ")}.`;
@@ -131,8 +155,7 @@ const ClimateEngine = {
                     secondaryTag = "TOO WET / ROOT ROT";
                     secondaryTooltip = "It's cold and damp. If you water it, the roots will rot.";
                 }
-            } else if (currentVPD > plant.vpd_range[1]) {
-                // TOO DRY TRIGGER
+            } else if (currentVPD > activePlant.vpd_range[1]) {
                 if (pData.dry.length > 0) {
                     secondaryTag = "DRY!! PEST WARNING";
                     secondaryTooltip = `Hot/dry air is triggering pests! Check foliage for: ${pData.dry.join(", ")}.`;
@@ -140,11 +163,10 @@ const ClimateEngine = {
                     secondaryTag = "DRY!! WATER & CHECK SOIL";
                     secondaryTooltip = "The air is sucking the water out of the leaves. Water it now.";
                 }
-            } else if (currentVPD >= plant.vpd_range[0] && currentVPD <= plant.vpd_range[1] && plant.lunar_affinity === currentAffinity) {
+            } else if (currentVPD >= activePlant.vpd_range[0] && currentVPD <= activePlant.vpd_range[1] && activePlant.lunar_affinity === currentAffinity) {
                 secondaryTag = "PERFECT FOR PROPAGATING!";
                 secondaryTooltip = "The moon phase and humidity are perfectly aligned to chop the plant and propagate it.";
             } else {
-                // GENERAL VIBING TRIGGER
                 if (pData.general.length > 0) {
                     secondaryTag = "MONITOR FOR PESTS";
                     secondaryTooltip = `Vibing, but always keep an eye out for: ${pData.general.join(", ")}.`;
@@ -154,9 +176,10 @@ const ClimateEngine = {
                 }
             }
 
+            // ✨ PUSH THE CLONED PLANT TO THE UI ✨
             results.push({
                 id: id,
-                plant: plant,
+                plant: activePlant, // Pushes the updated clone so the UI renders the correct seasonal text!
                 score: comfortScore,
                 primaryTag: primaryTag,
                 primaryTooltip: primaryTooltip,
@@ -174,3 +197,4 @@ const ClimateEngine = {
 };
 
 window.ClimateEngine = ClimateEngine;
+
