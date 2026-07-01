@@ -34,27 +34,26 @@ const floraDB = {
     // ==========================================
     // 🌵 CATEGORY 3: THE DESERT HARDY
     // ==========================================
-    "Schlumbergera_truncata": {
-name: "Thanksgiving cactus",
-type: "Cacti",
-temp_floor: 50,
- temp_ceiling: 80,
- optimal_temp: [60, 70],
-min_humidity: 40,
- water_frequency: "moderate",
-water_schedule: "7-10 days",
-wind_tolerance: 15,
- toxic_pets: false,
- lunar_affinity: "new",
- stamp_img: "thanksgiving.png",
-vpd_range: [0.6, 1.0],
-
-pest_risks: {
-dry: ["Thrips", "Spider Mites"],
-wet: ["Slugs", "Fungus Gnats"],
-general: ["Scale", "Aphids", "Mealybugs"]
-}
-},
+    "schlumbergera_truncata": {
+        name: "Thanksgiving cactus",
+        type: "Cacti",
+        temp_floor: 50,
+        temp_ceiling: 80,
+        optimal_temp: [60, 70],
+        min_humidity: 40,
+        water_frequency: "moderate",
+        water_schedule: "7-10 days",
+        wind_tolerance: 15,
+        toxic_pets: false,
+        lunar_affinity: "new",
+        stamp_img: "thanksgiving.png",
+        vpd_range: [0.6, 1.0],
+        pest_risks: {
+            dry: ["Thrips", "Spider Mites"],
+            wet: ["Slugs", "Fungus Gnats"],
+            general: ["Scale", "Aphids", "Mealybugs"]
+        }
+    },
 
     // ==========================================
     // 🧬 CATEGORY 4: AROIDS
@@ -98,4 +97,3 @@ general: ["Scale", "Aphids", "Mealybugs"]
 };
 
 window.floraDB = floraDB;
-
