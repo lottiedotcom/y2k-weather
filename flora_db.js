@@ -20,21 +20,27 @@ const floraDB = {
         vpd_range: [0.8, 1.2],
         pest_risk: "spider_mites"
     },
-    "epipremnum_aureum": {
-        name: "Golden Pothos",
-        type: "Tropical Epiphyte",
-        temp_floor: 45,
-        temp_ceiling: 100,
-        optimal_temp: [65, 85],
-        min_humidity: 40,
-        water_frequency: "low",
-        wind_tolerance: 10,
-        toxic_pets: true,
-        lunar_affinity: "new", 
-        stamp_img: "pothos_stamp.png",
-        vpd_range: [0.8, 1.5],
-        pest_risk: "mealybugs"
-    },
+"epipremnum_aureum": {
+name: "Golden pothos",
+type: "Tropical Epiphyte",
+temp_floor: 50,
+ temp_ceiling: 90,
+ optimal_temp: [65, 85],
+min_humidity: 30,
+ water_frequency: "low",
+water_schedule: "1-2 weeks",
+wind_tolerance: 20,
+ toxic_pets: true,
+ lunar_affinity: "waxing",
+ stamp_img: "goldenpothos.png",
+vpd_range: [0.8, 1.2],
+
+pest_risks: {
+dry: ["Thrips", "Spider Mites"],
+wet: ["Scales", "Mealybugs", "Fungus Gnats", "Root Rot"],
+general: ["Mealybugs", "Fungus Gnats"]
+},
+
     "maranta_leuconeura": {
         name: "Prayer Plant",
         type: "Herbaceous Perennial",
