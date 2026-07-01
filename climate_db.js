@@ -12,12 +12,11 @@ const ClimateEngine = {
         return { zone: "1-3", frostRisk: "Extreme (Sep-May)", season: "Arctic/Sub-Arctic" };
     },
 
-    // ✨ NEW: The Vapor Pressure Deficit (VPD) Calculator
     calculateVPD: function(tempF, humidity) {
         const tempC = (tempF - 32) * (5/9);
         const svp = 0.61078 * Math.exp((17.27 * tempC) / (tempC + 237.3));
         const vpd = svp * (1 - (humidity / 100));
-        return vpd; // Returns kilopascals (kPa)
+        return vpd; 
     },
 
     checkLethalGates: function(plant, weekTempsMin, weekTempsMax, maxWind) {
@@ -63,8 +62,6 @@ const ClimateEngine = {
 
         const zoneData = this.getHardinessZone(lat);
         const results = [];
-        
-        // Calculate Live VPD
         const currentVPD = this.calculateVPD(currentTemp, currentHumidity);
 
         for (const [id, plant] of Object.entries(window.floraDB)) {
@@ -77,7 +74,6 @@ const ClimateEngine = {
             const survival = this.checkLethalGates(plant, weekTempsMin, weekTempsMax, worstGust);
             let comfortScore = this.scoreComfort(plant, currentTemp, currentHumidity, rainTotal);
 
-            // Determine Moon Affinity Match
             let isWaxing = moonPhaseStr.includes("Waxing") || moonPhaseStr.includes("New") || moonPhaseStr.includes("1st Quarter");
             let isWaning = moonPhaseStr.includes("Waning") || moonPhaseStr.includes("Full") || moonPhaseStr.includes("Last Quarter");
             let currentAffinity = isWaxing ? "waxing" : (isWaning ? "waning" : "neutral");
@@ -86,7 +82,15 @@ const ClimateEngine = {
                 comfortScore = Math.min(100, Math.round(comfortScore * 1.25)); 
             }
 
-            // 🌍 PRIMARY TAG LOGIC (Location)
+            // 🐛 MULTI-PEST FALLBACK LOGIC
+            let pData = plant.pest_risks || { dry: [], wet: [], general: [] };
+            if (plant.pest_risk) { 
+                if (plant.pest_risk.includes("mites") || plant.pest_risk.includes("white")) pData.dry = [plant.pest_risk];
+                else if (plant.pest_risk.includes("slugs") || plant.pest_risk.includes("gnats")) pData.wet = [plant.pest_risk];
+                else pData.general = [plant.pest_risk];
+            }
+
+            // 🌍 PRIMARY TAG LOGIC
             let primaryTag = "";
             let primaryTooltip = "";
             let tagClass = "";
@@ -111,7 +115,7 @@ const ClimateEngine = {
                 reason = `Zone ${zoneData.zone} verified. Score: ${comfortScore}/100.`;
             }
 
-            // ⚡ SECONDARY TAG LOGIC (Action/Diagnostics based on VPD)
+            // ⚡ SECONDARY TAG LOGIC 
             let secondaryTag = "";
             let secondaryTooltip = "";
 
@@ -119,12 +123,19 @@ const ClimateEngine = {
                 secondaryTag = "WIND HAZARD";
                 secondaryTooltip = "It's too gusty. The leaves will tear or the pot will blow over.";
             } else if (currentVPD < plant.vpd_range[0] || rainTotal > 1.0) {
-                secondaryTag = "TOO WET / ROOT ROT";
-                secondaryTooltip = "It's cold and damp. If you water it, the roots will rot.";
+                // TOO WET TRIGGER
+                if (pData.wet.length > 0) {
+                    secondaryTag = "TOO WET / PEST RISK";
+                    secondaryTooltip = `Cold/damp conditions! Watch out for: ${pData.wet.join(", ")}.`;
+                } else {
+                    secondaryTag = "TOO WET / ROOT ROT";
+                    secondaryTooltip = "It's cold and damp. If you water it, the roots will rot.";
+                }
             } else if (currentVPD > plant.vpd_range[1]) {
-                if (plant.pest_risk === 'spider_mites' || plant.pest_risk === 'whiteflies') {
-                    secondaryTag = "MONITOR FOR PESTS";
-                    secondaryTooltip = "The hot/dry weather is triggering spider mites or whiteflies. Keep an eye on the leaves.";
+                // TOO DRY TRIGGER
+                if (pData.dry.length > 0) {
+                    secondaryTag = "DRY!! PEST WARNING";
+                    secondaryTooltip = `Hot/dry air is triggering pests! Check foliage for: ${pData.dry.join(", ")}.`;
                 } else {
                     secondaryTag = "DRY!! WATER & CHECK SOIL";
                     secondaryTooltip = "The air is sucking the water out of the leaves. Water it now.";
@@ -133,10 +144,10 @@ const ClimateEngine = {
                 secondaryTag = "PERFECT FOR PROPAGATING!";
                 secondaryTooltip = "The moon phase and humidity are perfectly aligned to chop the plant and propagate it.";
             } else {
-                // If it passes all tests but has a damp pest risk
-                if (plant.pest_risk === 'slugs' || plant.pest_risk === 'fungus_gnats') {
+                // GENERAL VIBING TRIGGER
+                if (pData.general.length > 0) {
                     secondaryTag = "MONITOR FOR PESTS";
-                    secondaryTooltip = "The damp weather is triggering pests like slugs or gnats. Keep an eye on the soil.";
+                    secondaryTooltip = `Vibing, but always keep an eye out for: ${pData.general.join(", ")}.`;
                 } else {
                     secondaryTag = "VIBING PERFECTLY";
                     secondaryTooltip = "Conditions are stable. No urgent action needed.";
