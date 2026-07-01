@@ -1,5 +1,4 @@
-// 🌿 FLORA DIRECTORY (flora_db.js) 🌿
-// The scientific baseline for the Agronomy Engine, featuring VPD and Pest Radar
+// 🌿 FLORA DIRECTORY
 
 const floraDB = {
     // ==========================================
@@ -27,11 +26,6 @@ const floraDB = {
     },
 
     // ==========================================
-    // 🥕 CATEGORY 2: THE OUTDOOR EDIBLES
-    // ==========================================
-    // (Add your outdoor veggies and herbs here)
-
-    // ==========================================
     // 🌵 CATEGORY 3: THE DESERT HARDY
     // ==========================================
     "schlumbergera_truncata": {
@@ -52,6 +46,11 @@ const floraDB = {
             dry: ["Thrips", "Spider Mites"],
             wet: ["Slugs", "Fungus Gnats"],
             general: ["Scale", "Aphids", "Mealybugs"]
+        },
+        seasons: {
+            summer: { optimal_temp: [70, 85], water_schedule: "5-7 days" },
+            fall:   { optimal_temp: [55, 65], water_schedule: "7-10 days" },
+            winter: { optimal_temp: [50, 60], water_schedule: "3-4 weeks" }
         }
     },
 
@@ -77,23 +76,7 @@ const floraDB = {
             wet: ["Root Rot", "Fungus Gnats"],
             general: ["Mealybugs", "Aphids"]
         }
-    },
-
-    // ==========================================
-    // 🧪 CATEGORY 5: WITCHY PLANTS
-    // ==========================================
-    // (Add ritual herbs, Mugwort, Rosemary, etc. here)
-
-    // ==========================================
-    // 🕸️ CATEGORY 6: VINING
-    // ==========================================
-    // (Add Ivy, String of Hearts, etc. here)
-
-    // ==========================================
-    // ☠️ CATEGORY 7: POISON GARDEN
-    // ==========================================
-    // (Add highly toxic ornamentals here)
-
+    }
 };
 
 window.floraDB = floraDB;
