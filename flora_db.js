@@ -40,7 +40,6 @@ dry: ["Thrips", "Spider Mites"],
 wet: ["Scales", "Mealybugs", "Fungus Gnats", "Root Rot"],
 general: ["Mealybugs", "Fungus Gnats"]
 },
-
     "maranta_leuconeura": {
         name: "Prayer Plant",
         type: "Herbaceous Perennial",
