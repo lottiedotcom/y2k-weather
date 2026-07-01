@@ -1,6 +1,10 @@
 // 🌿 FLORA DIRECTORY (flora_db.js) 🌿
+// The scientific baseline for the Agronomy Engine, featuring VPD and Pest Radar
 
 const floraDB = {
+    // ==========================================
+    // 🌿 CATEGORY 1: THE INDOOR JUNGLE
+    // ==========================================
     "rhaphidophora_tetrasperma": {
         name: "Mini Monstera",
         type: "Tropical Epiphyte",
@@ -12,7 +16,9 @@ const floraDB = {
         wind_tolerance: 15, 
         toxic_pets: true,
         lunar_affinity: "waxing", 
-        stamp_img: "mini_monstera_stamp.png"
+        stamp_img: "mini_monstera_stamp.png",
+        vpd_range: [0.8, 1.2],
+        pest_risk: "spider_mites"
     },
     "epipremnum_aureum": {
         name: "Golden Pothos",
@@ -25,7 +31,9 @@ const floraDB = {
         wind_tolerance: 10,
         toxic_pets: true,
         lunar_affinity: "new", 
-        stamp_img: "pothos_stamp.png"
+        stamp_img: "pothos_stamp.png",
+        vpd_range: [0.8, 1.5],
+        pest_risk: "mealybugs"
     },
     "maranta_leuconeura": {
         name: "Prayer Plant",
@@ -38,7 +46,9 @@ const floraDB = {
         wind_tolerance: 5, 
         toxic_pets: false,
         lunar_affinity: "waxing",
-        stamp_img: "prayer_plant_stamp.png"
+        stamp_img: "prayer_plant_stamp.png",
+        vpd_range: [0.6, 1.0],
+        pest_risk: "spider_mites"
     },
     "chlorophytum_comosum": {
         name: "Spider Plant",
@@ -51,7 +61,9 @@ const floraDB = {
         wind_tolerance: 20,
         toxic_pets: false,
         lunar_affinity: "full", 
-        stamp_img: "spider_plant_stamp.png"
+        stamp_img: "spider_plant_stamp.png",
+        vpd_range: [0.8, 1.5],
+        pest_risk: "aphids"
     },
     "nepeta_cataria": {
         name: "Catnip",
@@ -64,8 +76,14 @@ const floraDB = {
         wind_tolerance: 25,
         toxic_pets: false,
         lunar_affinity: "waning",
-        stamp_img: "catnip_stamp.png"
+        stamp_img: "catnip_stamp.png",
+        vpd_range: [1.0, 1.5],
+        pest_risk: "whiteflies"
     },
+
+    // ==========================================
+    // 🥕 CATEGORY 2: THE OUTDOOR EDIBLES
+    // ==========================================
     "raphanus_sativus": {
         name: "French Breakfast Radish",
         type: "Cool-Weather Taproot",
@@ -77,7 +95,9 @@ const floraDB = {
         wind_tolerance: 30, 
         toxic_pets: false,
         lunar_affinity: "waning", 
-        stamp_img: "radish_stamp.png"
+        stamp_img: "radish_stamp.png",
+        vpd_range: [0.8, 1.2],
+        pest_risk: "flea_beetles"
     },
     "solanum_lycopersicum": {
         name: "Cherry Tomato",
@@ -90,7 +110,9 @@ const floraDB = {
         wind_tolerance: 15,
         toxic_pets: true, 
         lunar_affinity: "waxing",
-        stamp_img: "tomato_stamp.png"
+        stamp_img: "tomato_stamp.png",
+        vpd_range: [1.0, 1.5],
+        pest_risk: "hornworms"
     },
     "ocimum_basilicum": {
         name: "Sweet Basil",
@@ -103,7 +125,9 @@ const floraDB = {
         wind_tolerance: 10,
         toxic_pets: false,
         lunar_affinity: "waxing",
-        stamp_img: "basil_stamp.png"
+        stamp_img: "basil_stamp.png",
+        vpd_range: [0.8, 1.2],
+        pest_risk: "aphids"
     },
     "capsicum_annuum": {
         name: "Jalapeño Pepper",
@@ -116,7 +140,9 @@ const floraDB = {
         wind_tolerance: 20,
         toxic_pets: true,
         lunar_affinity: "waxing",
-        stamp_img: "jalapeno_stamp.png"
+        stamp_img: "jalapeno_stamp.png",
+        vpd_range: [1.0, 1.5],
+        pest_risk: "aphids"
     },
     "lactuca_sativa": {
         name: "Butterhead Lettuce",
@@ -129,8 +155,14 @@ const floraDB = {
         wind_tolerance: 20,
         toxic_pets: false,
         lunar_affinity: "waxing",
-        stamp_img: "lettuce_stamp.png"
+        stamp_img: "lettuce_stamp.png",
+        vpd_range: [0.6, 1.0],
+        pest_risk: "slugs"
     },
+
+    // ==========================================
+    // 🌵 CATEGORY 3: THE DESERT HARDY
+    // ==========================================
     "aloe_barbadensis": {
         name: "True Aloe Vera",
         type: "Succulent",
@@ -142,7 +174,9 @@ const floraDB = {
         wind_tolerance: 25,
         toxic_pets: true,
         lunar_affinity: "new",
-        stamp_img: "aloe_stamp.png"
+        stamp_img: "aloe_stamp.png",
+        vpd_range: [1.5, 2.5],
+        pest_risk: "scale"
     },
     "echeveria_ghost": {
         name: "Ghost Echeveria",
@@ -155,7 +189,9 @@ const floraDB = {
         wind_tolerance: 40, 
         toxic_pets: false,
         lunar_affinity: "waning",
-        stamp_img: "echeveria_stamp.png"
+        stamp_img: "echeveria_stamp.png",
+        vpd_range: [1.5, 2.5],
+        pest_risk: "mealybugs"
     },
     "sansevieria_trifasciata": {
         name: "Snake Plant",
@@ -168,7 +204,9 @@ const floraDB = {
         wind_tolerance: 20,
         toxic_pets: true,
         lunar_affinity: "new",
-        stamp_img: "snake_plant_stamp.png"
+        stamp_img: "snake_plant_stamp.png",
+        vpd_range: [1.2, 2.0],
+        pest_risk: "root_rot"
     },
     "schlumbergera": {
         name: "Christmas Cactus",
@@ -181,7 +219,9 @@ const floraDB = {
         wind_tolerance: 10, 
         toxic_pets: false,
         lunar_affinity: "waning",
-        stamp_img: "christmas_cactus_stamp.png"
+        stamp_img: "christmas_cactus_stamp.png",
+        vpd_range: [0.8, 1.2],
+        pest_risk: "fungus_gnats"
     },
     "senecio_rowleyanus": {
         name: "String of Pearls",
@@ -194,8 +234,46 @@ const floraDB = {
         wind_tolerance: 5, 
         toxic_pets: true,
         lunar_affinity: "waxing",
-        stamp_img: "string_pearls_stamp.png"
-    }
+        stamp_img: "string_pearls_stamp.png",
+        vpd_range: [1.2, 1.8],
+        pest_risk: "mealybugs"
+    },
+
+    // ==========================================
+    // 🧬 CATEGORY 4: AROIDS
+    // ==========================================
+    // (Add Alocasias, Philodendrons, Syngoniums here)
+    "syngonium_podophyllum": {
+        name: "Arrowhead Vine",
+        type: "Tropical Aroid",
+        temp_floor: 50,        // Leaves will suffer severe cold damage below this
+        temp_ceiling: 95,      // Will wilt and stress in extreme heat
+        optimal_temp: [65, 80], // Perfect indoor/shaded patio temperatures
+        min_humidity: 50,      // Below 50%, the leaf tips will start to crisp
+        water_frequency: "moderate", // Let the top inch of soil dry out
+        wind_tolerance: 10,    // Thin leaves tear easily in heavy gusts
+        toxic_pets: true,      // Highly toxic to cats!
+        lunar_affinity: "waxing", // Responds well to upward sap flow for new leaves
+        stamp_img: "arrowhead.jpg", // The name of the stamp you'll draw for it!
+        vpd_range: [0.8, 1.2], // Optimal drying pressure for aroids
+        pest_risk: "spider_mites" // Extremely vulnerable to mites if the air gets too dry
+    },
+
+    // ==========================================
+    // 🧪 CATEGORY 5: WITCHY PLANTS
+    // ==========================================
+    // (Add ritual herbs, Mugwort, Rosemary, etc. here)
+
+    // ==========================================
+    // 🕸️ CATEGORY 6: VINING
+    // ==========================================
+    // (Add Ivy, String of Hearts, etc. here)
+
+    // ==========================================
+    // ☠️ CATEGORY 7: POISON GARDEN
+    // ==========================================
+    // (Add highly toxic ornamentals here)
+
 };
 
 window.floraDB = floraDB;
