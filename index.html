@@ -1003,6 +1003,7 @@
                             <div class="plant-reason">${res.reason}</div>
                             
                             <div class="plant-details-hidden">
+                                <div class="plant-stat-row"><span>🔬 Metabolism:</span> ${res.respiration}</div>
                                 <div class="plant-stat-row"><span>💧 Live VPD:</span> ${res.liveVPD} kPa</div>
                                 <div class="plant-stat-row"><span>🌡️ Temp Limits:</span> ${res.plant.temp_floor}°F to ${res.plant.temp_ceiling}°F</div>
                                 <div class="plant-stat-row"><span>🌸 Ideal Temp:</span> ${res.plant.optimal_temp[0]}°F to ${res.plant.optimal_temp[1]}°F</div>
@@ -1240,8 +1241,9 @@
                     const rainTotal = safeDailyPrecipSum.reduce((a, b) => a + b, 0);
                     const moonPhaseStr = moonData.phaseInfo.n;
 
+                    // 🔬 UPDATED: Passing isDaytime into the engine!
                     const agronomyResults = window.ClimateEngine.runAnalysis(
-                        latitude, longitude, safeDailyTempsMin, safeDailyTempsMax, safeDailyGusts, currentTemp, currentHumidity, rainTotal, moonPhaseStr
+                        latitude, longitude, safeDailyTempsMin, safeDailyTempsMax, safeDailyGusts, currentTemp, currentHumidity, rainTotal, moonPhaseStr, isDaytime
                     );
 
                     renderAgronomy(agronomyResults);
