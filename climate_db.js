@@ -12,9 +12,8 @@ const ClimateEngine = {
         return { zone: "1-3", frostRisk: "Extreme (Sep-May)", season: "Arctic/Sub-Arctic" };
     },
 
-    // 🗓️ NEW: Calendar Tracker for Seasonal Profiles (Northern Hemisphere)
     getCurrentSeason: function() {
-        const month = new Date().getMonth(); // 0 = Jan, 11 = Dec
+        const month = new Date().getMonth(); 
         if (month >= 2 && month <= 4) return "spring";
         if (month >= 5 && month <= 7) return "summer";
         if (month >= 8 && month <= 10) return "fall";
@@ -42,7 +41,6 @@ const ClimateEngine = {
         if (roundedWind >= plant.wind_tolerance + 10) { 
             return { pass: false, reason: `Gusts up to ${roundedWind} mph will cause damage.` };
         }
-
         return { pass: true };
     },
 
@@ -64,7 +62,6 @@ const ClimateEngine = {
         return score;
     },
 
-    // 🔬 UPDATED: Added isDaytime to the end of the parameters
     runAnalysis: function(lat, lon, weekTempsMin, weekTempsMax, dailyGusts, currentTemp, currentHumidity, rainTotal, moonPhaseStr, isDaytime) {
         if (!weekTempsMin || !weekTempsMax || !dailyGusts) {
             return { zone: {zone: "Unknown"}, recommendations: [] };
@@ -77,8 +74,6 @@ const ClimateEngine = {
 
         for (const [id, originalPlant] of Object.entries(window.floraDB)) {
             
-            // 🧬 CLONE THE PLANT: This lets us safely inject seasonal stats 
-            // without permanently overwriting the main database.
             let activePlant = JSON.parse(JSON.stringify(originalPlant));
 
             // 🍂 SEASONAL OVERRIDE INJECTION
@@ -89,6 +84,7 @@ const ClimateEngine = {
                 if (seasonStats.water_schedule) activePlant.water_schedule = seasonStats.water_schedule;
                 if (seasonStats.min_humidity) activePlant.min_humidity = seasonStats.min_humidity;
                 if (seasonStats.vpd_range) activePlant.vpd_range = seasonStats.vpd_range;
+                if (seasonStats.night_temp_trigger) activePlant.night_temp_trigger = seasonStats.night_temp_trigger; 
             }
 
             let safeDays = [];
@@ -99,6 +95,14 @@ const ClimateEngine = {
             let worstGust = Math.max(...dailyGusts);
             const survival = this.checkLethalGates(activePlant, weekTempsMin, weekTempsMax, worstGust);
             let comfortScore = this.scoreComfort(activePlant, currentTemp, currentHumidity, rainTotal);
+
+            // 🌸 BLOOM CHECKER
+            let lowestTemp = Math.round(Math.min(...weekTempsMin));
+            if (activePlant.night_temp_trigger) {
+                if (lowestTemp >= activePlant.night_temp_trigger[0] && lowestTemp <= activePlant.night_temp_trigger[1]) {
+                    comfortScore = Math.min(100, comfortScore + 15);
+                }
+            }
 
             let isWaxing = moonPhaseStr.includes("Waxing") || moonPhaseStr.includes("New") || moonPhaseStr.includes("1st Quarter");
             let isWaning = moonPhaseStr.includes("Waning") || moonPhaseStr.includes("Full") || moonPhaseStr.includes("Last Quarter");
@@ -130,15 +134,8 @@ const ClimateEngine = {
                     : (currentVPD > 1.2 ? "🟢 STOMATA OPEN: Active CAM respiration. Harvesting nighttime CO2." : "🔴 STOMATA CLOSED: Nighttime resting phase.");
             }
 
-            // 🐛 MULTI-PEST FALLBACK LOGIC
             let pData = activePlant.pest_risks || { dry: [], wet: [], general: [] };
-            if (activePlant.pest_risk) { 
-                if (activePlant.pest_risk.includes("mites") || activePlant.pest_risk.includes("white")) pData.dry = [activePlant.pest_risk];
-                else if (activePlant.pest_risk.includes("slugs") || activePlant.pest_risk.includes("gnats")) pData.wet = [activePlant.pest_risk];
-                else pData.general = [activePlant.pest_risk];
-            }
 
-            // 🌍 PRIMARY TAG LOGIC
             let primaryTag = "";
             let primaryTooltip = "";
             let tagClass = "";
@@ -163,7 +160,7 @@ const ClimateEngine = {
                 reason = `Zone ${zoneData.zone} verified. Score: ${comfortScore}/100.`;
             }
 
-            // ⚡ SECONDARY TAG LOGIC 
+            // ⚡ SECONDARY TAG LOGIC WITH GENTLE BLOOM TEXT
             let secondaryTag = "";
             let secondaryTooltip = "";
 
@@ -186,6 +183,14 @@ const ClimateEngine = {
                     secondaryTag = "DRY!! WATER & CHECK SOIL";
                     secondaryTooltip = "The air is sucking the water out of the leaves. Water it now.";
                 }
+            } else if (activePlant.night_temp_trigger && lowestTemp >= activePlant.night_temp_trigger[0] && lowestTemp <= activePlant.night_temp_trigger[1]) {
+                // Perfect Bloom Range
+                secondaryTag = "🌸 Ready to Flower";
+                secondaryTooltip = `Perfect! The nighttime lows (${lowestTemp}°F) are hitting the sweet spot to set blooms.`;
+            } else if (activePlant.night_temp_trigger && (lowestTemp < activePlant.night_temp_trigger[0] || lowestTemp > activePlant.night_temp_trigger[1])) {
+                // Wrong Temp for Bloom
+                secondaryTag = "🌸 Temp to Flower";
+                secondaryTooltip = `If you want it to flower, get the night temps between ${activePlant.night_temp_trigger[0]}°F and ${activePlant.night_temp_trigger[1]}°F.`;
             } else if (currentVPD >= activePlant.vpd_range[0] && currentVPD <= activePlant.vpd_range[1] && activePlant.lunar_affinity === currentAffinity) {
                 secondaryTag = "PERFECT FOR PROPAGATING!";
                 secondaryTooltip = "The moon phase and humidity are perfectly aligned to chop the plant and propagate it.";
@@ -199,7 +204,6 @@ const ClimateEngine = {
                 }
             }
 
-            // ✨ PUSH THE CLONED PLANT TO THE UI ✨
             results.push({
                 id: id,
                 plant: activePlant, 
@@ -211,7 +215,7 @@ const ClimateEngine = {
                 secondaryTooltip: secondaryTooltip,
                 reason: reason,
                 liveVPD: currentVPD.toFixed(2),
-                respiration: respirationStatus // 🔬 UPDATED: Passes the respiration string to index.html!
+                respiration: respirationStatus 
             });
         }
 
