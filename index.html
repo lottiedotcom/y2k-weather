@@ -294,7 +294,34 @@
         }
 
         #cloud-scanner-output { font-size: 0.85rem; color: var(--deep-sea); margin-top: 15px; line-height: 1.4; width: 100%; text-align: center; border-top: 2px dotted rgba(255,255,255,0.5); padding-top: 10px; }
-        .uv-message { font-size: 0.9rem; color: var(--moe-pink); margin-top: 5px; font-weight: 700;}
+        
+        /* 🧴 CUSTOM UV STYLING 🧴 */
+        .uv-wrapper {
+            margin-top: 10px;
+        }
+        .uv-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: var(--deep-sea);
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        .uv-number {
+            font-size: 2rem;
+            color: var(--moe-pink);
+            font-weight: 900;
+            margin: 0 10px;
+            text-shadow: 1px 1px 0px white;
+        }
+        .uv-message {
+            font-size: 0.9rem;
+            color: var(--mermaid-aqua);
+            margin-top: 5px;
+            font-weight: 700;
+            padding: 5px 10px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+        }
 
         /* ✨ AGRONOMY LIST STYLES WITH HELP BUTTONS ✨ */
         .zone-header {
@@ -652,7 +679,10 @@
             <div id="tab-sky" class="tab-section">
                 <div class="wide-box atmosphere-scanner">
                     <div class="celestial-title">🧴 Sun & UV</div>
-                    <div class="stat-label">UV Index: <span id="uv-number">--</span></div>
+                    <div class="uv-wrapper">
+                        <span class="uv-label">UV Index:</span>
+                        <span id="uv-number" class="uv-number">--</span>
+                    </div>
                     <div class="uv-message" id="uv-text">Checking the rays...</div>
                 </div>
 
