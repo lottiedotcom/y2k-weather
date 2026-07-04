@@ -64,7 +64,8 @@ const ClimateEngine = {
         return score;
     },
 
-    runAnalysis: function(lat, lon, weekTempsMin, weekTempsMax, dailyGusts, currentTemp, currentHumidity, rainTotal, moonPhaseStr) {
+    // 🔬 UPDATED: Added isDaytime to the end of the parameters
+    runAnalysis: function(lat, lon, weekTempsMin, weekTempsMax, dailyGusts, currentTemp, currentHumidity, rainTotal, moonPhaseStr, isDaytime) {
         if (!weekTempsMin || !weekTempsMax || !dailyGusts) {
             return { zone: {zone: "Unknown"}, recommendations: [] };
         }
@@ -105,6 +106,28 @@ const ClimateEngine = {
 
             if (activePlant.lunar_affinity === currentAffinity) {
                 comfortScore = Math.min(100, Math.round(comfortScore * 1.25)); 
+            }
+
+            // 🔬 LIVE STOMATAL RESPIRATION TRACKER
+            let respirationStatus = "Status unknown";
+            const plantMetabolism = activePlant.metabolism ? activePlant.metabolism.toLowerCase() : "c3"; 
+
+            if (plantMetabolism === "c3") {
+                respirationStatus = isDaytime 
+                    ? "🟢 STOMATA OPEN: Active C3 photosynthesis. Absorbing CO2." 
+                    : "🔴 STOMATA CLOSED: Nighttime resting phase.";
+            } else if (plantMetabolism === "cam") {
+                respirationStatus = isDaytime 
+                    ? "🔴 STOMATA CLOSED: Conserving moisture. Processing stored malic acid." 
+                    : "🟢 STOMATA OPEN: Active CAM respiration. Harvesting nighttime CO2.";
+            } else if (plantMetabolism === "c4") {
+                respirationStatus = isDaytime 
+                    ? (currentVPD > 1.5 ? "🟡 STOMATA PARTIALLY CLOSED: High-efficiency C4 carbon pumping." : "🟢 STOMATA OPEN: Active C4 photosynthesis.")
+                    : "🔴 STOMATA CLOSED: Nighttime resting phase.";
+            } else if (plantMetabolism === "facultative") {
+                respirationStatus = isDaytime
+                    ? (currentVPD > 1.2 ? "🔴 STOMATA CLOSED: Stress detected. Shifted to CAM metabolism." : "🟢 STOMATA OPEN: Active C3 photosynthesis.")
+                    : (currentVPD > 1.2 ? "🟢 STOMATA OPEN: Active CAM respiration. Harvesting nighttime CO2." : "🔴 STOMATA CLOSED: Nighttime resting phase.");
             }
 
             // 🐛 MULTI-PEST FALLBACK LOGIC
@@ -179,7 +202,7 @@ const ClimateEngine = {
             // ✨ PUSH THE CLONED PLANT TO THE UI ✨
             results.push({
                 id: id,
-                plant: activePlant, // Pushes the updated clone so the UI renders the correct seasonal text!
+                plant: activePlant, 
                 score: comfortScore,
                 primaryTag: primaryTag,
                 primaryTooltip: primaryTooltip,
@@ -187,7 +210,8 @@ const ClimateEngine = {
                 secondaryTag: secondaryTag,
                 secondaryTooltip: secondaryTooltip,
                 reason: reason,
-                liveVPD: currentVPD.toFixed(2)
+                liveVPD: currentVPD.toFixed(2),
+                respiration: respirationStatus // 🔬 UPDATED: Passes the respiration string to index.html!
             });
         }
 
@@ -197,4 +221,3 @@ const ClimateEngine = {
 };
 
 window.ClimateEngine = ClimateEngine;
-
