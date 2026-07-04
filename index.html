@@ -13,6 +13,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&display=swap" rel="stylesheet">
 
+    <!-- 🌿 LOAD THE AGRONOMY ENGINE & FLORA DATABASE 🌿 -->
     <script src="flora_db.js"></script>
     <script src="climate_db.js"></script>
 
@@ -269,7 +270,7 @@
         }
 
         .agronomy-card {
-            background: var(--inner-bubble);
+            background: rgba(180, 230, 255, 0.5); /* 🎀 Light blue background! */
             border: 2px solid white;
             border-radius: 20px;
             padding: 12px;
@@ -393,8 +394,8 @@
         }
 
         .stat-cell {
-            background: rgba(255, 255, 255, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.5);
+            background: rgba(0, 240, 255, 0.15); /* 🎀 Lighter teal background! */
+            border: 2px dotted var(--moe-pink); /* 🎀 Dotted pink box! */
             border-radius: 10px;
             padding: 6px 8px;
             text-align: center;
@@ -418,8 +419,8 @@
         }
 
         .metabolism-box {
-            background: rgba(255, 255, 255, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.5);
+            background: rgba(0, 240, 255, 0.15); /* 🎀 Lighter teal background! */
+            border: 2px dotted var(--moe-pink); /* 🎀 Dotted pink box! */
             border-radius: 10px;
             padding: 8px;
             text-align: center;
@@ -657,6 +658,7 @@
                 </div>
             </div>
 
+            <!-- ✨ THE FLORA TAB WITH AGRONOMY ENGINE ✨ -->
             <div id="tab-flora" class="tab-section">
                 <div class="wide-box">
                     <div class="celestial-title">🌱 Botanical Station 🌱</div>
@@ -1038,6 +1040,7 @@
                             
                             <div class="plant-reason">${res.reason}</div>
                             
+                            <!-- 🎀 NEW STATS GRID (IDEA 1) 🎀 -->
                             <div class="plant-details-hidden">
                                 <div class="stat-grid">
                                     <div class="stat-cell">
