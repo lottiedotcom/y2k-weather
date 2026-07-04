@@ -13,7 +13,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&display=swap" rel="stylesheet">
 
-    <!-- 🌿 LOAD THE AGRONOMY ENGINE & FLORA DATABASE 🌿 -->
     <script src="flora_db.js"></script>
     <script src="climate_db.js"></script>
 
@@ -270,7 +269,7 @@
         }
 
         .agronomy-card {
-            background: rgba(180, 230, 255, 0.5); /* 🎀 Light blue background! */
+            background: rgba(180, 230, 255, 0.5);
             border: 2px solid white;
             border-radius: 20px;
             padding: 12px;
@@ -394,8 +393,8 @@
         }
 
         .stat-cell {
-            background: rgba(0, 240, 255, 0.15); /* 🎀 Lighter teal background! */
-            border: 2px dotted var(--moe-pink); /* 🎀 Dotted pink box! */
+            background: rgba(0, 240, 255, 0.15);
+            border: 2px dotted var(--moe-pink);
             border-radius: 10px;
             padding: 6px 8px;
             text-align: center;
@@ -419,8 +418,8 @@
         }
 
         .metabolism-box {
-            background: rgba(0, 240, 255, 0.15); /* 🎀 Lighter teal background! */
-            border: 2px dotted var(--moe-pink); /* 🎀 Dotted pink box! */
+            background: rgba(0, 240, 255, 0.15);
+            border: 2px dotted var(--moe-pink);
             border-radius: 10px;
             padding: 8px;
             text-align: center;
@@ -658,7 +657,6 @@
                 </div>
             </div>
 
-            <!-- ✨ THE FLORA TAB WITH AGRONOMY ENGINE ✨ -->
             <div id="tab-flora" class="tab-section">
                 <div class="wide-box">
                     <div class="celestial-title">🌱 Botanical Station 🌱</div>
@@ -1014,7 +1012,6 @@
             
             engineData.recommendations.forEach(res => {
                 let toxIcon = res.plant.toxic_pets ? "💀🐾" : "🌿🐾";
-                let waterText = res.plant.water_frequency.replace('_', ' ');
 
                 // Cleanse quotes so the alert() works perfectly
                 let pTip = res.primaryTooltip.replace(/'/g, "\\'");
@@ -1040,7 +1037,6 @@
                             
                             <div class="plant-reason">${res.reason}</div>
                             
-                            <!-- 🎀 NEW STATS GRID (IDEA 1) 🎀 -->
                             <div class="plant-details-hidden">
                                 <div class="stat-grid">
                                     <div class="stat-cell">
@@ -1057,7 +1053,7 @@
                                     </div>
                                     <div class="stat-cell">
                                         <div class="stat-label-clean">Water Needs</div>
-                                        <div class="stat-value-clean">${waterText.toUpperCase()}</div>
+                                        <div class="stat-value-clean">${res.plant.water_schedule.toUpperCase()}</div>
                                     </div>
                                     <div class="stat-cell">
                                         <div class="stat-label-clean">Max Wind</div>
@@ -1070,7 +1066,7 @@
                                 </div>
                                 <div class="metabolism-box">
                                     <div class="stat-label-clean">Metabolism</div>
-                                    <div class="metabolism-text">${res.respiration.replace(/🟢 |🔴 |🟡 /g, '')}</div>
+                                    <div class="metabolism-text">${res.respiration}</div>
                                 </div>
                             </div>
                         </div>
