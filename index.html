@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🌦 Weather</title>
+    <title>🌦 weather</title>
     
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#ff85c2">
@@ -207,22 +207,61 @@
         .aqi-label { color: var(--deep-sea); text-shadow: 1px 1px 0px white; text-align: left; }
         .aqi-val { font-weight: 900; color: var(--moe-pink); text-shadow: 1px 1px 0px white; text-align: right; }
 
-        .celestial-grid-v2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; width: 100%; margin-bottom: 15px; }
-        .celestial-item { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; }
-        .stat-icon { font-size: 1.6rem; margin-bottom: 2px; filter: drop-shadow(2px 2px 0px white); }
-        
-        .pixel-stamp {
-            width: 99px;
-            height: 99px;
-            border-radius: 10px;
-            border: 2px solid white;
-            box-shadow: 0 0 10px var(--mermaid-aqua);
-            object-fit: cover;
+        /* 🎀 NEW DIGITAL DIARY TIMELINE 🎀 */
+        .celestial-timeline {
+            position: relative;
+            padding-left: 20px;
+            margin-left: 15px;
+            margin-top: 10px;
             margin-bottom: 5px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            width: 100%;
+            box-sizing: border-box;
         }
 
-        .stat-label { font-size: 0.75rem; text-transform: uppercase; color: var(--moe-pink); letter-spacing: 1px; text-align: center; font-weight: 700; }
-        .stat-value { font-size: 1rem; margin-top: 2px; text-align: center; color: var(--deep-sea);}
+        .celestial-timeline::before {
+            content: '';
+            position: absolute;
+            top: 5px;
+            bottom: 5px;
+            left: 0;
+            border-left: 3px dotted var(--moe-pink);
+        }
+
+        .celestial-event {
+            display: flex;
+            align-items: center;
+            position: relative;
+            width: 100%;
+        }
+
+        .celestial-event .pixel-stamp {
+            width: 45px;
+            height: 45px;
+            position: absolute;
+            left: -44px; /* Centers the stamp perfectly over the dotted line */
+            border-radius: 8px;
+            border: 2px solid white;
+            box-shadow: 0 0 8px var(--mermaid-aqua);
+            object-fit: cover;
+            background: var(--bubble-glass);
+            margin: 0;
+        }
+
+        .celestial-info {
+            padding-left: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            text-align: left;
+        }
+
+        .stat-icon { font-size: 1.6rem; margin-bottom: 2px; filter: drop-shadow(2px 2px 0px white); }
+
+        .stat-label { font-size: 0.75rem; text-transform: uppercase; color: var(--moe-pink); letter-spacing: 1px; text-align: left; font-weight: 700; text-shadow: 1px 1px 0px white;}
+        .stat-value { font-size: 1.2rem; margin-top: 2px; text-align: left; color: var(--deep-sea); font-weight: 700; text-shadow: 1px 1px 0px white; display: flex; align-items: center; gap: 6px;}
         
         #lunar-botanical-guide { font-size: 0.8rem; color: var(--deep-sea); margin-top: 3px; text-shadow: 1px 1px 0px white; line-height: 1.2; width: 100%; text-align: center; }
 
@@ -370,7 +409,7 @@
             text-shadow: 1px 1px 0px rgba(255,255,255,0.8);
         }
 
-        /* 🎀 NEW CLEAN STATS GRID 🎀 */
+        /* 🎀 CLEAN STATS GRID 🎀 */
         .plant-details-hidden {
             display: none;
             width: 100%;
@@ -619,27 +658,34 @@
 
                 <div class="wide-box">
                     <div class="celestial-title">🌌 Celestial </div>
-                    <div class="celestial-grid-v2">
-                        <div class="celestial-item">
+                    <div class="celestial-timeline">
+                        <div class="celestial-event">
                             <img class="pixel-stamp" src="https://i.postimg.cc/pX2NJQ95/fcc21a191313ea7e7ad9f23d615fbdd6.jpg" alt="Rise Stamp">
-                            <div class="stat-label">Rise</div>
-                            <div class="stat-value" id="sunrise">--:--</div>
+                            <div class="celestial-info">
+                                <div class="stat-label">Sunrise</div>
+                                <div class="stat-value" id="sunrise">--:--</div>
+                            </div>
                         </div>
-                        <div class="celestial-item">
+                        <div class="celestial-event">
                             <img class="pixel-stamp" src="https://i.postimg.cc/pX2NJQ9m/fe1fc3ebfafb9d2d765ccfd84af051fa.jpg" alt="Golden Hour Stamp">
-                            <div class="stat-label">Golden Hr</div>
-                            <div class="stat-value" id="golden-hour">--:--</div>
+                            <div class="celestial-info">
+                                <div class="stat-label">Golden Hr</div>
+                                <div class="stat-value" id="golden-hour">--:--</div>
+                            </div>
                         </div>
-                        <div class="celestial-item">
+                        <div class="celestial-event">
                             <img class="pixel-stamp" src="https://i.postimg.cc/028g0G6M/3b6149f779ec5e6827f5eb7fdc0b73af.jpg" alt="Set Stamp">
-                            <div class="stat-label">Set</div>
-                            <div class="stat-value" id="sunset">--:--</div>
+                            <div class="celestial-info">
+                                <div class="stat-label">Sunset</div>
+                                <div class="stat-value" id="sunset">--:--</div>
+                            </div>
                         </div>
-                        <div class="celestial-item">
+                        <div class="celestial-event">
                             <img class="pixel-stamp" src="https://i.postimg.cc/Fs9tVbff/d1fbe1c35c32494c9290ebf699c16fc6.jpg" alt="Phase Stamp">
-                            <div class="stat-label">Phase</div>
-                            <div class="stat-value" id="moon-phase">Scanning...</div>
-                            <div class="stat-icon" id="moon-icon" style="font-size: 1.2rem; margin-top: 2px;">🌙</div>
+                            <div class="celestial-info">
+                                <div class="stat-label">Phase</div>
+                                <div class="stat-value"><span id="moon-phase">Scanning...</span> <span id="moon-icon">🌙</span></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -702,6 +748,9 @@
             
             document.getElementById(tabId).classList.add('active');
             btnElement.classList.add('active');
+
+            // 🎀 AUTO-SCROLL TO TOP 🎀
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         const weatherMoji = {
@@ -1109,10 +1158,10 @@ desc = "It is way to hot! Drink lots of water and pay attention to your body tod
                     if (aqiData && aqiData.current) {
                         const aqi = aqiData.current.us_aqi || "--";
                         if (aqi !== "--") {
-                            aqiStatus = `${aqi} (Good ദ്ദി)`;
-                            if (aqi > 50) aqiStatus = `${aqi} (Moderate ⊹♡)`;
-                            if (aqi > 100) aqiStatus = `${aqi} (Poor ✗)`;
-                            if (aqi > 150) aqiStatus = `${aqi} (Hazardous ☣︎)`;
+                            aqiStatus = `${aqi} (Good 🌄)`;
+                            if (aqi > 50) aqiStatus = `${aqi} (Moderate 🌫️)`;
+                            if (aqi > 100) aqiStatus = `${aqi} (Poor ⚠️)`;
+                            if (aqi > 150) aqiStatus = `${aqi} (Hazardous 🚫)`;
                         }
 
                         const pm25 = aqiData.current.pm2_5 || "--";
@@ -1368,3 +1417,4 @@ desc = "It is way to hot! Drink lots of water and pay attention to your body tod
     </script>
 </body>
 </html>
+
