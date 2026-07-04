@@ -138,6 +138,34 @@ const floraDB = {
             fall:   { optimal_temp: [60, 70], night_temp_trigger: [50, 55], water_schedule: "10-14 days" },
             winter: { optimal_temp: [45, 55], night_temp_trigger: [40, 45], water_schedule: "2-3 weeks" }
         }
+    },
+
+    "hedera_helix": {
+        name: "English / Common Ivy",
+        type: "Climbing Vine",
+        metabolism: "c3", 
+        toxic_pets: true, 
+        lunar_affinity: "waxing", 
+        stamp_img: "commonivy.png",
+        temp_floor: 45, 
+        temp_ceiling: 90, 
+        optimal_temp: [65, 75], 
+        min_humidity: 45,
+        vpd_range: [0.8, 1.2], 
+        water_frequency: "moderate", 
+        water_schedule: "When top inch is dry", 
+        wind_tolerance: 25, 
+        pest_risks: {
+            dry: ["Thrips", "Spider Mites", "Scale"], 
+            wet: ["Root Rot", "Bacterial Leaf Spot", "Foliar Mealybugs", "Fungus Gnats"], 
+            general: ["Aphids", "Whiteflies", "Scale"]
+        },
+        seasons: {
+            spring: { optimal_temp: [65, 70], night_temp_trigger: [55, 60], water_schedule: "When top inch is dry" },
+            summer: { optimal_temp: [70, 75], night_temp_trigger: [60, 65], water_schedule: "When top inch is dry" },
+            fall:   { optimal_temp: [60, 65], night_temp_trigger: [50, 55], water_schedule: "When top 1.5 - 2 inches is dry" },
+            winter: { optimal_temp: [55, 60], night_temp_trigger: [45, 50], water_schedule: "Allow to dry almost completely" }
+        }
     }
 };
 
