@@ -112,26 +112,26 @@ const ClimateEngine = {
                 comfortScore = Math.min(100, Math.round(comfortScore * 1.25)); 
             }
 
-            // 🔬 LIVE STOMATAL RESPIRATION TRACKER
+            // 🔬 LIVE STOMATAL RESPIRATION TRACKER (CLEAN & PUNCHY)
             let respirationStatus = "Status unknown";
             const plantMetabolism = activePlant.metabolism ? activePlant.metabolism.toLowerCase() : "c3"; 
 
             if (plantMetabolism === "c3") {
                 respirationStatus = isDaytime 
-                    ? "🟢 STOMATA OPEN: Active C3 photosynthesis. Absorbing CO2." 
-                    : "🔴 STOMATA CLOSED: Nighttime resting phase.";
+                    ? "Respirating (Daytime growth cycle)" 
+                    : "Inactive (Nighttime rest cycle)";
             } else if (plantMetabolism === "cam") {
                 respirationStatus = isDaytime 
-                    ? "🔴 STOMATA CLOSED: Conserving moisture. Processing stored malic acid." 
-                    : "🟢 STOMATA OPEN: Active CAM respiration. Harvesting nighttime CO2.";
+                    ? "Conserving (Daytime heat defense)" 
+                    : "Respirating (Nighttime air collection)";
             } else if (plantMetabolism === "c4") {
                 respirationStatus = isDaytime 
-                    ? (currentVPD > 1.5 ? "🟡 STOMATA PARTIALLY CLOSED: High-efficiency C4 carbon pumping." : "🟢 STOMATA OPEN: Active C4 photosynthesis.")
-                    : "🔴 STOMATA CLOSED: Nighttime resting phase.";
+                    ? (currentVPD > 1.5 ? "Conserving (High-efficiency heat defense)" : "Respirating (High-efficiency daytime cycle)")
+                    : "Inactive (Nighttime rest cycle)";
             } else if (plantMetabolism === "facultative") {
                 respirationStatus = isDaytime
-                    ? (currentVPD > 1.2 ? "🔴 STOMATA CLOSED: Stress detected. Shifted to CAM metabolism." : "🟢 STOMATA OPEN: Active C3 photosynthesis.")
-                    : (currentVPD > 1.2 ? "🟢 STOMATA OPEN: Active CAM respiration. Harvesting nighttime CO2." : "🔴 STOMATA CLOSED: Nighttime resting phase.");
+                    ? (currentVPD > 1.2 ? "Conserving (Stress-induced heat defense)" : "Respirating (Daytime growth cycle)")
+                    : (currentVPD > 1.2 ? "Respirating (Nighttime air collection)" : "Inactive (Nighttime rest cycle)");
             }
 
             let pData = activePlant.pest_risks || { dry: [], wet: [], general: [] };
@@ -160,7 +160,6 @@ const ClimateEngine = {
                 reason = `Zone ${zoneData.zone} verified. Score: ${comfortScore}/100.`;
             }
 
-            // ⚡ SECONDARY TAG LOGIC WITH GENTLE BLOOM TEXT
             let secondaryTag = "";
             let secondaryTooltip = "";
 
@@ -184,11 +183,9 @@ const ClimateEngine = {
                     secondaryTooltip = "The air is sucking the water out of the leaves. Water it now.";
                 }
             } else if (activePlant.night_temp_trigger && lowestTemp >= activePlant.night_temp_trigger[0] && lowestTemp <= activePlant.night_temp_trigger[1]) {
-                // Perfect Bloom Range
                 secondaryTag = "🌸 Ready to Flower";
                 secondaryTooltip = `Perfect! The nighttime lows (${lowestTemp}°F) are hitting the sweet spot to set blooms.`;
             } else if (activePlant.night_temp_trigger && (lowestTemp < activePlant.night_temp_trigger[0] || lowestTemp > activePlant.night_temp_trigger[1])) {
-                // Wrong Temp for Bloom
                 secondaryTag = "🌸 Temp to Flower";
                 secondaryTooltip = `If you want it to flower, get the night temps between ${activePlant.night_temp_trigger[0]}°F and ${activePlant.night_temp_trigger[1]}°F.`;
             } else if (currentVPD >= activePlant.vpd_range[0] && currentVPD <= activePlant.vpd_range[1] && activePlant.lunar_affinity === currentAffinity) {
