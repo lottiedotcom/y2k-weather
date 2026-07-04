@@ -57,6 +57,51 @@ const floraDB = {
     // ==========================================
     // 🌵 CATEGORY 2: THE DESERT HARDY
     // ==========================================
+"dracaena_trifasciata": {
+name: "Snake Plant",
+type: "Succulent",
+metabolism: "cam",
+toxic_pets: true,
+lunar_affinity: "new",
+stamp_img: "snakeplant.png",
+temp_floor: 50,
+temp_ceiling: 100,
+optimal_temp: [70, 85],
+min_humidity: 30,
+vpd_range: [1.2, 1.6],
+water_frequency: "low",
+water_schedule: "Water when soil is completely dry!",
+wind_tolerance: 25,
+pest_risks: {
+dry: ["Spider Mites", "Thrips"],
+wet: ["Root Mealybugs", "Fungus Gnats", "Mealybugs"],
+general: ["Scale", "Fungal Leaf Spot"]
+},
+seasons: {
+spring: {
+optimal_temp: [70, 80],
+night_temp_trigger: [60, 65],
+water_schedule: "Water when soil is completely dry!"
+},
+summer: {
+optimal_temp: [75, 90],
+night_temp_trigger: [65, 70],
+water_schedule: "Water when soil is completely dry!"
+},
+fall: {
+optimal_temp: [70, 75],
+night_temp_trigger: [55, 60],
+water_schedule: "Water when soil is completely dry!"
+},
+winter: {
+optimal_temp: [65, 70],
+night_temp_trigger: [50, 55],
+water_schedule: "Water when soil is completely dry!"
+}
+}
+},
+
+    
     "schlumbergera_truncata": {
         name: "Thanksgiving cactus",
         type: "Cacti",
