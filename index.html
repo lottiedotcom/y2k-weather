@@ -1011,7 +1011,7 @@ desc = "It is way to hot! Drink lots of water and pay attention to your body tod
             container.innerHTML = `<div class="zone-header">📍 Est. Hardiness Zone: ${engineData.zone.zone}</div>`;
             
             engineData.recommendations.forEach(res => {
-                let toxIcon = res.plant.toxic_pets ? "💀🐾" : "🌿🐾";
+                let toxIcon = res.plant.toxic_pets ? "☣︎🐾" : "♡🐾";
 
                 // Cleanse quotes so the alert() works perfectly
                 let pTip = res.primaryTooltip.replace(/'/g, "\\'");
@@ -1109,8 +1109,8 @@ desc = "It is way to hot! Drink lots of water and pay attention to your body tod
                     if (aqiData && aqiData.current) {
                         const aqi = aqiData.current.us_aqi || "--";
                         if (aqi !== "--") {
-                            aqiStatus = `${aqi} (Good 🫧)`;
-                            if (aqi > 50) aqiStatus = `${aqi} (Moderate 🍂)`;
+                            aqiStatus = `${aqi} (Good 🌄)`;
+                            if (aqi > 50) aqiStatus = `${aqi} (Moderate 🌫️)`;
                             if (aqi > 100) aqiStatus = `${aqi} (Poor ⚠️)`;
                             if (aqi > 150) aqiStatus = `${aqi} (Hazardous 🚫)`;
                         }
@@ -1327,10 +1327,10 @@ desc = "It is way to hot! Drink lots of water and pay attention to your body tod
                 myLat = overrideLat;
                 myLon = overrideLon;
                 document.getElementById('location-name').innerText = `📍 ${customName}`;
-                document.getElementById('loading').innerText = "Downloading sky data... 🫧";
+                document.getElementById('loading').innerText = "Downloading data... 🌺";
                 await fetchWeatherData(myLat, myLon);
             } else {
-                document.getElementById('loading').innerText = "Locating... 🫧";
+                document.getElementById('loading').innerText = "Locating... 📍";
                 if (navigator.geolocation) {
                     navigator.geolocation.getCurrentPosition(async (position) => {
                         myLat = position.coords.latitude;
