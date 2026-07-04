@@ -500,6 +500,38 @@
             text-shadow: 1px 1px 0px white;
         }
 
+        /* 🎀 LUNAR GLOW EFFECT 🎀 */
+        .lunar-boost-active {
+            color: var(--moe-pink);
+            text-shadow: 0 0 8px var(--moe-pink), 0 0 15px var(--moe-pink);
+            font-weight: 900;
+        }
+
+        /* 🌿 FLORA SEARCH BAR 🌿 */
+        .flora-search-container {
+            margin: 15px 0 10px 0;
+            width: 100%;
+        }
+        #flora-search-input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 10px 15px;
+            border-radius: 20px;
+            border: 2px solid white;
+            background: var(--inner-bubble);
+            color: var(--deep-sea);
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 700;
+            outline: none;
+            box-shadow: inset 1px 1px 5px rgba(0, 240, 255, 0.1);
+            text-shadow: 1px 1px 0px white;
+        }
+        #flora-search-input::placeholder {
+            color: var(--moe-pink);
+            opacity: 0.8;
+            text-shadow: none;
+        }
+
         .minutely-grid { display: flex; width: 100%; justify-content: space-between; gap: 5px; margin-top: 5px; }
         .minutely-col { flex: 1; background: var(--bubble-glass); border-radius: 10px; padding: 8px 2px; font-size: 0.75rem; border: 1px dotted white; box-shadow: inset 1px 1px 5px rgba(255,255,255,0.5); }
         .minutely-time { font-weight: 700; color: var(--moe-pink); margin-bottom: 3px; text-shadow: 1px 1px 0px white;}
@@ -743,6 +775,10 @@
                     <div class="vibe-title" style="margin-top: 15px; font-size: 1rem;">🌤 Ambient Air Check</div>
                     <div class="vibe-desc" id="flora-humidity-guide">Checking moisture...</div>
                 </div>
+                
+                <div class="flora-search-container">
+                    <input type="text" id="flora-search-input" placeholder="Search plants... 🪴" onkeyup="filterFlora()">
+                </div>
 
                 <div id="agronomy-list"></div>
             </div>
@@ -781,6 +817,21 @@
 
             // 🎀 AUTO-SCROLL TO TOP 🎀
             window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // 🌿 FUNCTION TO FILTER PLANTS AS YOU TYPE 🌿
+        function filterFlora() {
+            const query = document.getElementById('flora-search-input').value.toLowerCase();
+            const cards = document.querySelectorAll('.agronomy-card');
+            
+            cards.forEach(card => {
+                const plantName = card.querySelector('.plant-name').innerText.toLowerCase();
+                if (plantName.includes(query)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
         }
 
         const weatherMoji = {
@@ -1143,7 +1194,7 @@ desc = "It is way to hot! Drink lots of water and pay attention to your body tod
                                     </div>
                                     <div class="stat-cell">
                                         <div class="stat-label-clean">Lunar Boost</div>
-                                        <div class="stat-value-clean">${res.plant.lunar_affinity.toUpperCase()}</div>
+                                        <div class="stat-value-clean ${res.isLunarBoostActive ? 'lunar-boost-active' : ''}">${res.plant.lunar_affinity.toUpperCase()}</div>
                                     </div>
                                 </div>
                                 <div class="metabolism-box">
