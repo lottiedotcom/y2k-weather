@@ -903,7 +903,7 @@ desc = "It is way to hot! Drink lots of water and pay attention to your body tod
                 stargazerDesc.innerText = "Most major stars are visible! ₊˚⊹☆";
             } else if (cloudCoverTotal < 60) {
                 stargazerTitle.innerText = "Void Scanner: partial clarity ₊˚⊹☆";
-                stargazerDesc.innerText = "Stars maybe visible from your window ☾⋆⁺₊✧;";
+                stargazerDesc.innerText = "Stars maybe visible from your window ☾⋆⁺₊✧";
             } else if (cloudCoverTotal < 90) {
                 stargazerTitle.innerText = "Looking for stars..₊˚⊹☆ ";
                 stargazerDesc.innerText = "Only the absolute brightest will cut through ⊹☆";
@@ -1044,7 +1044,7 @@ desc = "It is way to hot! Drink lots of water and pay attention to your body tod
                                 <div class="stat-grid">
                                     <div class="stat-cell">
                                         <div class="stat-label-clean">Ideal VPD</div>
-                                        <div class="stat-value-clean">${res.idealVPDText}</div>
+                                        <div class="stat-value-clean">${res.idealVPDText || (Array.isArray(res.plant.vpd_range) ? res.plant.vpd_range[0] + ' - ' + res.plant.vpd_range[1] : 'Split (Day/Night)')}</div>
                                     </div>
                                     <div class="stat-cell">
                                         <div class="stat-label-clean">Temp Limits</div>
