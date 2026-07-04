@@ -1,4 +1,4 @@
-// 🌍 CLIMATE & AGRONOMY ENGINE (climate_db.js) 🌍
+// +* CLIMATE & AGRONOMY ENGINE (climate_db.js) *+
 
 const ClimateEngine = {
 
@@ -76,7 +76,7 @@ const ClimateEngine = {
             
             let activePlant = JSON.parse(JSON.stringify(originalPlant));
 
-            // 🍂 SEASONAL OVERRIDE INJECTION
+            // SEASONAL OVERRIDE INJECTION
             if (activePlant.seasons && activePlant.seasons[currentSeason]) {
                 const seasonStats = activePlant.seasons[currentSeason];
                 if (seasonStats.optimal_temp) activePlant.optimal_temp = seasonStats.optimal_temp;
@@ -96,7 +96,7 @@ const ClimateEngine = {
             const survival = this.checkLethalGates(activePlant, weekTempsMin, weekTempsMax, worstGust);
             let comfortScore = this.scoreComfort(activePlant, currentTemp, currentHumidity, rainTotal);
 
-            // 🌸 BLOOM CHECKER
+            // BLOOM CHECKER
             let lowestTemp = Math.round(Math.min(...weekTempsMin));
             if (activePlant.night_temp_trigger) {
                 if (lowestTemp >= activePlant.night_temp_trigger[0] && lowestTemp <= activePlant.night_temp_trigger[1]) {
@@ -112,7 +112,7 @@ const ClimateEngine = {
                 comfortScore = Math.min(100, Math.round(comfortScore * 1.25)); 
             }
 
-            // 🔬 LIVE STOMATAL RESPIRATION TRACKER (CLEAN & PUNCHY)
+            // LIVE STOMATAL RESPIRATION TRACKER 
             let respirationStatus = "Status unknown";
             const plantMetabolism = activePlant.metabolism ? activePlant.metabolism.toLowerCase() : "c3"; 
 
@@ -183,10 +183,10 @@ const ClimateEngine = {
                     secondaryTooltip = "The air is sucking the water out of the leaves. Water it now.";
                 }
             } else if (activePlant.night_temp_trigger && lowestTemp >= activePlant.night_temp_trigger[0] && lowestTemp <= activePlant.night_temp_trigger[1]) {
-                secondaryTag = "🌸 Ready to Flower";
+                secondaryTag = "(+*) Ready to Flower";
                 secondaryTooltip = `Perfect! The nighttime lows (${lowestTemp}°F) are hitting the sweet spot to set blooms.`;
             } else if (activePlant.night_temp_trigger && (lowestTemp < activePlant.night_temp_trigger[0] || lowestTemp > activePlant.night_temp_trigger[1])) {
-                secondaryTag = "🌸 Temp to Flower";
+                secondaryTag = "(+*) Temp to Flower";
                 secondaryTooltip = `If you want it to flower, get the night temps between ${activePlant.night_temp_trigger[0]}°F and ${activePlant.night_temp_trigger[1]}°F.`;
             } else if (currentVPD >= activePlant.vpd_range[0] && currentVPD <= activePlant.vpd_range[1] && activePlant.lunar_affinity === currentAffinity) {
                 secondaryTag = "PERFECT FOR PROPAGATING!";
@@ -201,6 +201,15 @@ const ClimateEngine = {
                 }
             }
 
+            // CHECK IDEAL VPD DAY VS NIGHT
+            let targetVPD = "N/A";
+            if (activePlant.ideal_vpd) {
+                targetVPD = isDaytime ? activePlant.ideal_vpd.day : activePlant.ideal_vpd.night;
+            } else if (activePlant.vpd_range) {
+                // fallback if you haven't updated a plant in your DB yet!
+                targetVPD = `${activePlant.vpd_range[0]}-${activePlant.vpd_range[1]}`;
+            }
+
             results.push({
                 id: id,
                 plant: activePlant, 
@@ -211,7 +220,7 @@ const ClimateEngine = {
                 secondaryTag: secondaryTag,
                 secondaryTooltip: secondaryTooltip,
                 reason: reason,
-                liveVPD: currentVPD.toFixed(2),
+                idealVPD: targetVPD, 
                 respiration: respirationStatus 
             });
         }
