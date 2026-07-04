@@ -789,13 +789,13 @@
 
             let botanicalGuide = "...";
             if (normalizedPhase >= 0.015 && normalizedPhase < 0.485) {
-                botanicalGuide = "Moon is Waxing! Moisture is pulling UP into leaves ⬆️ Optimal time to feed plants & get new growth! (☘︎◠‿◠)";
+                botanicalGuide = "Moon is Waxing! Moisture is pulling UP into leaves ↑ Optimal time to feed plants & get new growth! (☘︎◠‿◠)";
             } else if (normalizedPhase >= 0.485 && normalizedPhase < 0.515) {
                 botanicalGuide = "⋆｡°✩ Soil moisture is high! Perfect for slacking seeds, hold off on pruning for now";
             } else if (normalizedPhase >= 0.515 && normalizedPhase < 0.985) {
-                botanicalGuide = "The Moon is Waning. Energy is pulling DOWN to the roots ⬇️. This is the absolute perfect window for transplanting water cuttings into soil.";
+                botanicalGuide = "Moon is Waning! Energy is pulling DOWN to roots ↓ Perfect window to pot water cuttings ₍ꕤᐢ..ᐢ₎";
             } else {
-                botanicalGuide = "New Moon Rest Phase 🌑. Sap flow is slow and plants are dormant. This is the safest time to take fresh cuttings or prune dead leaves.";
+                botanicalGuide = "New moon ᶻ 𝗓 𐰁 stop flow is slow & plants are sleepy,, time to prune and take fresh cuttings!!";
             }
 
             return { phaseInfo: phases[b], botanicalGuide: botanicalGuide };
@@ -804,7 +804,7 @@
         function setFloraVibe(humidity) {
             let humidityGuide = "";
             if (humidity < 30) {
-                humidityGuide = `Current humidity is only ${humidity}%. The air is incredibly dry! Make sure to give your indoor jungle a good misting today, and keep delicate aroid cuttings away from dry heat drafts.`;
+                humidityGuide = `Current humidity is only ${humidity}%. Super dry air! 𓆈 Mist your plants today and keep aroid cuttings far away from heaters`;
             } else if (humidity < 50) {
                 humidityGuide = `Current humidity is ${humidity}%. The air is decent, but tropical plants might want a little extra moisture. A great day to top off any water propagation jars.`;
             } else {
