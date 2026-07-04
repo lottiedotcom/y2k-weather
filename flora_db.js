@@ -25,6 +25,61 @@ const floraDB = {
         }
     },
 
+        "peperomia_orba": {
+        name: "Teardrop Peperomia",
+        type: "Tropical Epiphyte",
+
+        // 🔬 LIVE TRACKERS
+        metabolism: "cam", 
+        toxic_pets: false, 
+        lunar_affinity: "waxing", 
+        stamp_img: "Piperales.png",
+
+        // 🌡️ TEMPERATURE GATES
+        temp_floor: 55, 
+        temp_ceiling: 80, 
+        optimal_temp: [65, 75], 
+        // Note: Base night_temp_trigger removed so it relies on your seasons below!
+
+        // 💧 MOISTURE & WIND
+        min_humidity: 40,
+        vpd_range: [0.8, 1.1], 
+        water_frequency: "low", 
+        water_schedule: "1-2 weeks", 
+        wind_tolerance: 10, 
+
+        // 🐛 MULTI-PEST RADAR
+        pest_risks: {
+            dry: ["Thrips", "Spider Mites"], 
+            wet: ["Root Rot", "Root Mealybugs", "Shore Flies", "Fungus Gnats"], 
+            general: ["Scales", "Whiteflies", "Mealybugs"]
+        },
+
+        // 🍂 OPTIONAL: SEASONAL OVERRIDES
+        seasons: {
+            spring: {
+                optimal_temp: [72, 78],
+                night_temp_trigger: [65, 68], 
+                water_schedule: "1-2 weeks"
+            },
+            summer: {
+                optimal_temp: [72, 78],
+                night_temp_trigger: [65, 68], 
+                water_schedule: "1-2 weeks"
+            },
+            fall: {
+                optimal_temp: [65, 68],
+                night_temp_trigger: [60, 62], 
+                water_schedule: "2-3 weeks"
+            },
+            winter: {
+                optimal_temp: [65, 68],
+                night_temp_trigger: [60, 62], 
+                water_schedule: "2-3 weeks"
+            }
+        }
+    },
+
     // ==========================================
     // 🌵 CATEGORY 3: THE DESERT HARDY
     // ==========================================
