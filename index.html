@@ -340,7 +340,6 @@
             border: 1px solid rgba(255,255,255,0.5);
         }
 
-        /* Help Button CSS */
         .help-btn {
             background: rgba(255,255,255,0.4);
             border-radius: 50%;
@@ -371,13 +370,13 @@
             text-shadow: 1px 1px 0px rgba(255,255,255,0.8);
         }
 
+        /* 🎀 NEW CLEAN STATS GRID 🎀 */
         .plant-details-hidden {
             display: none;
             width: 100%;
             margin-top: 10px;
             padding-top: 10px;
             border-top: 2px dotted rgba(255,255,255,0.5);
-            font-size: 0.8rem;
             color: var(--deep-sea);
         }
 
@@ -386,16 +385,53 @@
             animation: fadeIn 0.3s ease;
         }
 
-        .plant-stat-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 5px;
+        .stat-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr; 
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .stat-cell {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 10px;
+            padding: 6px 8px;
+            text-align: center;
+            box-shadow: inset 1px 1px 3px rgba(255,255,255,0.4);
+        }
+
+        .stat-label-clean {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--moe-pink);
+            font-weight: 700;
+            margin-bottom: 2px;
             text-shadow: 1px 1px 0px white;
         }
 
-        .plant-stat-row span {
-            color: var(--moe-pink);
+        .stat-value-clean {
+            font-size: 0.85rem;
             font-weight: 700;
+            text-shadow: 1px 1px 0px white;
+        }
+
+        .metabolism-box {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 10px;
+            padding: 8px;
+            text-align: center;
+            box-shadow: inset 1px 1px 3px rgba(255,255,255,0.4);
+        }
+        
+        .metabolism-text {
+            font-size: 0.8rem;
+            line-height: 1.3;
+            margin-top: 3px;
+            font-weight: 700;
+            text-shadow: 1px 1px 0px white;
         }
 
         .minutely-grid { display: flex; width: 100%; justify-content: space-between; gap: 5px; margin-top: 5px; }
@@ -968,7 +1004,7 @@
             }
         }
 
-        // ✨ THE AGRONOMY RENDERER WITH DOUBLE TAGS & TOOLTIPS ✨
+        // ✨ THE AGRONOMY RENDERER WITH NEW GRID LAYOUT ✨
         function renderAgronomy(engineData) {
             const container = document.getElementById('agronomy-list');
             
@@ -1003,13 +1039,36 @@
                             <div class="plant-reason">${res.reason}</div>
                             
                             <div class="plant-details-hidden">
-                                <div class="plant-stat-row"><span>🔬 Metabolism:</span> ${res.respiration}</div>
-                                <div class="plant-stat-row"><span>💧 Live VPD:</span> ${res.liveVPD} kPa</div>
-                                <div class="plant-stat-row"><span>🌡️ Temp Limits:</span> ${res.plant.temp_floor}°F to ${res.plant.temp_ceiling}°F</div>
-                                <div class="plant-stat-row"><span>🌸 Ideal Temp:</span> ${res.plant.optimal_temp[0]}°F to ${res.plant.optimal_temp[1]}°F</div>
-                                <div class="plant-stat-row"><span>💧 Water Needs:</span> ${waterText.toUpperCase()}</div>
-                                <div class="plant-stat-row"><span>🌬️ Max Wind:</span> ${res.plant.wind_tolerance} mph</div>
-                                <div class="plant-stat-row"><span>🌕 Lunar Boost:</span> ${res.plant.lunar_affinity.toUpperCase()}</div>
+                                <div class="stat-grid">
+                                    <div class="stat-cell">
+                                        <div class="stat-label-clean">Live VPD</div>
+                                        <div class="stat-value-clean">${res.liveVPD} kPa</div>
+                                    </div>
+                                    <div class="stat-cell">
+                                        <div class="stat-label-clean">Temp Limits</div>
+                                        <div class="stat-value-clean">${res.plant.temp_floor}° - ${res.plant.temp_ceiling}°</div>
+                                    </div>
+                                    <div class="stat-cell">
+                                        <div class="stat-label-clean">Ideal Temp</div>
+                                        <div class="stat-value-clean">${res.plant.optimal_temp[0]}° - ${res.plant.optimal_temp[1]}°</div>
+                                    </div>
+                                    <div class="stat-cell">
+                                        <div class="stat-label-clean">Water Needs</div>
+                                        <div class="stat-value-clean">${waterText.toUpperCase()}</div>
+                                    </div>
+                                    <div class="stat-cell">
+                                        <div class="stat-label-clean">Max Wind</div>
+                                        <div class="stat-value-clean">${res.plant.wind_tolerance} mph</div>
+                                    </div>
+                                    <div class="stat-cell">
+                                        <div class="stat-label-clean">Lunar Boost</div>
+                                        <div class="stat-value-clean">${res.plant.lunar_affinity.toUpperCase()}</div>
+                                    </div>
+                                </div>
+                                <div class="metabolism-box">
+                                    <div class="stat-label-clean">Metabolism</div>
+                                    <div class="metabolism-text">${res.respiration.replace(/🟢 |🔴 |🟡 /g, '')}</div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1241,7 +1300,6 @@
                     const rainTotal = safeDailyPrecipSum.reduce((a, b) => a + b, 0);
                     const moonPhaseStr = moonData.phaseInfo.n;
 
-                    // 🔬 UPDATED: Passing isDaytime into the engine!
                     const agronomyResults = window.ClimateEngine.runAnalysis(
                         latitude, longitude, safeDailyTempsMin, safeDailyTempsMax, safeDailyGusts, currentTemp, currentHumidity, rainTotal, moonPhaseStr, isDaytime
                     );
