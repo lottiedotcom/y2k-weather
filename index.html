@@ -13,7 +13,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&display=swap" rel="stylesheet">
 
-    <!-- 🌿 LOAD THE AGRONOMY ENGINE & FLORA DATABASE 🌿 -->
     <script src="flora_db.js"></script>
     <script src="climate_db.js"></script>
 
@@ -622,7 +621,6 @@
                 </div>
             </div>
 
-            <!-- ✨ THE FLORA TAB WITH AGRONOMY ENGINE ✨ -->
             <div id="tab-flora" class="tab-section">
                 <div class="wide-box">
                     <div class="celestial-title">🌱 Botanical Station 🌱</div>
@@ -928,6 +926,7 @@
             }
         }
 
+        // 🎀 NEW CITY/STATE SMART SEARCH ENGINE 🎀
         async function searchLocation() {
             const query = document.getElementById('search-input').value.trim();
             if (!query) return;
@@ -937,12 +936,28 @@
             document.getElementById('loading').innerText = "Searching... 🔍";
 
             try {
-                const geoUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=1&language=en&format=json`;
+                // 1. Split the text at the comma
+                const [city, state] = query.split(',').map(text => text.trim());
+
+                // 2. Ask the API for up to 10 cities with that name to find the right state
+                const geoUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=10&language=en&format=json`;
                 const geoRes = await fetch(geoUrl);
                 const geoData = await geoRes.json();
 
                 if (geoData.results && geoData.results.length > 0) {
-                    const place = geoData.results[0];
+                    let place = geoData.results[0]; // Default to first result
+
+                    // 3. If a state was typed, filter the results to find a match!
+                    if (state) {
+                        const exactMatch = geoData.results.find(location => 
+                            location.admin1 && location.admin1.toLowerCase().includes(state.toLowerCase())
+                        );
+                        
+                        if (exactMatch) {
+                            place = exactMatch;
+                        }
+                    }
+
                     const locName = place.name + (place.admin1 ? `, ${place.admin1}` : '');
                     fetchWeather(place.latitude, place.longitude, locName);
                 } else {
