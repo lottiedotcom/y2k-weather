@@ -890,26 +890,26 @@ desc = "It is way to hot! Drink lots of water and pay attention to your body tod
             const stargazerDesc = document.getElementById('stargazer-desc');
 
             if (!isNight) {
-                stargazerTitle.innerText = "Sun is currently UP ☀️";
-                stargazerDesc.innerText = "Scanner will activate tonight.";
+                stargazerTitle.innerText = "Sun is up ⋆｡˚☀︎｡";
+                stargazerDesc.innerText = "Stars may be out tonight instead!";
                 return;
             }
 
             if (cloudCoverTotal < 10) {
-                stargazerTitle.innerText = "Void Scanner: ABSOLUTE CLARITY 🌌";
-                stargazerDesc.innerText = "Maximum visibility. Entire constellations are plain as day.";
+                stargazerTitle.innerText = "Looking for clouds & stars ☾⋆⁺₊✧";
+                stargazerDesc.innerText = "No clouds! Entire constellations are plain as day  ݁⋆⭒˚.⋆";
             } else if (cloudCoverTotal < 30) {
-                stargazerTitle.innerText = "Void Scanner: GOOD CLARITY 🌠";
-                stargazerDesc.innerText = "Most major stars are visible. Minimal obstruction.";
+                stargazerTitle.innerText = "Looking for stars: good clarity ☾⋆⁺₊✧";
+                stargazerDesc.innerText = "Most major stars are visible! ₊˚⊹☆";
             } else if (cloudCoverTotal < 60) {
-                stargazerTitle.innerText = "Void Scanner: PARTIAL CLARITY ☁️";
-                stargazerDesc.innerText = "Stars visible in windows. Moving clouds obscure the void.";
+                stargazerTitle.innerText = "Void Scanner: partial clarity ₊˚⊹☆";
+                stargazerDesc.innerText = "Stars maybe visible from your window ☾⋆⁺₊✧;
             } else if (cloudCoverTotal < 90) {
-                stargazerTitle.innerText = "Void Scanner: POOR CLARITY ☁️";
-                stargazerDesc.innerText = "Only the absolute brightest stars/planets cut through.";
+                stargazerTitle.innerText = "Looking for stars..₊˚⊹☆ ";
+                stargazerDesc.innerText = "Only the absolute brightest will cut through ⊹☆";
             } else {
-                stargazerTitle.innerText = "Void Scanner: VOID TOTALLY BLOCKED 🌫️";
-                stargazerDesc.innerText = "Overcast ceiling. Zero celestial visibility.";
+                stargazerTitle.innerText = "Constellations not visible!  ݁⋆⭒˚.⋆";
+                stargazerDesc.innerText = "Very overcast, low to no visibility ☾⋆⁺₊✧";
             }
         }
 
