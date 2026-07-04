@@ -89,13 +89,20 @@ const ClimateEngine = {
                 if (seasonStats.night_temp_trigger) activePlant.night_temp_trigger = seasonStats.night_temp_trigger; 
             }
 
-            // 🕒 DAY/NIGHT VPD TARGET SWITCHER
-            let currentVPDRange = activePlant.vpd_range;
-            if (isDaytime && activePlant.vpd_range_day) {
+            // 🕒 DAY/NIGHT VPD TARGET SWITCHER (Bulletproofed!)
+            let currentVPDRange = activePlant.vpd_range || [0.5, 1.5]; // Fallback if missing
+            
+            // Check if nested object was used: vpd_range: { day: [], night: [] }
+            if (activePlant.vpd_range && !Array.isArray(activePlant.vpd_range)) {
+                currentVPDRange = isDaytime ? activePlant.vpd_range.day : activePlant.vpd_range.night;
+            } 
+            // Check if flat keys were used: vpd_range_day: []
+            else if (isDaytime && activePlant.vpd_range_day) {
                 currentVPDRange = activePlant.vpd_range_day;
             } else if (!isDaytime && activePlant.vpd_range_night) {
                 currentVPDRange = activePlant.vpd_range_night;
             }
+
             let idealVPDText = `${currentVPDRange[0]} - ${currentVPDRange[1]}`;
 
             let safeDays = [];
