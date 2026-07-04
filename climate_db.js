@@ -126,7 +126,10 @@ const ClimateEngine = {
             let isWaning = moonPhaseStr.includes("Waning") || moonPhaseStr.includes("Full") || moonPhaseStr.includes("Last Quarter");
             let currentAffinity = isWaxing ? "waxing" : (isWaning ? "waning" : "neutral");
 
-            if (activePlant.lunar_affinity === currentAffinity) {
+            // 🎀 LIVE MOON GLOW CHECK 🎀
+            let isLunarBoostActive = (activePlant.lunar_affinity === currentAffinity);
+
+            if (isLunarBoostActive) {
                 comfortScore = Math.min(100, Math.round(comfortScore * 1.25)); 
             }
 
@@ -231,6 +234,7 @@ const ClimateEngine = {
                 reason: reason,
                 liveVPD: currentVPD.toFixed(2),
                 idealVPDText: idealVPDText,
+                isLunarBoostActive: isLunarBoostActive, 
                 respiration: respirationStatus 
             });
         }
@@ -241,3 +245,4 @@ const ClimateEngine = {
 };
 
 window.ClimateEngine = ClimateEngine;
+
