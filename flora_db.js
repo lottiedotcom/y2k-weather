@@ -4,6 +4,52 @@ const floraDB = {
     // ==========================================
     // 🌿 CATEGORY 1: THE INDOOR JUNGLE
     // ==========================================
+"monstera_deliciosa": {
+name: "Monstera",
+type: "Climbing Vine",
+metabolism: "c3",
+toxic_pets: true,
+lunar_affinity: "waxing",
+stamp_img: "monstera.png",
+temp_floor: 50,
+temp_ceiling: 95,
+optimal_temp: [70, 85],
+min_humidity: 50,
+vpd_range: [0.8, 1.2],
+water_frequency: "moderate",
+water_schedule: "Water when top 2-3 inches of soil is dry!",
+wind_tolerance: 15,
+pest_risks: {
+dry: ["Spider Mites", "Thrips"],
+wet: ["Mealybugs", "Fungus Gnats"],
+general: ["Scale"]
+},
+seasons: {
+spring: {
+optimal_temp: [70, 78],
+night_temp_trigger: [62, 68],
+water_schedule: "Water when top 2 -3  inches of soil is dry"
+},
+summer: {
+optimal_temp: [75, 85],
+night_temp_trigger: [65, 72],
+water_schedule: "Let top 2" dry and check weekly.
+"
+},
+fall: {
+optimal_temp: [68, 74],
+night_temp_trigger: [60, 65],
+water_schedule: "Water when 1/3 of soil is dry"
+},
+winter: {
+optimal_temp: [65, 70],
+night_temp_trigger: [55, 60],
+water_schedule: "Water when 1/2 of soil is dry"
+}
+}
+},
+
+    
     "Rhaphidophora_tetrasperma": {
         name: "Mini Monstera",
         type: "Climbing Vine Aroid",
