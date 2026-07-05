@@ -340,7 +340,13 @@
         .agronomy-card.expanded .plant-details-hidden { display: block; animation: fadeIn 0.3s ease; }
 
         .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
-        .stat-cell { background: rgba(0, 240, 255, 0.15); border: 2px dotted var(--moe-pink); border-radius: 10px; padding: 6px 8px; text-align: center; box-shadow: inset 1px 1px 3px rgba(255,255,255,0.4); }
+
+        /* STATIC (Pink) */
+        .stat-cell-static { background: rgba(255, 133, 194, 0.2); border: 2px dotted var(--moe-pink); border-radius: 10px; padding: 6px 8px; text-align: center; box-shadow: inset 1px 1px 3px rgba(255,255,255,0.4); }
+
+        /* DYNAMIC (Green) */
+        .stat-cell-dynamic { background: rgba(40, 167, 69, 0.2); border: 2px dotted #28a745; border-radius: 10px; padding: 6px 8px; text-align: center; box-shadow: inset 1px 1px 3px rgba(255,255,255,0.4); }
+
         .stat-label-clean { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; color: var(--moe-pink); font-weight: 700; margin-bottom: 2px; text-shadow: 1px 1px 0px white; }
         .stat-value-clean { font-size: 0.85rem; font-weight: 700; text-shadow: 1px 1px 0px white; }
 
@@ -936,7 +942,6 @@ desc = "It is way to hot! Drink lots of water and pay attention to your body tod
             }
         }
 
-        // 🎀 NEW CITY/STATE SMART SEARCH ENGINE 🎀
         async function searchLocation() {
             const query = document.getElementById('search-input').value.trim();
             if (!query) return;
@@ -946,18 +951,14 @@ desc = "It is way to hot! Drink lots of water and pay attention to your body tod
             document.getElementById('loading').innerText = "Searching... 🔍";
 
             try {
-                // 1. Split the text at the comma
                 const [city, state] = query.split(',').map(text => text.trim());
-
-                // 2. Ask the API for up to 10 cities with that name to find the right state
                 const geoUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=10&language=en&format=json`;
                 const geoRes = await fetch(geoUrl);
                 const geoData = await geoRes.json();
 
                 if (geoData.results && geoData.results.length > 0) {
-                    let place = geoData.results[0]; // Default to first result
+                    let place = geoData.results[0]; 
 
-                    // 3. If a state was typed, filter the results to find a match!
                     if (state) {
                         const exactMatch = geoData.results.find(location => 
                             location.admin1 && location.admin1.toLowerCase().includes(state.toLowerCase())
@@ -978,7 +979,6 @@ desc = "It is way to hot! Drink lots of water and pay attention to your body tod
             }
         }
 
-        // ✨ THE AGRONOMY RENDERER WITH NEW GRID LAYOUT ✨
         function renderAgronomy(engineData, expandId = null) {
             const container = document.getElementById('agronomy-list');
             
@@ -987,13 +987,11 @@ desc = "It is way to hot! Drink lots of water and pay attention to your body tod
             engineData.recommendations.forEach(res => {
                 let toxIcon = res.plant.toxic_pets ? "☣︎🐾" : "♡🐾";
 
-                // Cleanse quotes so the alert() works perfectly
                 let pTip = res.primaryTooltip.replace(/'/g, "\\'");
                 let sTip = res.secondaryTooltip.replace(/'/g, "\\'");
 
                 let isExpanded = (res.id === expandId) ? "expanded" : "";
 
-                // 🎀 DYNAMIC LIFECYCLE INPUT 🎀
                 let lifecycleHTML = "";
                 if (res.plant.life_stages) {
                     let currentDays = res.plant.days_since_planted !== undefined ? res.plant.days_since_planted : "";
@@ -1007,6 +1005,13 @@ desc = "It is way to hot! Drink lots of water and pay attention to your body tod
                             </div>
                         </div>
                     `;
+                }
+
+                let waterRaw = res.plant.water_schedule ? res.plant.water_schedule.toUpperCase() : "";
+                let formattedWaterNeeds = waterRaw;
+                if (waterRaw.includes(':')) {
+                    let splitText = waterRaw.split(':');
+                    formattedWaterNeeds = `<span style="color: var(--moe-pink); text-shadow: 1px 1px 0px white;">${splitText[0]}:</span>${splitText[1]}`;
                 }
 
                 container.innerHTML += `
@@ -1035,27 +1040,27 @@ desc = "It is way to hot! Drink lots of water and pay attention to your body tod
                             <div class="plant-details-hidden">
                                 ${lifecycleHTML}
                                 <div class="stat-grid">
-                                    <div class="stat-cell">
+                                    <div class="stat-cell-static">
                                         <div class="stat-label-clean">Ideal VPD</div>
                                         <div class="stat-value-clean">${res.idealVPDText || (Array.isArray(res.plant.vpd_range) ? res.plant.vpd_range[0] + ' - ' + res.plant.vpd_range[1] : 'Split (Day/Night)')}</div>
                                     </div>
-                                    <div class="stat-cell">
+                                    <div class="stat-cell-static">
                                         <div class="stat-label-clean">Temp Limits</div>
                                         <div class="stat-value-clean">${res.plant.temp_floor}° - ${res.plant.temp_ceiling}°</div>
                                     </div>
-                                    <div class="stat-cell">
+                                    <div class="stat-cell-dynamic">
                                         <div class="stat-label-clean">Ideal Temp</div>
                                         <div class="stat-value-clean">${res.plant.optimal_temp[0]}° - ${res.plant.optimal_temp[1]}°</div>
                                     </div>
-                                    <div class="stat-cell">
+                                    <div class="stat-cell-dynamic">
                                         <div class="stat-label-clean">Water Needs</div>
-                                        <div class="stat-value-clean">${res.plant.water_schedule.toUpperCase()}</div>
+                                        <div class="stat-value-clean">${formattedWaterNeeds}</div>
                                     </div>
-                                    <div class="stat-cell">
+                                    <div class="stat-cell-static">
                                         <div class="stat-label-clean">Max Wind</div>
                                         <div class="stat-value-clean">${res.plant.wind_tolerance} mph</div>
                                     </div>
-                                    <div class="stat-cell">
+                                    <div class="stat-cell-static">
                                         <div class="stat-label-clean">Lunar Boost</div>
                                         <div class="stat-value-clean ${res.isLunarBoostActive ? 'lunar-boost-active' : ''}">${res.plant.lunar_affinity.toUpperCase()}</div>
                                     </div>
@@ -1365,4 +1370,3 @@ desc = "It is way to hot! Drink lots of water and pay attention to your body tod
     </script>
 </body>
 </html>
-
