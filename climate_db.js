@@ -89,9 +89,10 @@ const ClimateEngine = {
                 if (seasonStats.night_temp_trigger) activePlant.night_temp_trigger = seasonStats.night_temp_trigger; 
             }
 
-            // 🌱 LIFECYCLE OVERRIDE INJECTION
+            // 🌱 LIFECYCLE OVERRIDE INJECTION (Overrides Seasonal if active)
             if (activePlant.life_stages && activePlant.days_since_planted !== undefined && activePlant.days_since_planted !== null) {
                 const currentDay = parseInt(activePlant.days_since_planted);
+                // Find the highest stage day that is <= the current day
                 let currentStage = activePlant.life_stages[0]; 
                 for (let i = 0; i < activePlant.life_stages.length; i++) {
                     if (currentDay >= activePlant.life_stages[i].day) {
@@ -99,17 +100,20 @@ const ClimateEngine = {
                     }
                 }
                 
+                // Override the base/seasonal stats with the lifecycle stage stats
                 if (currentStage.temp) activePlant.optimal_temp = currentStage.temp;
-                // Formatted string to differentiate Maturity Stage from Water needs in UI
                 if (currentStage.water) activePlant.water_schedule = `${currentStage.stage}: ${currentStage.water}`;
             }
 
             // 🕒 DAY/NIGHT VPD TARGET SWITCHER
-            let currentVPDRange = activePlant.vpd_range || [0.5, 1.5];
+            let currentVPDRange = activePlant.vpd_range || [0.5, 1.5]; // Fallback if missing
             
+            // Check if nested object was used: vpd_range: { day: [], night: [] }
             if (activePlant.vpd_range && !Array.isArray(activePlant.vpd_range)) {
                 currentVPDRange = isDaytime ? activePlant.vpd_range.day : activePlant.vpd_range.night;
-            } else if (isDaytime && activePlant.vpd_range_day) {
+            } 
+            // Check if flat keys were used: vpd_range_day: []
+            else if (isDaytime && activePlant.vpd_range_day) {
                 currentVPDRange = activePlant.vpd_range_day;
             } else if (!isDaytime && activePlant.vpd_range_night) {
                 currentVPDRange = activePlant.vpd_range_night;
@@ -198,14 +202,14 @@ const ClimateEngine = {
 
             if (worstGust >= activePlant.wind_tolerance + 10) {
                 secondaryTag = "WIND HAZARD";
-                secondaryTooltip = "It's too gusty. The leaves will tear or the pot will blow over.";
+                secondaryTooltip = "Too gusty! Leaves will tear";
             } else if (currentVPD < currentVPDRange[0] || rainTotal > 1.0) {
                 if (pData.wet.length > 0) {
                     secondaryTag = "TOO WET / PEST RISK";
                     secondaryTooltip = `Cold/damp conditions! Watch out for: ${pData.wet.join(", ")}.`;
                 } else {
                     secondaryTag = "TOO WET / ROOT ROT";
-                    secondaryTooltip = "It's cold and damp. If you water it, the roots will rot.";
+                    secondaryTooltip = "It's cold and damp! watering may cause root rot!";
                 }
             } else if (currentVPD > currentVPDRange[1]) {
                 if (pData.dry.length > 0) {
@@ -213,7 +217,7 @@ const ClimateEngine = {
                     secondaryTooltip = `Hot/dry air is triggering pests! Check foliage for: ${pData.dry.join(", ")}.`;
                 } else {
                     secondaryTag = "DRY!! WATER & CHECK SOIL";
-                    secondaryTooltip = "The air is sucking the water out of the leaves. Water it now.";
+                    secondaryTooltip = "The air is sucking the water out of the leaves!! Water it now";
                 }
             } else if (activePlant.night_temp_trigger && lowestTemp >= activePlant.night_temp_trigger[0] && lowestTemp <= activePlant.night_temp_trigger[1]) {
                 secondaryTag = "🌸 Ready to Flower";
