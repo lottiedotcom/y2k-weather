@@ -353,8 +353,11 @@
         /* 🎀 DYNAMIC LIFECYCLE BOX 🎀 */
         .lifecycle-box { background: rgba(255, 255, 255, 0.3); border: 2px dashed var(--moe-pink); border-radius: 15px; padding: 8px 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: inset 1px 1px 3px rgba(255,255,255,0.4); }
         .lifecycle-label { font-size: 0.75rem; color: var(--deep-sea); font-weight: 700; text-transform: uppercase; text-shadow: 1px 1px 0px white; }
-        .days-input { width: 50px; padding: 6px; border-radius: 10px; border: 2px solid white; background: var(--inner-bubble); color: var(--moe-pink); font-family: 'Fredoka', sans-serif; font-weight: 900; text-align: center; outline: none; box-shadow: inset 1px 1px 4px rgba(0,240,255,0.2); text-shadow: 1px 1px 0px white;}
+        .lifecycle-input-group { display: flex; align-items: center; gap: 5px; }
+        .days-input { width: 45px; padding: 6px; border-radius: 10px; border: 2px solid white; background: var(--inner-bubble); color: var(--moe-pink); font-family: 'Fredoka', sans-serif; font-weight: 900; text-align: center; outline: none; box-shadow: inset 1px 1px 4px rgba(0,240,255,0.2); text-shadow: 1px 1px 0px white;}
         .days-input::placeholder { color: rgba(255, 133, 194, 0.5); }
+        .lifecycle-btn { background: linear-gradient(135deg, var(--mermaid-aqua), var(--moe-pink)); border: 2px solid white; border-radius: 10px; color: white; font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 0.7rem; padding: 6px 10px; cursor: pointer; box-shadow: 0 2px 5px rgba(0, 240, 255, 0.3); text-shadow: 1px 1px 1px rgba(0,0,0,0.2); transition: 0.2s; }
+        .lifecycle-btn:active { transform: scale(0.9); }
 
         /* 🌿 FLORA SEARCH BAR 🌿 */
         .flora-search-container { margin: 15px 0 10px 0; width: 100%; }
@@ -636,7 +639,7 @@
     <script>
         let myLat = 0;
         let myLon = 0;
-        let lastWeatherState = null; // 🎀 Saves weather data so the lifecycle updates instantly!
+        let lastWeatherState = null;
 
         function switchTab(tabId, btnElement) {
             document.querySelectorAll('.tab-section').forEach(tab => tab.classList.remove('active'));
@@ -645,11 +648,9 @@
             document.getElementById(tabId).classList.add('active');
             btnElement.classList.add('active');
 
-            // 🎀 AUTO-SCROLL TO TOP 🎀
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // 🌿 FUNCTION TO FILTER PLANTS AS YOU TYPE 🌿
         function filterFlora() {
             const query = document.getElementById('flora-search-input').value.toLowerCase();
             const cards = document.querySelectorAll('.agronomy-card');
@@ -673,7 +674,7 @@
                 const newResults = window.ClimateEngine.runAnalysis(
                     state.lat, state.lon, state.weekTempsMin, state.weekTempsMax, state.dailyGusts, state.currentTemp, state.currentHumidity, state.rainTotal, state.moonPhaseStr, state.isDaytime
                 );
-                renderAgronomy(newResults, plantId); // Pass the ID to keep the card open!
+                renderAgronomy(newResults, plantId); 
             }
         }
 
@@ -996,12 +997,14 @@ desc = "It is way to hot! Drink lots of water and pay attention to your body tod
                 let lifecycleHTML = "";
                 if (res.plant.life_stages) {
                     let currentDays = res.plant.days_since_planted !== undefined ? res.plant.days_since_planted : "";
+                    let inputId = `days-input-${res.id}`;
                     lifecycleHTML = `
                         <div class="lifecycle-box" onclick="event.stopPropagation();">
                             <div class="lifecycle-label">🌱 Days Since Planted:</div>
-                            <input type="number" class="days-input" value="${currentDays}" placeholder="0" 
-                                   onchange="updateLifecycle('${res.id}', this.value)" 
-                                   onclick="event.stopPropagation();">
+                            <div class="lifecycle-input-group">
+                                <input type="number" id="${inputId}" class="days-input" value="${currentDays}" placeholder="0" onclick="event.stopPropagation();">
+                                <button class="lifecycle-btn" onclick="event.stopPropagation(); updateLifecycle('${res.id}', document.getElementById('${inputId}').value)">SET</button>
+                            </div>
                         </div>
                     `;
                 }
@@ -1067,7 +1070,6 @@ desc = "It is way to hot! Drink lots of water and pay attention to your body tod
                 `;
             });
 
-            // Re-apply filter if user is actively searching
             filterFlora();
         }
 
@@ -1295,7 +1297,6 @@ desc = "It is way to hot! Drink lots of water and pay attention to your body tod
                     const rainTotal = safeDailyPrecipSum.reduce((a, b) => a + b, 0);
                     const moonPhaseStr = moonData.phaseInfo.n;
                     
-                    // 🎀 SAVE WEATHER STATE SO LIFECYCLE UPDATES INSTANTLY 🎀
                     window.lastWeatherState = { lat: latitude, lon: longitude, weekTempsMin: safeDailyTempsMin, weekTempsMax: safeDailyTempsMax, dailyGusts: safeDailyGusts, currentTemp: currentTemp, currentHumidity: currentHumidity, rainTotal: rainTotal, moonPhaseStr: moonPhaseStr, isDaytime: isDaytime };
 
                     const agronomyResults = window.ClimateEngine.runAnalysis(
@@ -1364,4 +1365,3 @@ desc = "It is way to hot! Drink lots of water and pay attention to your body tod
     </script>
 </body>
 </html>
-
