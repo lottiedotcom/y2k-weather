@@ -202,14 +202,14 @@ const ClimateEngine = {
 
             if (worstGust >= activePlant.wind_tolerance + 10) {
                 secondaryTag = "WIND HAZARD";
-                secondaryTooltip = "Too gusty! Leaves will tear";
+                secondaryTooltip = "It's too gusty. The leaves will tear or the pot will blow over.";
             } else if (currentVPD < currentVPDRange[0] || rainTotal > 1.0) {
                 if (pData.wet.length > 0) {
                     secondaryTag = "TOO WET / PEST RISK";
                     secondaryTooltip = `Cold/damp conditions! Watch out for: ${pData.wet.join(", ")}.`;
                 } else {
                     secondaryTag = "TOO WET / ROOT ROT";
-                    secondaryTooltip = "It's cold and damp! watering may cause root rot!";
+                    secondaryTooltip = "It's cold and damp. If you water it, the roots will rot.";
                 }
             } else if (currentVPD > currentVPDRange[1]) {
                 if (pData.dry.length > 0) {
@@ -217,7 +217,7 @@ const ClimateEngine = {
                     secondaryTooltip = `Hot/dry air is triggering pests! Check foliage for: ${pData.dry.join(", ")}.`;
                 } else {
                     secondaryTag = "DRY!! WATER & CHECK SOIL";
-                    secondaryTooltip = "The air is sucking the water out of the leaves!! Water it now";
+                    secondaryTooltip = "The air is sucking the water out of the leaves. Water it now.";
                 }
             } else if (activePlant.night_temp_trigger && lowestTemp >= activePlant.night_temp_trigger[0] && lowestTemp <= activePlant.night_temp_trigger[1]) {
                 secondaryTag = "🌸 Ready to Flower";
