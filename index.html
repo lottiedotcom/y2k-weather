@@ -336,18 +336,11 @@
         
         .plant-reason { font-size: 0.75rem; color: var(--deep-sea); line-height: 1.25; text-shadow: 1px 1px 0px rgba(255,255,255,0.8); }
 
-        /* 🎀 CLEAN STATS GRID 🎀 */
         .plant-details-hidden { display: none; width: 100%; margin-top: 10px; padding-top: 10px; border-top: 2px dotted rgba(255,255,255,0.5); color: var(--deep-sea); }
         .agronomy-card.expanded .plant-details-hidden { display: block; animation: fadeIn 0.3s ease; }
 
         .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
-
-        /* STATIC (Pink) */
-        .stat-cell-static { background: rgba(255, 133, 194, 0.2); border: 2px dotted var(--moe-pink); border-radius: 10px; padding: 6px 8px; text-align: center; box-shadow: inset 1px 1px 3px rgba(255,255,255,0.4); }
-
-        /* DYNAMIC (Green) */
-        .stat-cell-dynamic { background: rgba(40, 167, 69, 0.2); border: 2px dotted #28a745; border-radius: 10px; padding: 6px 8px; text-align: center; box-shadow: inset 1px 1px 3px rgba(255,255,255,0.4); }
-
+        .stat-cell { background: rgba(0, 240, 255, 0.15); border: 2px dotted var(--moe-pink); border-radius: 10px; padding: 6px 8px; text-align: center; box-shadow: inset 1px 1px 3px rgba(255,255,255,0.4); }
         .stat-label-clean { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; color: var(--moe-pink); font-weight: 700; margin-bottom: 2px; text-shadow: 1px 1px 0px white; }
         .stat-value-clean { font-size: 0.85rem; font-weight: 700; text-shadow: 1px 1px 0px white; }
 
@@ -1042,27 +1035,27 @@ desc = "It is way to hot! Drink lots of water and pay attention to your body tod
                             <div class="plant-details-hidden">
                                 ${lifecycleHTML}
                                 <div class="stat-grid">
-                                    <div class="stat-cell-static">
+                                    <div class="stat-cell">
                                         <div class="stat-label-clean">Ideal VPD</div>
-                                        <div class="stat-value-clean">${res.idealVPDText || 'N/A'}</div>
+                                        <div class="stat-value-clean">${res.idealVPDText || (Array.isArray(res.plant.vpd_range) ? res.plant.vpd_range[0] + ' - ' + res.plant.vpd_range[1] : 'Split (Day/Night)')}</div>
                                     </div>
-                                    <div class="stat-cell-static">
+                                    <div class="stat-cell">
                                         <div class="stat-label-clean">Temp Limits</div>
                                         <div class="stat-value-clean">${res.plant.temp_floor}° - ${res.plant.temp_ceiling}°</div>
                                     </div>
-                                    <div class="stat-cell-dynamic">
+                                    <div class="stat-cell">
                                         <div class="stat-label-clean">Ideal Temp</div>
                                         <div class="stat-value-clean">${res.plant.optimal_temp[0]}° - ${res.plant.optimal_temp[1]}°</div>
                                     </div>
-                                    <div class="stat-cell-dynamic">
+                                    <div class="stat-cell">
                                         <div class="stat-label-clean">Water Needs</div>
                                         <div class="stat-value-clean">${res.plant.water_schedule.toUpperCase()}</div>
                                     </div>
-                                    <div class="stat-cell-static">
+                                    <div class="stat-cell">
                                         <div class="stat-label-clean">Max Wind</div>
                                         <div class="stat-value-clean">${res.plant.wind_tolerance} mph</div>
                                     </div>
-                                    <div class="stat-cell-static">
+                                    <div class="stat-cell">
                                         <div class="stat-label-clean">Lunar Boost</div>
                                         <div class="stat-value-clean ${res.isLunarBoostActive ? 'lunar-boost-active' : ''}">${res.plant.lunar_affinity.toUpperCase()}</div>
                                     </div>
@@ -1372,3 +1365,4 @@ desc = "It is way to hot! Drink lots of water and pay attention to your body tod
     </script>
 </body>
 </html>
+
