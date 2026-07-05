@@ -4,52 +4,6 @@ const floraDB = {
     // ==========================================
     // 🌿 CATEGORY 1: THE INDOOR JUNGLE
     // ==========================================
-"monstera_deliciosa": {
-name: "Monstera",
-type: "Climbing Vine",
-metabolism: "c3",
-toxic_pets: true,
-lunar_affinity: "waxing",
-stamp_img: "monstera.png",
-temp_floor: 50,
-temp_ceiling: 95,
-optimal_temp: [70, 85],
-min_humidity: 50,
-vpd_range: [0.8, 1.2],
-water_frequency: "moderate",
-water_schedule: "Water when top 2-3 inches of soil is dry!",
-wind_tolerance: 15,
-pest_risks: {
-dry: ["Spider Mites", "Thrips"],
-wet: ["Mealybugs", "Fungus Gnats"],
-general: ["Scale"]
-},
-seasons: {
-spring: {
-optimal_temp: [70, 78],
-night_temp_trigger: [62, 68],
-water_schedule: "Water when top 2 -3  inches of soil is dry"
-},
-summer: {
-optimal_temp: [75, 85],
-night_temp_trigger: [65, 72],
-water_schedule: "Let top 2" dry and check weekly.
-"
-},
-fall: {
-optimal_temp: [68, 74],
-night_temp_trigger: [60, 65],
-water_schedule: "Water when 1/3 of soil is dry"
-},
-winter: {
-optimal_temp: [65, 70],
-night_temp_trigger: [55, 60],
-water_schedule: "Water when 1/2 of soil is dry"
-}
-}
-},
-
-    
     "Rhaphidophora_tetrasperma": {
         name: "Mini Monstera",
         type: "Climbing Vine Aroid",
@@ -77,7 +31,7 @@ water_schedule: "Water when 1/2 of soil is dry"
             winter: { optimal_temp: [65, 70], night_temp_trigger: [58, 62], water_schedule: "Water when 1/2 of soil is dry" }
         }
     },
-
+    
     "epipremnum_aureum": {
         name: "Golden Pothos",
         type: "Tropical Epiphyte",
@@ -128,52 +82,64 @@ water_schedule: "Water when 1/2 of soil is dry"
         }
     },
 
+    "maranta_leuconeura": {
+        name: "Red Prayer Plant",
+        type: "Tropical Calathea",
+        metabolism: "c3", 
+        toxic_pets: false, 
+        lunar_affinity: "waxing", 
+        stamp_img: "redprayer.png",
+        temp_floor: 55, 
+        temp_ceiling: 90, 
+        optimal_temp: [65, 80], 
+        min_humidity: 50,
+        vpd_range: [0.6, 1.0], 
+        water_frequency: "moderate", 
+        water_schedule: "When top 1 inch is dry", 
+        wind_tolerance: 10, 
+        pest_risks: {
+            dry: ["Spider Mites"], 
+            wet: ["Root Rot", "Bacterial Leaf Spot", "Foliar Mealybugs", "Fungus Gnats" ], 
+            general: ["Aphids", "Whiteflies", "Scale", "Mealybugs"]
+        },
+        seasons: {
+            spring: { optimal_temp: [68, 75], night_temp_trigger: [55, 60], water_schedule: "When top 1 inch is dry" },
+            summer: { optimal_temp: [75, 80], night_temp_trigger: [60, 65], water_schedule: "When top inch is dry" },
+            fall:   { optimal_temp: [65, 75], night_temp_trigger: [55, 60], water_schedule: "When top 1.5 - 2 inches is dry" },
+            winter: { optimal_temp: [60, 65], night_temp_trigger: [55, 60], water_schedule: "Wait til dry then water fully" }
+        }
+    },
+
     // ==========================================
     // 🌵 CATEGORY 2: THE DESERT HARDY
     // ==========================================
-"zamioculcas zamiifolia": {
-name: "ZZ Plant",
-type: "Succulent",
-metabolism: "cam",
-toxic_pets: true,
-lunar_affinity: "new",
-stamp_img: "zzplant.png",
-temp_floor: 35,
-temp_ceiling: 100,
-optimal_temp: [72, 80],
-min_humidity: 45,
-vpd_range: [0.8, 1.4],
-water_frequency: "low",
-water_schedule: "Water when soil is dry!",
-wind_tolerance: 20,
-pest_risks: {
-dry: ["Spider Mites", "Thrips"],
-wet: ["Mealybugs", "Fungus Gnats"],
-general: ["Scale", "Aphids"]
-},
-seasons: {
-spring: {
-optimal_temp: [70, 80],
-night_temp_trigger: [60, 65],
-water_schedule: "Let soil dry out and water fully!"
-},
-summer: {
-optimal_temp: [75, 90],
-night_temp_trigger: [65, 70],
-water_schedule: "Let soil dry out completely, check monthly!"
-},
-fall: {
-optimal_temp: [70, 75],
-night_temp_trigger: [65, 70],
-water_schedule: "Water every 6 weeks"
-},
-winter: {
-optimal_temp: [65, 70],
-night_temp_trigger: [50, 55],
-water_schedule: "Water once every 2 months"
-}
-}
-},
+    "zamioculcas_zamiifolia": {
+        name: "ZZ Plant",
+        type: "Succulent",
+        metabolism: "cam",
+        toxic_pets: true,
+        lunar_affinity: "new",
+        stamp_img: "zzplant.png",
+        temp_floor: 35,
+        temp_ceiling: 100,
+        optimal_temp: [72, 80],
+        min_humidity: 45,
+        vpd_range: [0.8, 1.4],
+        water_frequency: "low",
+        water_schedule: "Water when soil is dry!",
+        wind_tolerance: 20,
+        pest_risks: {
+            dry: ["Spider Mites", "Thrips"],
+            wet: ["Mealybugs", "Fungus Gnats"],
+            general: ["Scale", "Aphids"]
+        },
+        seasons: {
+            spring: { optimal_temp: [70, 80], night_temp_trigger: [60, 65], water_schedule: "Let soil dry out and water fully!" },
+            summer: { optimal_temp: [75, 90], night_temp_trigger: [65, 70], water_schedule: "Let soil dry out completely, check monthly!" },
+            fall:   { optimal_temp: [70, 75], night_temp_trigger: [65, 70], water_schedule: "Water every 6 weeks" },
+            winter: { optimal_temp: [65, 70], night_temp_trigger: [50, 55], water_schedule: "Water once every 2 months" }
+        }
+    },
     
     "dracaena_trifasciata": {
         name: "Snake Plant",
@@ -411,4 +377,3 @@ window.floraDB = floraDB;
         ]
     }
 */
-
