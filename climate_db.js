@@ -89,7 +89,23 @@ const ClimateEngine = {
                 if (seasonStats.night_temp_trigger) activePlant.night_temp_trigger = seasonStats.night_temp_trigger; 
             }
 
-            // 🕒 DAY/NIGHT VPD TARGET SWITCHER (Bulletproofed!)
+            // 🌱 LIFECYCLE OVERRIDE INJECTION (Overrides Seasonal if active)
+            if (activePlant.life_stages && activePlant.days_since_planted !== undefined && activePlant.days_since_planted !== null) {
+                const currentDay = parseInt(activePlant.days_since_planted);
+                // Find the highest stage day that is <= the current day
+                let currentStage = activePlant.life_stages[0]; 
+                for (let i = 0; i < activePlant.life_stages.length; i++) {
+                    if (currentDay >= activePlant.life_stages[i].day) {
+                        currentStage = activePlant.life_stages[i];
+                    }
+                }
+                
+                // Override the base/seasonal stats with the lifecycle stage stats
+                if (currentStage.temp) activePlant.optimal_temp = currentStage.temp;
+                if (currentStage.water) activePlant.water_schedule = `${currentStage.stage}: ${currentStage.water}`;
+            }
+
+            // 🕒 DAY/NIGHT VPD TARGET SWITCHER
             let currentVPDRange = activePlant.vpd_range || [0.5, 1.5]; // Fallback if missing
             
             // Check if nested object was used: vpd_range: { day: [], night: [] }
@@ -133,7 +149,7 @@ const ClimateEngine = {
                 comfortScore = Math.min(100, Math.round(comfortScore * 1.25)); 
             }
 
-            // 🔬 LIVE STOMATAL RESPIRATION TRACKER (CLEAN & PUNCHY)
+            // 🔬 LIVE STOMATAL RESPIRATION TRACKER
             let respirationStatus = "Status unknown";
             const plantMetabolism = activePlant.metabolism ? activePlant.metabolism.toLowerCase() : "c3"; 
 
@@ -245,4 +261,3 @@ const ClimateEngine = {
 };
 
 window.ClimateEngine = ClimateEngine;
-
