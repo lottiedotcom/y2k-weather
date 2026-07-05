@@ -658,7 +658,7 @@
 
     <div id="radar-modal" class="modal">
         <div class="modal-content">
-            <div class="close-radar-btn" onclick="closeRadar()">🌠 CLOSE RADAR </div>
+            <div class="close-radar-btn" onclick="closeRadar()">🌈 CLOSE RADAR </div>
             <iframe id="radar-frame" src=""></iframe>
         </div>
     </div>
@@ -672,7 +672,6 @@
     </div>
 
     <script>
-        // 📖 UPDATED PLANT DIARY MANAGER LOGIC 📖
         const DiaryManager = {
             getPinned: function() {
                 return JSON.parse(localStorage.getItem('plantDiary')) || {};
@@ -689,7 +688,6 @@
                 if (data[plantId]) {
                     delete data[plantId]; 
                 } else {
-                    // FIX: Save 0 so it defaults as completely dry (High Priority Shelf)
                     data[plantId] = { lastWatered: 0 }; 
                 }
                 this.savePinned(data);
@@ -845,22 +843,15 @@
 
                     let targetTier = tier3; 
                     
-                    // FIX: The Smart Math
                     if (data[id].lastWatered === 0) {
-                        // Needs water IMMEDIATELY because it's a new pin
                         targetTier = tier1; 
                     } else if (daysSinceWatered < 1.5) {
-                        // Grace Period: If we watered it in the last ~36 hours, 
-                        // force it to stay on the hydrated bottom shelf so it visually moves!
                         targetTier = tier3; 
                     } else if (daysUntilWatering <= 3) {
-                        // Needs water in 3 days or less
                         targetTier = tier1; 
                     } else if (daysUntilWatering <= 7 || daysSinceWatered >= (freq / 2)) {
-                        // Needs water in 4 to 7 days, OR it's halfway through its cycle
                         targetTier = tier2; 
                     } else {
-                        // Doesn't need water anytime soon
                         targetTier = tier3; 
                     }
 
@@ -875,7 +866,6 @@
             }
         };
         window.DiaryManager = DiaryManager;
-        // ----------------------------------------------------
 
         let myLat = 0;
         let myLon = 0;
@@ -1326,64 +1316,91 @@ desc = "It is way to hot! Drink lots of water and pay attention to your body tod
             filterFlora();
         }
 
-        async function fetchWeatherData(latitude, longitude) {
+        async function fetchWeatherData(latitude, longitude, cachedSession = null) {
             try {
+                let sunData = null, weatherData = null, aqiData = null;
                 let sunsetUtc = null;
-                try {
-                    const sunUrl = `https://api.sunrise-sunset.org/json?lat=${latitude}&lng=${longitude}&formatted=0`;
-                    const sunRes = await fetch(sunUrl);
-                    const sunData = await sunRes.json();
-                    sunsetUtc = sunData.results.sunset;
+
+                if (cachedSession) {
+                    sunData = cachedSession.sunData;
+                    weatherData = cachedSession.weatherData;
+                    aqiData = cachedSession.aqiData;
+                    sunsetUtc = sunData?.results?.sunset || null;
+                    
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('weather-content').style.display = 'block';
+                } else {
+                    try {
+                        const sunUrl = `https://api.sunrise-sunset.org/json?lat=${latitude}&lng=${longitude}&formatted=0`;
+                        const sunRes = await fetch(sunUrl);
+                        sunData = await sunRes.json();
+                        sunsetUtc = sunData.results.sunset;
+                    } catch (e) {
+                        console.error("Sun API failed");
+                    }
+
+                    const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,dew_point_2m,surface_pressure,wind_speed_10m,wind_gusts_10m,weather_code,uv_index,visibility,cloud_cover,cloud_cover_low,cloud_cover_mid,cloud_cover_high,is_day&hourly=temperature_2m,weather_code,precipitation_probability,precipitation,cloud_cover,surface_pressure&minutely_15=precipitation&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,uv_index_max,wind_speed_10m_max,wind_gusts_10m_max&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=auto&models=best_match`;
+                    const response = await fetch(weatherUrl);
+                    weatherData = await response.json();
+                    
+                    try {
+                        const aqiUrl = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${latitude}&longitude=${longitude}&current=us_aqi,pm10,pm2_5,ozone&timezone=auto`;
+                        const aqiRes = await fetch(aqiUrl);
+                        aqiData = await aqiRes.json();
+                    } catch (e) {
+                        console.log("AQI data unavailable for this location.");
+                    }
+
+                    // CACHE IT 
+                    const locName = document.getElementById('location-name').innerText;
+                    localStorage.setItem('weatherSession', JSON.stringify({
+                        lat: latitude, lon: longitude, locName: locName,
+                        sunData: sunData, weatherData: weatherData, aqiData: aqiData
+                    }));
+                }
+
+                // ==================================
+                // UI RENDERING BELOW
+                // ==================================
+
+                if (sunData && sunData.results) {
                     document.getElementById('sunrise').innerText = formatSunTime(sunData.results.sunrise);
-                    document.getElementById('sunset').innerText = formatSunTime(sunsetUtc);
-                    document.getElementById('golden-hour').innerText = getGoldenHour(sunsetUtc);
-                } catch (e) {
+                    document.getElementById('sunset').innerText = formatSunTime(sunData.results.sunset);
+                    document.getElementById('golden-hour').innerText = getGoldenHour(sunData.results.sunset);
+                } else {
                     document.getElementById('sunrise').innerText = "--:--";
                     document.getElementById('sunset').innerText = "--:--";
                     document.getElementById('golden-hour').innerText = "--:--";
                 }
 
-                const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,dew_point_2m,surface_pressure,wind_speed_10m,wind_gusts_10m,weather_code,uv_index,visibility,cloud_cover,cloud_cover_low,cloud_cover_mid,cloud_cover_high,is_day&hourly=temperature_2m,weather_code,precipitation_probability,precipitation,cloud_cover,surface_pressure&minutely_15=precipitation&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,uv_index_max,wind_speed_10m_max,wind_gusts_10m_max&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=auto&models=best_match`;
-                const response = await fetch(weatherUrl);
-                const data = await response.json();
-                
-                let aqiData = null;
                 let aqiStatus = "-- (No Data)", pm25Status = "--", pm10Status = "--", ozoneStatus = "--";
-                try {
-                    const aqiUrl = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${latitude}&longitude=${longitude}&current=us_aqi,pm10,pm2_5,ozone&timezone=auto`;
-                    const aqiRes = await fetch(aqiUrl);
-                    aqiData = await aqiRes.json();
-                    
-                    if (aqiData && aqiData.current) {
-                        const aqi = aqiData.current.us_aqi || "--";
-                        if (aqi !== "--") {
-                            aqiStatus = `${aqi} (Good 🌄)`;
-                            if (aqi > 50) aqiStatus = `${aqi} (Moderate 🌫️)`;
-                            if (aqi > 100) aqiStatus = `${aqi} (Poor ⚠️)`;
-                            if (aqi > 150) aqiStatus = `${aqi} (Hazardous 🚫)`;
-                        }
-
-                        const pm25 = aqiData.current.pm2_5 || "--";
-                        if (pm25 !== "--") pm25Status = pm25 > 35 ? "High ⚠️" : pm25 > 12 ? "Moderate 🍂" : "Low 🍃";
-
-                        const pm10 = aqiData.current.pm10 || "--";
-                        if (pm10 !== "--") pm10Status = pm10 > 154 ? "High ⚠️" : pm10 > 54 ? "Moderate 🍂" : "Low 🍃";
-
-                        const ozone = aqiData.current.ozone || "--";
-                        if (ozone !== "--") ozoneStatus = ozone > 120 ? "High ⚠️" : ozone > 60 ? "Moderate ☁️" : "Low 🌸";
-                        
-                        document.getElementById('aqi-pm25').innerText = pm25 !== "--" ? `${pm25} μg/m³ (${pm25Status})` : "--";
-                        document.getElementById('aqi-pm10').innerText = pm10 !== "--" ? `${pm10} μg/m³ (${pm10Status})` : "--";
-                        document.getElementById('aqi-ozone').innerText = ozone !== "--" ? `${ozone} μg/m³ (${ozoneStatus})` : "--";
+                if (aqiData && aqiData.current) {
+                    const aqi = aqiData.current.us_aqi || "--";
+                    if (aqi !== "--") {
+                        aqiStatus = `${aqi} (Good 🌄)`;
+                        if (aqi > 50) aqiStatus = `${aqi} (Moderate 🌫️)`;
+                        if (aqi > 100) aqiStatus = `${aqi} (Poor ⚠️)`;
+                        if (aqi > 150) aqiStatus = `${aqi} (Hazardous 🚫)`;
                     }
-                } catch (e) {
-                    console.log("AQI data unavailable for this location.");
+
+                    const pm25 = aqiData.current.pm2_5 || "--";
+                    if (pm25 !== "--") pm25Status = pm25 > 35 ? "High ⚠️" : pm25 > 12 ? "Moderate 🍂" : "Low 🍃";
+
+                    const pm10 = aqiData.current.pm10 || "--";
+                    if (pm10 !== "--") pm10Status = pm10 > 154 ? "High ⚠️" : pm10 > 54 ? "Moderate 🍂" : "Low 🍃";
+
+                    const ozone = aqiData.current.ozone || "--";
+                    if (ozone !== "--") ozoneStatus = ozone > 120 ? "High ⚠️" : ozone > 60 ? "Moderate ☁️" : "Low 🌸";
+                    
+                    document.getElementById('aqi-pm25').innerText = pm25 !== "--" ? `${pm25} μg/m³ (${pm25Status})` : "--";
+                    document.getElementById('aqi-pm10').innerText = pm10 !== "--" ? `${pm10} μg/m³ (${pm10Status})` : "--";
+                    document.getElementById('aqi-ozone').innerText = ozone !== "--" ? `${ozone} μg/m³ (${ozoneStatus})` : "--";
                 }
                 document.getElementById('aqi-score').innerText = aqiStatus;
 
-                const current = data.current || {};
-                const daily = data.daily || {};
-                const hourly = data.hourly || {};
+                const current = weatherData.current || {};
+                const daily = weatherData.daily || {};
+                const hourly = weatherData.hourly || {};
 
                 const currentTemp = Math.round(current.temperature_2m || 50);
                 document.getElementById('temp').innerText = currentTemp + "°";
@@ -1445,19 +1462,19 @@ desc = "It is way to hot! Drink lots of water and pay attention to your body tod
                 const minList = document.getElementById('minutely-list');
                 minList.innerHTML = '';
                 
-                if (data.minutely_15 && data.minutely_15.time && data.minutely_15.time.length > 0) {
+                if (weatherData.minutely_15 && weatherData.minutely_15.time && weatherData.minutely_15.time.length > 0) {
                     const nowMs = Date.now();
                     let minStartIndex = 0;
                     
-                    for(let i=0; i < data.minutely_15.time.length; i++) {
-                        if(new Date(data.minutely_15.time[i]).getTime() >= nowMs - (15 * 60000)) { 
+                    for(let i=0; i < weatherData.minutely_15.time.length; i++) {
+                        if(new Date(weatherData.minutely_15.time[i]).getTime() >= nowMs - (15 * 60000)) { 
                             minStartIndex = i;
                             break;
                         }
                     }
 
                     for(let i=0; i<4; i++){
-                        let pVal = data.minutely_15.precipitation[minStartIndex + i] || 0;
+                        let pVal = weatherData.minutely_15.precipitation[minStartIndex + i] || 0;
                         let timeLabel = `+${(i+1)*15}m`;
                         let valText = pVal > 0 ? `${pVal}"` : '0"';
                         let textColor = pVal > 0 ? 'var(--mermaid-aqua)' : 'var(--deep-sea)';
@@ -1576,14 +1593,19 @@ desc = "It is way to hot! Drink lots of water and pay attention to your body tod
             document.getElementById('loading').style.display = 'block';
             document.getElementById('weather-content').style.display = 'none';
 
+            // By default, if the user manually fired this via a button, we don't pass cachedSession 
+            // to fetchWeatherData, forcing a fresh API grab.
+
             if (overrideLat !== null && overrideLon !== null) {
                 myLat = overrideLat;
                 myLon = overrideLon;
                 document.getElementById('location-name').innerText = `📍 ${customName}`;
                 document.getElementById('loading').innerText = "Downloading data... 🌺";
-                await fetchWeatherData(myLat, myLon);
+                await fetchWeatherData(myLat, myLon); // Fresh API grab
             } else {
-                document.getElementById('loading').innerText = "Locating... 📍";
+                document.getElementById('location-name').innerText = "Scanning... (◕‿◕✿)";
+                document.getElementById('loading').innerHTML = "Locating... 📍<br><span style='font-size:0.7rem; color:white; text-shadow:none;'>Please allow location access</span>";
+                
                 if (navigator.geolocation) {
                     navigator.geolocation.getCurrentPosition(async (position) => {
                         myLat = position.coords.latitude;
@@ -1600,18 +1622,50 @@ desc = "It is way to hot! Drink lots of water and pay attention to your body tod
                             document.getElementById('location-name').innerText = `📍 Lost in the waves`;
                         }
                         
-                        await fetchWeatherData(myLat, myLon);
+                        await fetchWeatherData(myLat, myLon); // Fresh API grab
                     }, (err) => {
-                        document.getElementById('loading').innerText = "Location disabled! Type a city above. 🌸";
+                        document.getElementById('loading').innerHTML = "Location disabled! Type a city above. 🌸";
                     }, { enableHighAccuracy: true, timeout: 10000 });
                 } else {
-                    document.getElementById('loading').innerText = "GPS not supported! Use the search bar. 🌸";
+                    document.getElementById('loading').innerHTML = "GPS not supported! Use the search bar. 🌸";
                 }
             }
         }
 
+        function showLocatePrompt() {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('weather-content').style.display = 'none';
+            document.getElementById('location-name').innerText = "Standby... 🌺";
+            document.getElementById('loading').innerHTML = `
+                <div style="margin: 30px 0;">
+                    <button class="refresh-btn" onclick="fetchWeather()" style="font-size: 1.2rem; padding: 15px 30px; animation: bounce 2s infinite;">📍 CLICK TO LOCATE!</button>
+                    <div style="font-size: 0.75rem; margin-top: 15px; color: white; opacity: 0.8; text-shadow: 1px 1px 2px rgba(0,0,0,0.5); line-height: 1.4;">
+                        Location is stored securely on your device.<br>No background tracking! 🫧
+                    </div>
+                </div>
+            `;
+        }
+
         window.addEventListener('load', () => {
-            fetchWeather();
+            const cachedData = localStorage.getItem('weatherSession');
+            
+            if (cachedData) {
+                try {
+                    const parsedSession = JSON.parse(cachedData);
+                    myLat = parsedSession.lat;
+                    myLon = parsedSession.lon;
+                    document.getElementById('location-name').innerText = parsedSession.locName || "📍 Saved Location";
+                    
+                    // Call fetchWeatherData instantly using the memory cache
+                    fetchWeatherData(myLat, myLon, parsedSession);
+                } catch(e) {
+                    showLocatePrompt();
+                }
+            } else {
+                // First time user OR cache cleared
+                showLocatePrompt();
+            }
+
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.register('sw.js')
                     .then(registration => console.log('ServiceWorker registered! 🫧'))
