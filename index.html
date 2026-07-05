@@ -321,7 +321,6 @@
         .plant-stamp { width: 70px; height: 70px; border-radius: 10px; border: 2px dashed white; object-fit: cover; background: var(--bubble-glass); flex-shrink: 0; box-shadow: 0 0 5px var(--mermaid-aqua); }
         .plant-info { flex: 1; min-width: 0; }
         
-        /* 📍 UPDATED PIN BUTTON AND NAME LAYOUT 📍 */
         .plant-name-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 5px; width: 100%;}
         .plant-name { font-weight: 700; color: var(--deep-sea); font-size: 0.95rem; text-shadow: 1px 1px 0px white; display: flex; align-items: center; gap: 5px; }
         .plant-toxicity { font-size: 0.85rem; filter: drop-shadow(1px 1px 0px white); }
@@ -347,10 +346,7 @@
 
         .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
 
-        /* STATIC (Pink) */
         .stat-cell-static { background: rgba(255, 133, 194, 0.2); border: 2px dotted var(--moe-pink); border-radius: 10px; padding: 6px 8px; text-align: center; box-shadow: inset 1px 1px 3px rgba(255,255,255,0.4); }
-
-        /* DYNAMIC (Green) */
         .stat-cell-dynamic { background: rgba(40, 167, 69, 0.2); border: 2px dotted #28a745; border-radius: 10px; padding: 6px 8px; text-align: center; box-shadow: inset 1px 1px 3px rgba(255,255,255,0.4); }
 
         .stat-label-clean { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; color: var(--moe-pink); font-weight: 700; margin-bottom: 2px; text-shadow: 1px 1px 0px white; }
@@ -359,10 +355,8 @@
         .metabolism-box { background: rgba(0, 240, 255, 0.15); border: 2px dotted var(--moe-pink); border-radius: 10px; padding: 8px; text-align: center; box-shadow: inset 1px 1px 3px rgba(255,255,255,0.4); }
         .metabolism-text { font-size: 0.8rem; line-height: 1.3; margin-top: 3px; font-weight: 700; text-shadow: 1px 1px 0px white; }
 
-        /* 🎀 LUNAR GLOW EFFECT 🎀 */
         .lunar-boost-active { color: var(--moe-pink); text-shadow: 0 0 8px var(--moe-pink), 0 0 15px var(--moe-pink); font-weight: 900; }
 
-        /* 🎀 DYNAMIC LIFECYCLE BOX 🎀 */
         .lifecycle-box { background: rgba(255, 255, 255, 0.3); border: 2px dashed var(--moe-pink); border-radius: 15px; padding: 8px 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: inset 1px 1px 3px rgba(255,255,255,0.4); }
         .lifecycle-label { font-size: 0.75rem; color: var(--deep-sea); font-weight: 700; text-transform: uppercase; text-shadow: 1px 1px 0px white; }
         .lifecycle-input-group { display: flex; align-items: center; gap: 5px; }
@@ -371,7 +365,6 @@
         .lifecycle-btn { background: linear-gradient(135deg, var(--mermaid-aqua), var(--moe-pink)); border: 2px solid white; border-radius: 10px; color: white; font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 0.7rem; padding: 6px 10px; cursor: pointer; box-shadow: 0 2px 5px rgba(0, 240, 255, 0.3); text-shadow: 1px 1px 1px rgba(0,0,0,0.2); transition: 0.2s; }
         .lifecycle-btn:active { transform: scale(0.9); }
 
-        /* 🌿 FLORA SEARCH BAR 🌿 */
         .flora-search-container { margin: 0 0 15px 0; width: 100%; }
         #flora-search-input { width: 100%; box-sizing: border-box; padding: 10px 15px; border-radius: 20px; border: 2px solid white; background: var(--inner-bubble); color: var(--deep-sea); font-family: 'Fredoka', sans-serif; font-weight: 700; outline: none; box-shadow: inset 1px 1px 5px rgba(0, 240, 255, 0.1); text-shadow: 1px 1px 0px white; }
         #flora-search-input::placeholder { color: var(--moe-pink); opacity: 0.8; text-shadow: none; }
@@ -679,7 +672,7 @@
     </div>
 
     <script>
-        // 📖 PLANT DIARY MANAGER LOGIC EMBEDDED 📖
+        // 📖 UPDATED PLANT DIARY MANAGER LOGIC 📖
         const DiaryManager = {
             getPinned: function() {
                 return JSON.parse(localStorage.getItem('plantDiary')) || {};
@@ -696,7 +689,8 @@
                 if (data[plantId]) {
                     delete data[plantId]; 
                 } else {
-                    data[plantId] = { lastWatered: Date.now() }; 
+                    // FIX: Save 0 so it defaults as completely dry (High Priority Shelf)
+                    data[plantId] = { lastWatered: 0 }; 
                 }
                 this.savePinned(data);
                 
@@ -839,22 +833,35 @@
                     const plantData = window.floraDB[id];
                     if (!plantData) return;
 
-                    const msSinceWatered = now - data[id].lastWatered;
-                    const daysSinceWatered = msSinceWatered / (1000 * 60 * 60 * 24);
-
                     let freq = 14; 
                     if (plantData.water_frequency === "high") freq = 3;
                     else if (plantData.water_frequency === "moderate") freq = 7;
                     else if (plantData.water_frequency === "low") freq = 14;
                     else if (plantData.water_frequency === "very_low") freq = 30;
 
+                    const msSinceWatered = now - data[id].lastWatered;
+                    const daysSinceWatered = msSinceWatered / (1000 * 60 * 60 * 24);
                     const daysUntilWatering = freq - daysSinceWatered;
 
                     let targetTier = tier3; 
-                    if (daysUntilWatering <= 3) {
+                    
+                    // FIX: The Smart Math
+                    if (data[id].lastWatered === 0) {
+                        // Needs water IMMEDIATELY because it's a new pin
                         targetTier = tier1; 
-                    } else if (daysUntilWatering <= 7) {
+                    } else if (daysSinceWatered < 1.5) {
+                        // Grace Period: If we watered it in the last ~36 hours, 
+                        // force it to stay on the hydrated bottom shelf so it visually moves!
+                        targetTier = tier3; 
+                    } else if (daysUntilWatering <= 3) {
+                        // Needs water in 3 days or less
+                        targetTier = tier1; 
+                    } else if (daysUntilWatering <= 7 || daysSinceWatered >= (freq / 2)) {
+                        // Needs water in 4 to 7 days, OR it's halfway through its cycle
                         targetTier = tier2; 
+                    } else {
+                        // Doesn't need water anytime soon
+                        targetTier = tier3; 
                     }
 
                     const stampHTML = `
@@ -881,7 +888,6 @@
             document.getElementById(tabId).classList.add('active');
             btnElement.classList.add('active');
 
-            // Hide the global weather search if we are in the Flora tab
             if (tabId === 'tab-flora') {
                 document.getElementById('weather-search-box').style.display = 'none';
             } else {
@@ -905,7 +911,6 @@
             });
         }
 
-        // 🌱 DYNAMIC LIFECYCLE UPDATER 🌱
         function updateLifecycle(plantId, days) {
             window.floraDB[plantId].days_since_planted = days ? parseInt(days) : 0;
             
@@ -1216,7 +1221,6 @@ desc = "It is way to hot! Drink lots of water and pay attention to your body tod
         function renderAgronomy(engineData, expandId = null) {
             const container = document.getElementById('agronomy-list');
             
-            // Fetch what is currently pinned so we can show the proper button state
             const pinnedData = window.DiaryManager ? window.DiaryManager.getPinned() : {};
             
             container.innerHTML = `<div class="zone-header">📍 Est. Hardiness Zone: ${engineData.zone.zone}</div>`;
@@ -1230,7 +1234,6 @@ desc = "It is way to hot! Drink lots of water and pay attention to your body tod
 
                 let isExpanded = (res.id === expandId) ? "expanded" : "";
                 
-                // Determine pin UI state
                 let isPinnedClass = pinnedData[res.id] ? "pinned" : "";
                 let pinIcon = pinnedData[res.id] ? "📍" : "📌";
 
@@ -1561,7 +1564,6 @@ desc = "It is way to hot! Drink lots of water and pay attention to your body tod
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('weather-content').style.display = 'block';
                 
-                // 📖 Make sure the diary renders right away 📖
                 if(window.DiaryManager) DiaryManager.renderGrid();
 
             } catch (error) {
