@@ -89,10 +89,9 @@ const ClimateEngine = {
                 if (seasonStats.night_temp_trigger) activePlant.night_temp_trigger = seasonStats.night_temp_trigger; 
             }
 
-            // 🌱 LIFECYCLE OVERRIDE INJECTION (Overrides Seasonal if active)
+            // 🌱 LIFECYCLE OVERRIDE INJECTION
             if (activePlant.life_stages && activePlant.days_since_planted !== undefined && activePlant.days_since_planted !== null) {
                 const currentDay = parseInt(activePlant.days_since_planted);
-                // Find the highest stage day that is <= the current day
                 let currentStage = activePlant.life_stages[0]; 
                 for (let i = 0; i < activePlant.life_stages.length; i++) {
                     if (currentDay >= activePlant.life_stages[i].day) {
@@ -100,20 +99,17 @@ const ClimateEngine = {
                     }
                 }
                 
-                // Override the base/seasonal stats with the lifecycle stage stats
                 if (currentStage.temp) activePlant.optimal_temp = currentStage.temp;
+                // Formatted string to differentiate Maturity Stage from Water needs in UI
                 if (currentStage.water) activePlant.water_schedule = `${currentStage.stage}: ${currentStage.water}`;
             }
 
             // 🕒 DAY/NIGHT VPD TARGET SWITCHER
-            let currentVPDRange = activePlant.vpd_range || [0.5, 1.5]; // Fallback if missing
+            let currentVPDRange = activePlant.vpd_range || [0.5, 1.5];
             
-            // Check if nested object was used: vpd_range: { day: [], night: [] }
             if (activePlant.vpd_range && !Array.isArray(activePlant.vpd_range)) {
                 currentVPDRange = isDaytime ? activePlant.vpd_range.day : activePlant.vpd_range.night;
-            } 
-            // Check if flat keys were used: vpd_range_day: []
-            else if (isDaytime && activePlant.vpd_range_day) {
+            } else if (isDaytime && activePlant.vpd_range_day) {
                 currentVPDRange = activePlant.vpd_range_day;
             } else if (!isDaytime && activePlant.vpd_range_night) {
                 currentVPDRange = activePlant.vpd_range_night;
@@ -261,3 +257,4 @@ const ClimateEngine = {
 };
 
 window.ClimateEngine = ClimateEngine;
+
