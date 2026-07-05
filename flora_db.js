@@ -199,8 +199,51 @@ water_schedule: "Water when soil is completely dry!"
         }
     },
 
+        // ==========================================
+    // 🍃 CATEGORY 4: ROOT VEGETABLE
     // ==========================================
-    // 🍃 CATEGORY 4: VINING PLANTS
+"daucus_carota": {
+name: "Carrots",
+type: "Root Vegetable",
+
+// 🔬 LIVE TRACKERS
+metabolism: "c3",
+toxic_pets: false,
+lunar_affinity: "waning",
+stamp_img: "carrot.png",
+
+// 🌡️ BASE LIMITS
+temp_floor: 28,
+temp_ceiling: 85,
+
+// 💧 DEFAULT FALLBACKS (Used if user input is empty/0)
+optimal_temp: [60, 75],
+min_humidity: 50,
+vpd_range: [0.8, 1.4],
+water_frequency: "high",
+water_schedule: "Keep soil moist",
+wind_tolerance: 30,
+
+// 🐛 MULTI-PEST RADAR
+pest_risks: {
+dry: ["Carrot Rust Fly", "Wireworms", "Spider Mites"],
+wet: ["Slugs", "Root Rot"],
+general: ["Aphids"]
+},
+
+// 🌱 GROWTH STAGES (The engine calculates based on user input!)
+life_stages: [
+{ day: 0, stage: "Germination", water: "Keep soil moist", temp: [65, 75] },
+{ day: 15, stage: "Seedling", water: "Moderate moisture", temp: [65, 75] },
+{ day: 45, stage: "Maturing", water: "Consistent deep soak", temp: [60, 70] },
+{ day: 70, stage: "Harvest", water: "Low (Prepare for pull)", temp: [55, 65] }
+]
+},
+
+    
+
+    // ==========================================
+    // 🍃 CATEGORY 5: VINING PLANTS
     // ==========================================
     "hedera_canariensis": {
         name: "Algerian Ivy",
