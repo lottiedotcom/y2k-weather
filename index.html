@@ -207,7 +207,6 @@
         .aqi-label { color: var(--deep-sea); text-shadow: 1px 1px 0px white; text-align: left; }
         .aqi-val { font-weight: 900; color: var(--moe-pink); text-shadow: 1px 1px 0px white; text-align: right; }
 
-        /* 🎀 NEW DIGITAL DIARY TIMELINE 🎀 */
         .celestial-timeline {
             position: relative;
             padding-left: 20px;
@@ -241,7 +240,7 @@
             width: 45px;
             height: 45px;
             position: absolute;
-            left: -44px; /* Centers the stamp perfectly over the dotted line */
+            left: -44px;
             border-radius: 8px;
             border: 2px solid white;
             box-shadow: 0 0 8px var(--mermaid-aqua);
@@ -259,7 +258,6 @@
         }
 
         .stat-icon { font-size: 1.6rem; margin-bottom: 2px; filter: drop-shadow(2px 2px 0px white); }
-
         .stat-label { font-size: 0.75rem; text-transform: uppercase; color: var(--moe-pink); letter-spacing: 1px; text-align: left; font-weight: 700; text-shadow: 1px 1px 0px white;}
         .stat-value { font-size: 1.2rem; margin-top: 2px; text-align: left; color: var(--deep-sea); font-weight: 700; text-shadow: 1px 1px 0px white; display: flex; align-items: center; gap: 6px;}
         
@@ -295,44 +293,12 @@
 
         #cloud-scanner-output { font-size: 0.85rem; color: var(--deep-sea); margin-top: 15px; line-height: 1.4; width: 100%; text-align: center; border-top: 2px dotted rgba(255,255,255,0.5); padding-top: 10px; }
         
-        /* 🧴 CUSTOM UV STYLING 🧴 */
-        .uv-wrapper {
-            margin-top: 10px;
-        }
-        .uv-label {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            color: var(--deep-sea);
-            font-weight: 700;
-            letter-spacing: 1px;
-        }
-        .uv-number {
-            font-size: 2rem;
-            color: var(--moe-pink);
-            font-weight: 900;
-            margin: 0 10px;
-            text-shadow: 1px 1px 0px white;
-        }
-        .uv-message {
-            font-size: 0.7rem;
-            color: var(--mermaid-aqua);
-            margin-top: 5px;
-            font-weight: 700;
-            padding: 5px 10px;
-            background: rgba(255, 255, 255, 0.3);
-            border-radius: 15px;
-        }
+        .uv-wrapper { margin-top: 10px; }
+        .uv-label { font-size: 0.75rem; text-transform: uppercase; color: var(--deep-sea); font-weight: 700; letter-spacing: 1px; }
+        .uv-number { font-size: 2rem; color: var(--moe-pink); font-weight: 900; margin: 0 10px; text-shadow: 1px 1px 0px white; }
+        .uv-message { font-size: 0.7rem; color: var(--mermaid-aqua); margin-top: 5px; font-weight: 700; padding: 5px 10px; background: rgba(255, 255, 255, 0.3); border-radius: 15px; }
 
-        /* ✨ AGRONOMY LIST STYLES WITH HELP BUTTONS ✨ */
-        .zone-header {
-            font-size: 0.85rem;
-            color: var(--moe-pink);
-            font-weight: 700;
-            margin: 15px 0 10px 0;
-            text-transform: uppercase;
-            border-bottom: 2px dotted white;
-            padding-bottom: 5px;
-        }
+        .zone-header { font-size: 0.85rem; color: var(--moe-pink); font-weight: 700; margin: 15px 0 10px 0; text-transform: uppercase; border-bottom: 2px dotted white; padding-bottom: 5px; }
 
         .agronomy-card {
             background: rgba(180, 230, 255, 0.5);
@@ -352,76 +318,15 @@
         
         .agronomy-card:active { transform: scale(0.98); }
 
-        .plant-stamp {
-            width: 70px;
-            height: 70px;
-            border-radius: 10px;
-            border: 2px dashed white;
-            object-fit: cover;
-            background: var(--bubble-glass);
-            flex-shrink: 0;
-            box-shadow: 0 0 5px var(--mermaid-aqua);
-        }
+        .plant-stamp { width: 70px; height: 70px; border-radius: 10px; border: 2px dashed white; object-fit: cover; background: var(--bubble-glass); flex-shrink: 0; box-shadow: 0 0 5px var(--mermaid-aqua); }
+        .plant-info { flex: 1; min-width: 0; }
+        .plant-name { font-weight: 700; color: var(--deep-sea); font-size: 0.95rem; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center; text-shadow: 1px 1px 0px white; }
+        .plant-toxicity { font-size: 0.85rem; filter: drop-shadow(1px 1px 0px white); }
 
-        .plant-info {
-            flex: 1;
-            min-width: 0;
-        }
+        .tag-container { display: flex; gap: 6px; margin-bottom: 6px; flex-wrap: wrap; }
+        .plant-tag { font-size: 0.65rem; font-weight: 700; padding: 4px 8px; border-radius: 10px; display: inline-flex; align-items: center; color: white; text-transform: uppercase; letter-spacing: 1px; line-height: 1.3; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.5); }
 
-        .plant-name {
-            font-weight: 700;
-            color: var(--deep-sea);
-            font-size: 0.95rem;
-            margin-bottom: 5px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            text-shadow: 1px 1px 0px white;
-        }
-
-        .plant-toxicity {
-            font-size: 0.85rem;
-            filter: drop-shadow(1px 1px 0px white);
-        }
-
-        .tag-container {
-            display: flex;
-            gap: 6px;
-            margin-bottom: 6px;
-            flex-wrap: wrap;
-        }
-
-        .plant-tag {
-            font-size: 0.65rem;
-            font-weight: 700;
-            padding: 4px 8px;
-            border-radius: 10px;
-            display: inline-flex;
-            align-items: center;
-            color: white;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            line-height: 1.3;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-            border: 1px solid rgba(255,255,255,0.5);
-        }
-
-        .help-btn {
-            background: rgba(255,255,255,0.4);
-            border-radius: 50%;
-            width: 15px;
-            height: 15px;
-            display: inline-flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 0.6rem;
-            cursor: help;
-            border: 1px solid white;
-            margin-left: 6px;
-            color: var(--deep-sea);
-            text-shadow: none;
-            transition: 0.2s ease;
-        }
+        .help-btn { background: rgba(255,255,255,0.4); border-radius: 50%; width: 15px; height: 15px; display: inline-flex; justify-content: center; align-items: center; font-size: 0.6rem; cursor: help; border: 1px solid white; margin-left: 6px; color: var(--deep-sea); text-shadow: none; transition: 0.2s ease; }
         .help-btn:active { background: white; transform: scale(0.9); }
 
         .tag-max { background: linear-gradient(135deg, #00f0ff, #00d084); }
@@ -429,108 +334,32 @@
         .tag-sanctuary { background: linear-gradient(135deg, #a8a8a8, #7a7a7a); }
         .tag-action { background: linear-gradient(135deg, #ff9a9e, #fecfef); color: var(--deep-sea); text-shadow: 1px 1px 0px white; border-color: white;}
         
-        .plant-reason {
-            font-size: 0.75rem;
-            color: var(--deep-sea);
-            line-height: 1.25;
-            text-shadow: 1px 1px 0px rgba(255,255,255,0.8);
-        }
+        .plant-reason { font-size: 0.75rem; color: var(--deep-sea); line-height: 1.25; text-shadow: 1px 1px 0px rgba(255,255,255,0.8); }
 
-        /* 🎀 CLEAN STATS GRID 🎀 */
-        .plant-details-hidden {
-            display: none;
-            width: 100%;
-            margin-top: 10px;
-            padding-top: 10px;
-            border-top: 2px dotted rgba(255,255,255,0.5);
-            color: var(--deep-sea);
-        }
+        .plant-details-hidden { display: none; width: 100%; margin-top: 10px; padding-top: 10px; border-top: 2px dotted rgba(255,255,255,0.5); color: var(--deep-sea); }
+        .agronomy-card.expanded .plant-details-hidden { display: block; animation: fadeIn 0.3s ease; }
 
-        .agronomy-card.expanded .plant-details-hidden {
-            display: block;
-            animation: fadeIn 0.3s ease;
-        }
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+        .stat-cell { background: rgba(0, 240, 255, 0.15); border: 2px dotted var(--moe-pink); border-radius: 10px; padding: 6px 8px; text-align: center; box-shadow: inset 1px 1px 3px rgba(255,255,255,0.4); }
+        .stat-label-clean { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; color: var(--moe-pink); font-weight: 700; margin-bottom: 2px; text-shadow: 1px 1px 0px white; }
+        .stat-value-clean { font-size: 0.85rem; font-weight: 700; text-shadow: 1px 1px 0px white; }
 
-        .stat-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr; 
-            gap: 8px;
-            margin-bottom: 8px;
-        }
-
-        .stat-cell {
-            background: rgba(0, 240, 255, 0.15);
-            border: 2px dotted var(--moe-pink);
-            border-radius: 10px;
-            padding: 6px 8px;
-            text-align: center;
-            box-shadow: inset 1px 1px 3px rgba(255,255,255,0.4);
-        }
-
-        .stat-label-clean {
-            font-size: 0.65rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--moe-pink);
-            font-weight: 700;
-            margin-bottom: 2px;
-            text-shadow: 1px 1px 0px white;
-        }
-
-        .stat-value-clean {
-            font-size: 0.85rem;
-            font-weight: 700;
-            text-shadow: 1px 1px 0px white;
-        }
-
-        .metabolism-box {
-            background: rgba(0, 240, 255, 0.15);
-            border: 2px dotted var(--moe-pink);
-            border-radius: 10px;
-            padding: 8px;
-            text-align: center;
-            box-shadow: inset 1px 1px 3px rgba(255,255,255,0.4);
-        }
-        
-        .metabolism-text {
-            font-size: 0.8rem;
-            line-height: 1.3;
-            margin-top: 3px;
-            font-weight: 700;
-            text-shadow: 1px 1px 0px white;
-        }
+        .metabolism-box { background: rgba(0, 240, 255, 0.15); border: 2px dotted var(--moe-pink); border-radius: 10px; padding: 8px; text-align: center; box-shadow: inset 1px 1px 3px rgba(255,255,255,0.4); }
+        .metabolism-text { font-size: 0.8rem; line-height: 1.3; margin-top: 3px; font-weight: 700; text-shadow: 1px 1px 0px white; }
 
         /* 🎀 LUNAR GLOW EFFECT 🎀 */
-        .lunar-boost-active {
-            color: var(--moe-pink);
-            text-shadow: 0 0 8px var(--moe-pink), 0 0 15px var(--moe-pink);
-            font-weight: 900;
-        }
+        .lunar-boost-active { color: var(--moe-pink); text-shadow: 0 0 8px var(--moe-pink), 0 0 15px var(--moe-pink); font-weight: 900; }
+
+        /* 🎀 DYNAMIC LIFECYCLE BOX 🎀 */
+        .lifecycle-box { background: rgba(255, 255, 255, 0.3); border: 2px dashed var(--moe-pink); border-radius: 15px; padding: 8px 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: inset 1px 1px 3px rgba(255,255,255,0.4); }
+        .lifecycle-label { font-size: 0.75rem; color: var(--deep-sea); font-weight: 700; text-transform: uppercase; text-shadow: 1px 1px 0px white; }
+        .days-input { width: 50px; padding: 6px; border-radius: 10px; border: 2px solid white; background: var(--inner-bubble); color: var(--moe-pink); font-family: 'Fredoka', sans-serif; font-weight: 900; text-align: center; outline: none; box-shadow: inset 1px 1px 4px rgba(0,240,255,0.2); text-shadow: 1px 1px 0px white;}
+        .days-input::placeholder { color: rgba(255, 133, 194, 0.5); }
 
         /* 🌿 FLORA SEARCH BAR 🌿 */
-        .flora-search-container {
-            margin: 15px 0 10px 0;
-            width: 100%;
-        }
-        #flora-search-input {
-            width: 100%;
-            box-sizing: border-box;
-            padding: 10px 15px;
-            border-radius: 20px;
-            border: 2px solid white;
-            background: var(--inner-bubble);
-            color: var(--deep-sea);
-            font-family: 'Fredoka', sans-serif;
-            font-weight: 700;
-            outline: none;
-            box-shadow: inset 1px 1px 5px rgba(0, 240, 255, 0.1);
-            text-shadow: 1px 1px 0px white;
-        }
-        #flora-search-input::placeholder {
-            color: var(--moe-pink);
-            opacity: 0.8;
-            text-shadow: none;
-        }
+        .flora-search-container { margin: 15px 0 10px 0; width: 100%; }
+        #flora-search-input { width: 100%; box-sizing: border-box; padding: 10px 15px; border-radius: 20px; border: 2px solid white; background: var(--inner-bubble); color: var(--deep-sea); font-family: 'Fredoka', sans-serif; font-weight: 700; outline: none; box-shadow: inset 1px 1px 5px rgba(0, 240, 255, 0.1); text-shadow: 1px 1px 0px white; }
+        #flora-search-input::placeholder { color: var(--moe-pink); opacity: 0.8; text-shadow: none; }
 
         .minutely-grid { display: flex; width: 100%; justify-content: space-between; gap: 5px; margin-top: 5px; }
         .minutely-col { flex: 1; background: var(--bubble-glass); border-radius: 10px; padding: 8px 2px; font-size: 0.75rem; border: 1px dotted white; box-shadow: inset 1px 1px 5px rgba(255,255,255,0.5); }
@@ -807,6 +636,7 @@
     <script>
         let myLat = 0;
         let myLon = 0;
+        let lastWeatherState = null; // 🎀 Saves weather data so the lifecycle updates instantly!
 
         function switchTab(tabId, btnElement) {
             document.querySelectorAll('.tab-section').forEach(tab => tab.classList.remove('active'));
@@ -832,6 +662,19 @@
                     card.style.display = 'none';
                 }
             });
+        }
+
+        // 🌱 DYNAMIC LIFECYCLE UPDATER 🌱
+        function updateLifecycle(plantId, days) {
+            window.floraDB[plantId].days_since_planted = days ? parseInt(days) : 0;
+            
+            if(window.lastWeatherState) {
+                const state = window.lastWeatherState;
+                const newResults = window.ClimateEngine.runAnalysis(
+                    state.lat, state.lon, state.weekTempsMin, state.weekTempsMax, state.dailyGusts, state.currentTemp, state.currentHumidity, state.rainTotal, state.moonPhaseStr, state.isDaytime
+                );
+                renderAgronomy(newResults, plantId); // Pass the ID to keep the card open!
+            }
         }
 
         const weatherMoji = {
@@ -1135,7 +978,7 @@ desc = "It is way to hot! Drink lots of water and pay attention to your body tod
         }
 
         // ✨ THE AGRONOMY RENDERER WITH NEW GRID LAYOUT ✨
-        function renderAgronomy(engineData) {
+        function renderAgronomy(engineData, expandId = null) {
             const container = document.getElementById('agronomy-list');
             
             container.innerHTML = `<div class="zone-header">📍 Est. Hardiness Zone: ${engineData.zone.zone}</div>`;
@@ -1147,8 +990,24 @@ desc = "It is way to hot! Drink lots of water and pay attention to your body tod
                 let pTip = res.primaryTooltip.replace(/'/g, "\\'");
                 let sTip = res.secondaryTooltip.replace(/'/g, "\\'");
 
+                let isExpanded = (res.id === expandId) ? "expanded" : "";
+
+                // 🎀 DYNAMIC LIFECYCLE INPUT 🎀
+                let lifecycleHTML = "";
+                if (res.plant.life_stages) {
+                    let currentDays = res.plant.days_since_planted !== undefined ? res.plant.days_since_planted : "";
+                    lifecycleHTML = `
+                        <div class="lifecycle-box" onclick="event.stopPropagation();">
+                            <div class="lifecycle-label">🌱 Days Since Planted:</div>
+                            <input type="number" class="days-input" value="${currentDays}" placeholder="0" 
+                                   onchange="updateLifecycle('${res.id}', this.value)" 
+                                   onclick="event.stopPropagation();">
+                        </div>
+                    `;
+                }
+
                 container.innerHTML += `
-                    <div class="agronomy-card" onclick="this.classList.toggle('expanded')">
+                    <div class="agronomy-card ${isExpanded}" onclick="this.classList.toggle('expanded')">
                         <div style="display: flex; flex-direction: column; align-items: center; gap: 4px; flex-shrink: 0;">
                             <img src="${res.plant.stamp_img}" alt="${res.plant.name}" class="plant-stamp" onerror="this.src='https://i.postimg.cc/Fs9tVbff/d1fbe1c35c32494c9290ebf699c16fc6.jpg'">
                             <span style="font-size: 0.7rem; font-weight: 700; color: var(--deep-sea); text-shadow: 1px 1px 0px white;">Live: ${res.liveVPD}</span>
@@ -1171,6 +1030,7 @@ desc = "It is way to hot! Drink lots of water and pay attention to your body tod
                             <div class="plant-reason">${res.reason}</div>
                             
                             <div class="plant-details-hidden">
+                                ${lifecycleHTML}
                                 <div class="stat-grid">
                                     <div class="stat-cell">
                                         <div class="stat-label-clean">Ideal VPD</div>
@@ -1206,6 +1066,9 @@ desc = "It is way to hot! Drink lots of water and pay attention to your body tod
                     </div>
                 `;
             });
+
+            // Re-apply filter if user is actively searching
+            filterFlora();
         }
 
         async function fetchWeatherData(latitude, longitude) {
@@ -1431,6 +1294,9 @@ desc = "It is way to hot! Drink lots of water and pay attention to your body tod
                 if (window.ClimateEngine && window.floraDB) {
                     const rainTotal = safeDailyPrecipSum.reduce((a, b) => a + b, 0);
                     const moonPhaseStr = moonData.phaseInfo.n;
+                    
+                    // 🎀 SAVE WEATHER STATE SO LIFECYCLE UPDATES INSTANTLY 🎀
+                    window.lastWeatherState = { lat: latitude, lon: longitude, weekTempsMin: safeDailyTempsMin, weekTempsMax: safeDailyTempsMax, dailyGusts: safeDailyGusts, currentTemp: currentTemp, currentHumidity: currentHumidity, rainTotal: rainTotal, moonPhaseStr: moonPhaseStr, isDaytime: isDaytime };
 
                     const agronomyResults = window.ClimateEngine.runAnalysis(
                         latitude, longitude, safeDailyTempsMin, safeDailyTempsMax, safeDailyGusts, currentTemp, currentHumidity, rainTotal, moonPhaseStr, isDaytime
