@@ -382,11 +382,12 @@
         .minutely-val { font-weight: 700; text-shadow: 1px 1px 0px white; }
 
         .hourly-container { display: flex; overflow-x: auto; gap: 10px; padding-bottom: 10px; margin-bottom: 15px; }
-        .hourly-box { min-width: 65px; background: var(--inner-bubble); border: 2px solid white; border-radius: 20px; padding: 10px 5px; display: flex; flex-direction: column; align-items: center; box-shadow: 2px 2px 8px rgba(0, 240, 255, 0.15); transition: 0.3s ease; }
+        .hourly-box { min-width: 80px; background: var(--inner-bubble); border: 2px solid white; border-radius: 20px; padding: 10px 5px; display: flex; flex-direction: column; align-items: center; box-shadow: 2px 2px 8px rgba(0, 240, 255, 0.15); transition: 0.3s ease; }
         .hourly-time { font-size: 0.85rem; color: var(--moe-pink); text-shadow: 1px 1px 0px white; margin-bottom: 3px; font-weight: 700;}
         .hourly-icon { font-size: 1.3rem; filter: drop-shadow(2px 2px 0px white); margin: 3px 0; }
         .hourly-temp { font-size: 1.1rem; font-weight: 700; color: var(--mermaid-aqua); text-shadow: 1px 1px 0px white; margin-top: 3px; margin-bottom: 5px; }
-        .hourly-precip { font-size: 0.75rem; color: var(--deep-sea); font-weight: 700; line-height: 1.3; text-shadow: 1px 1px 0px white; margin-top: 2px; }
+        .hourly-precip { font-size: 0.75rem; color: var(--deep-sea); font-weight: 700; line-height: 1.3; text-shadow: 1px 1px 0px white; margin-top: 2px; white-space: nowrap; }
+        .hourly-humid { font-size: 0.75rem; color: var(--deep-sea); font-weight: 700; line-height: 1.3; text-shadow: 1px 1px 0px white; margin-top: 2px; }
 
         .forecast-title { font-size: 1.3rem; margin: 15px 0 10px 0; color: white; font-weight: 700; text-shadow: 2px 2px var(--mermaid-aqua), -1px -1px var(--moe-pink); border-bottom: 3px dotted white; padding-bottom: 5px; }
         .forecast-item { display: flex; flex-direction: column; background: var(--inner-bubble); margin-bottom: 10px; border-radius: 25px; border: 2px solid white; box-shadow: 2px 2px 8px rgba(0, 240, 255, 0.1); cursor: pointer; transition: transform 0.2s ease, background 0.3s ease; }
@@ -641,15 +642,15 @@
 
                 <!-- 📖 THE PLANT DIARY GRID 📖 -->
                 <div class="wide-box" id="diary-container">
-                    <div class="celestial-title">✎ Plant Diary</div>
+                    <div class="celestial-title">📖 My Plant Diary</div>
                     
-                    <div class="diary-tier-label">𖦹 ˚ 𓇼 Water now!</div>
+                    <div class="diary-tier-label">🔴 High Priority (Water <= 3 Days)</div>
                     <div class="diary-tier" id="diary-tier-1"></div>
                     
-                    <div class="diary-tier-label">₊‧ ଳ Check water soon</div>
+                    <div class="diary-tier-label">🟡 Upcoming (Water <= 7 Days)</div>
                     <div class="diary-tier" id="diary-tier-2"></div>
                     
-                    <div class="diary-tier-label">⋆.˚ 𓆉 Hydrated</div>
+                    <div class="diary-tier-label">🟢 Hydrated (Recently Watered)</div>
                     <div class="diary-tier" id="diary-tier-3"></div>
                 </div>
 
@@ -1367,7 +1368,6 @@ desc = "It is way to hot! Drink lots of water and pay attention to your body tod
                     document.getElementById('golden-hour').innerText = "--:--";
                 }
 
-                // 🟢 Added relative_humidity_2m to the hourly forecast to track propagation windows
                 const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,dew_point_2m,surface_pressure,wind_speed_10m,wind_gusts_10m,weather_code,uv_index,visibility,cloud_cover,cloud_cover_low,cloud_cover_mid,cloud_cover_high,is_day&hourly=temperature_2m,relative_humidity_2m,weather_code,precipitation_probability,precipitation,cloud_cover,surface_pressure&minutely_15=precipitation&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,uv_index_max,wind_speed_10m_max,wind_gusts_10m_max&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=auto&models=best_match`;
                 const response = await fetch(weatherUrl);
                 const data = await response.json();
@@ -1498,16 +1498,14 @@ desc = "It is way to hot! Drink lots of water and pay attention to your body tod
                     minList.innerHTML = `<div style="width:100%; text-align:center; padding:10px; color:var(--deep-sea); font-size:0.8rem; font-weight:700;">No minutely radar available for this zone 🫧</div>`;
                 }
 
-                // 🟢 Pre-calculate full week Propagation Window days
                 let propDaysSet = new Set();
                 if (hourly && hourly.temperature_2m) {
                     for(let i=0; i < hourly.temperature_2m.length; i++) {
                         let t = hourly.temperature_2m[i];
                         let h = hourly.relative_humidity_2m[i];
                         
-                        // Condition: 65-80°F, >50% Humidity, Good Lunar Phase
                         if (t >= 65 && t <= 80 && h >= 50 && moonData.isGoodPropPhase) {
-                            let dateStr = hourly.time[i].split('T')[0]; // Grabs YYYY-MM-DD
+                            let dateStr = hourly.time[i].split('T')[0]; 
                             propDaysSet.add(dateStr);
                         }
                     }
@@ -1527,7 +1525,6 @@ desc = "It is way to hot! Drink lots of water and pay attention to your body tod
                         const hPop = hourly.precipitation_probability[dataIdx] || 0;
                         const hPrecip = hourly.precipitation[dataIdx] || 0;
                         
-                        // 🟢 Check if this exact hour is a Propagation Window!
                         const isPropHour = (hTemp >= 65 && hTemp <= 80 && hHumid >= 50 && moonData.isGoodPropPhase);
                         const boxClass = isPropHour ? "hourly-box prop-window" : "hourly-box";
                         
@@ -1536,8 +1533,8 @@ desc = "It is way to hot! Drink lots of water and pay attention to your body tod
                                 <div class="hourly-time">${hTime}</div>
                                 <div class="hourly-icon">${hIcon}</div>
                                 <div class="hourly-temp">${hTemp}°</div>
-                                <div class="hourly-precip">☂️ ${hPop}%</div>
-                                <div class="hourly-precip">💧 ${hPrecip}"</div>
+                                <div class="hourly-precip">${hPop}% 💧 ${hPrecip}"</div>
+                                <div class="hourly-humid">${hHumid}% 🐸</div>
                             </div>
                         `;
                     }
@@ -1551,8 +1548,8 @@ desc = "It is way to hot! Drink lots of water and pay attention to your body tod
                 const safeDailyPrecipSum = daily.precipitation_sum || Array(7).fill(0);
                 const safeDailyGusts = daily.wind_gusts_10m_max || Array(7).fill(0);
                 
-                let perfectRainDays = []; // 💡 For the Smart Alerts
-                let propAlertDays = []; // 💡 For the Smart Alerts
+                let perfectRainDays = []; 
+                let propAlertDays = []; 
 
                 if (daily && daily.weather_code) {
                     for (let i = 0; i < 7; i++) {
@@ -1565,7 +1562,6 @@ desc = "It is way to hot! Drink lots of water and pay attention to your body tod
                         const uvMax = Math.round((daily.uv_index_max && daily.uv_index_max[i]) ? daily.uv_index_max[i] : 0);
                         const windMax = Math.round((daily.wind_speed_10m_max && daily.wind_speed_10m_max[i]) ? daily.wind_speed_10m_max[i] : 0);
 
-                        // 💡 Rainwater Harvesting Engine (Safe-Soak logic)
                         let safeSoakText = "No precipitation expected today.";
                         if (rainTotal > 0) {
                             if (minTemp < 55 || maxTemp > 85) {
@@ -1576,14 +1572,13 @@ desc = "It is way to hot! Drink lots of water and pay attention to your body tod
                                 safeSoakText = "⚠️ Heavy downpour risk. Could cause root rot.";
                             } else if (rainTotal >= 0.05) {
                                 safeSoakText = "🌿 Perfect Natural Shower! Safe to put plants outside.";
-                                perfectRainDays.push(dayName); // Track for Smart Alert
+                                perfectRainDays.push(dayName); 
                             } else {
                                 safeSoakText = "Mist/Trace rain. Not enough to soak roots.";
                             }
                         }
 
-                        // 🟢 Does this day have Prop Windows?
-                        let dStr = daily.time[i]; // "YYYY-MM-DD"
+                        let dStr = daily.time[i]; 
                         let isPropDay = propDaysSet.has(dStr);
                         let dayClass = isPropDay ? "forecast-item prop-window" : "forecast-item";
                         let propBadge = isPropDay ? `<div class="prop-badge">PROPAGATION WINDOW</div>` : '';
@@ -1610,7 +1605,6 @@ desc = "It is way to hot! Drink lots of water and pay attention to your body tod
                     }
                 }
 
-                // 💡 INJECT SMART BOTANICAL ALERTS TO FLORA TAB 💡
                 let alertsHTML = "";
                 
                 if (perfectRainDays.length > 0) {
