@@ -261,4 +261,3 @@ const ClimateEngine = {
 };
 
 window.ClimateEngine = ClimateEngine;
-
