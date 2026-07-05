@@ -1,323 +1,1372 @@
-// 🌿 FLORA DIRECTORY
-
-const floraDB = {
-    // ==========================================
-    // 🌿 CATEGORY 1: THE INDOOR JUNGLE
-    // ==========================================
-    "Rhaphidophora_tetrasperma": {
-        name: "Mini Monstera",
-        type: "Climbing Vine Aroid",
-        metabolism: "c3",
-        toxic_pets: true,
-        lunar_affinity: "waxing",
-        stamp_img: "minimonstera.png",
-        temp_floor: 55,
-        temp_ceiling: 95,
-        optimal_temp: [65, 85],
-        min_humidity: 40,
-        vpd_range: [0.8, 1.1],
-        water_frequency: "moderate",
-        water_schedule: "Water when top 1-2 of soil is dry!",
-        wind_tolerance: 15,
-        pest_risks: {
-            dry: ["Spider Mites", "Thrips"],
-            wet: ["Mealybugs", "Fungus Gnats"],
-            general: ["Scale", "Aphids"]
-        },
-        seasons: {
-            spring: { optimal_temp: [70, 78], night_temp_trigger: [62, 68], water_schedule: "Water when top 2 inches of soil is dry" },
-            summer: { optimal_temp: [75, 85], night_temp_trigger: [65, 72], water_schedule: "Water when 1-2 inch of soil is dry" },
-            fall: { optimal_temp: [68, 74], night_temp_trigger: [60, 65], water_schedule: "Water when 1/3 of soil is dry" },
-            winter: { optimal_temp: [65, 70], night_temp_trigger: [58, 62], water_schedule: "Water when 1/2 of soil is dry" }
-        }
-    },
-
-    "epipremnum_aureum": {
-        name: "Golden Pothos",
-        type: "Tropical Epiphyte",
-        metabolism: "c3",
-        temp_floor: 50,
-        temp_ceiling: 90,
-        optimal_temp: [65, 85],
-        min_humidity: 30,
-        water_frequency: "low",
-        water_schedule: "1-2 weeks",
-        wind_tolerance: 20,
-        toxic_pets: true,
-        lunar_affinity: "waxing",
-        stamp_img: "goldenpothos.png",
-        vpd_range: [0.8, 1.2],
-        pest_risks: {
-            dry: ["Thrips", "Spider Mites"],
-            wet: ["Scales", "Mealybugs", "Fungus Gnats", "Root Rot"],
-            general: ["Mealybugs", "Fungus Gnats"]
-        }
-    },
-
-    "peperomia_orba": {
-        name: "Teardrop Peperomia",
-        type: "Tropical Epiphyte",
-        metabolism: "cam", 
-        toxic_pets: false, 
-        lunar_affinity: "waxing", 
-        stamp_img: "Piperales.png",
-        temp_floor: 55, 
-        temp_ceiling: 80, 
-        optimal_temp: [65, 75], 
-        min_humidity: 40,
-        vpd_range: [0.8, 1.1], 
-        water_frequency: "low", 
-        water_schedule: "1-2 weeks", 
-        wind_tolerance: 10, 
-        pest_risks: {
-            dry: ["Thrips", "Spider Mites"], 
-            wet: ["Root Rot", "Root Mealybugs", "Shore Flies", "Fungus Gnats" ], 
-            general: ["Scales", "Whiteflies", "Mealybugs"]
-        },
-        seasons: {
-            spring: { optimal_temp: [72, 78], night_temp_trigger: [65, 68], water_schedule: "1-2 weeks" },
-            summer: { optimal_temp: [72, 78], night_temp_trigger: [65, 68], water_schedule: "1-2 weeks" },
-            fall:   { optimal_temp: [65, 68], night_temp_trigger: [60, 62], water_schedule: "2-3 weeks" },
-            winter: { optimal_temp: [65, 68], night_temp_trigger: [60, 62], water_schedule: "2-3 weeks" }
-        }
-    },
-
-    // ==========================================
-    // 🌵 CATEGORY 2: THE DESERT HARDY
-    // ==========================================
-    "dracaena_trifasciata": {
-        name: "Snake Plant",
-        type: "Succulent",
-        metabolism: "cam",
-        toxic_pets: true,
-        lunar_affinity: "new",
-        stamp_img: "snakeplant.png",
-        temp_floor: 50,
-        temp_ceiling: 100,
-        optimal_temp: [70, 80],
-        min_humidity: 30,
-        vpd_range: [1.2, 1.6],
-        water_frequency: "low",
-        water_schedule: "Water when soil is completely dry!",
-        wind_tolerance: 25,
-        pest_risks: {
-            dry: ["Spider Mites", "Thrips"],
-            wet: ["Root Mealybugs", "Fungus Gnats", "Mealybugs"],
-            general: ["Scale", "Fungal Leaf Spot"]
-        },
-        seasons: {
-            spring: { optimal_temp: [70, 80], night_temp_trigger: [60, 65], water_schedule: "Water when soil is completely dry!" },
-            summer: { optimal_temp: [75, 90], night_temp_trigger: [65, 70], water_schedule: "Water when soil is completely dry!" },
-            fall: { optimal_temp: [70, 75], night_temp_trigger: [55, 60], water_schedule: "Water when soil is completely dry!" },
-            winter: { optimal_temp: [65, 70], night_temp_trigger: [50, 55], water_schedule: "Water when soil is completely dry!" }
-        }
-    },
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌦 weather</title>
     
-    "schlumbergera_truncata": {
-        name: "Thanksgiving cactus",
-        type: "Cacti",
-        metabolism: "cam",
-        temp_floor: 50,
-        temp_ceiling: 80,
-        optimal_temp: [60, 70],
-        min_humidity: 40,
-        water_frequency: "moderate",
-        water_schedule: "7-10 days",
-        wind_tolerance: 15,
-        toxic_pets: false,
-        lunar_affinity: "new",
-        stamp_img: "thanksgiving.png",
-        vpd_range: [0.6, 1.0],
-        pest_risks: {
-            dry: ["Thrips", "Spider Mites"],
-            wet: ["Slugs", "Fungus Gnats"],
-            general: ["Scale", "Aphids", "Mealybugs"]
-        },
-        seasons: {
-            summer: { optimal_temp: [70, 85], water_schedule: "5-7 days" },
-            fall:   { optimal_temp: [55, 65], water_schedule: "7-10 days" },
-            winter: { optimal_temp: [50, 60], water_schedule: "3-4 weeks" }
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#ff85c2">
+    <link rel="apple-touch-icon" href="icon.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&display=swap" rel="stylesheet">
+
+    <script src="flora_db.js"></script>
+    <script src="climate_db.js"></script>
+
+    <style>
+        :root {
+            --mermaid-aqua: #00f0ff;
+            --moe-pink: #ff85c2;
+            --pearl-glow: #ffffff;
+            --deep-sea: #005f8a;
+            --bubble-glass: rgba(200, 245, 255, 0.25);
+            --inner-bubble: rgba(255, 255, 255, 0.4);
         }
-    },
 
-    // ==========================================
-    // 🧬 CATEGORY 3: AROIDS
-    // ==========================================
-    "syngonium_podophyllum": {
-        name: "Arrowhead Plant",
-        type: "Tropical Aroid",
-        metabolism: "c3",
-        temp_floor: 50,        
-        temp_ceiling: 95,      
-        optimal_temp: [65, 80], 
-        min_humidity: 50,      
-        water_frequency: "low", 
-        water_schedule: "1-2 weeks", 
-        wind_tolerance: 10,    
-        toxic_pets: true,      
-        lunar_affinity: "waxing", 
-        stamp_img: "arrowhead.png", 
-        vpd_range: [0.8, 1.2], 
-        pest_risks: {
-            dry: ["Spider Mites"],
-            wet: ["Root Rot", "Fungus Gnats"],
-            general: ["Mealybugs", "Aphids"]
+        body {
+            margin: 0;
+            padding: 20px 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            background: url('https://i.postimg.cc/K8WLGzPT/684495e309f1e7a6b1d1609f033f905c.jpg') no-repeat center center fixed;
+            background-size: cover;
+            font-family: 'Fredoka', sans-serif;
+            overflow-y: auto;
+            color: var(--deep-sea);
         }
-    },
 
-    // ==========================================
-    // 🥕 CATEGORY 4: ROOT VEGETABLES (Lifecycle)
-    // ==========================================
-    "daucus_carota": {
-        name: "Carrots",
-        type: "Root Vegetable",
-        metabolism: "c3",
-        toxic_pets: false,
-        lunar_affinity: "waning",
-        stamp_img: "carrot.png",
-        temp_floor: 28,
-        temp_ceiling: 85,
-        optimal_temp: [60, 75],
-        min_humidity: 50,
-        vpd_range: [0.8, 1.4],
-        water_frequency: "high",
-        water_schedule: "Keep soil moist",
-        wind_tolerance: 30,
-        pest_risks: {
-            dry: ["Carrot Rust Fly", "Wireworms", "Spider Mites"],
-            wet: ["Slugs", "Root Rot"],
-            general: ["Aphids"]
-        },
-        life_stages: [
-            { day: 0, stage: "Germination", water: "Keep soil moist", temp: [65, 75] },
-            { day: 15, stage: "Seedling", water: "Moderate moisture", temp: [65, 75] },
-            { day: 45, stage: "Maturing", water: "Consistent deep soak", temp: [60, 70] },
-            { day: 70, stage: "Harvest", water: "Low", temp: [55, 65] }
-        ]
-    },
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: var(--bubble-glass); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: var(--moe-pink); border-radius: 10px; border: 2px dotted white; }
 
-    // ==========================================
-    // 🍃 CATEGORY 5: VINING PLANTS
-    // ==========================================
-    "hedera_canariensis": {
-        name: "Algerian Ivy",
-        type: "Climbing Vine",
-        metabolism: "c3", 
-        toxic_pets: true, 
-        lunar_affinity: "waxing", 
-        stamp_img: "algerianivy.png",
-        temp_floor: 10, 
-        temp_ceiling: 100, 
-        optimal_temp: [68, 78], 
-        min_humidity: 40,
-        vpd_range: [0.8, 1.2], 
-        water_frequency: "high", 
-        water_schedule: "When top 1-2 inches are dry", 
-        wind_tolerance: 25, 
-        pest_risks: {
-            dry: ["Thrips", "Spider Mites", "Scale"], 
-            wet: ["Root Rot", "Bacterial Leaf Spot", "Foliar Mealybugs", "Fungus Gnats"], 
-            general: ["Aphids", "Whiteflies", "Scale"]
-        },
-        seasons: {
-            spring: { optimal_temp: [68, 78], night_temp_trigger: [50, 60], water_schedule: "When top 1-2 inches are dry" },
-            summer: { optimal_temp: [68, 78], night_temp_trigger: [60, 65], water_schedule: "When top 1-2 inches are dry" },
-            fall:   { optimal_temp: [60, 70], night_temp_trigger: [50, 55], water_schedule: "10-14 days" },
-            winter: { optimal_temp: [45, 55], night_temp_trigger: [40, 45], water_schedule: "2-3 weeks" }
+        .weather-container {
+            background: var(--bubble-glass);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 4px dotted var(--pearl-glow);
+            border-radius: 50px; 
+            padding: 30px 20px;
+            text-align: center;
+            box-shadow: 0 0 25px rgba(0, 240, 255, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.8);
+            width: 85%;
+            max-width: 350px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
         }
-    },
 
-    "hedera_helix": {
-        name: "English / Common Ivy",
-        type: "Climbing Vine",
-        metabolism: "c3", 
-        toxic_pets: true, 
-        lunar_affinity: "waxing", 
-        stamp_img: "commonivy.png",
-        temp_floor: 45, 
-        temp_ceiling: 90, 
-        optimal_temp: [65, 75], 
-        min_humidity: 45,
-        vpd_range: [0.8, 1.2], 
-        water_frequency: "moderate", 
-        water_schedule: "When top inch is dry", 
-        wind_tolerance: 25, 
-        pest_risks: {
-            dry: ["Thrips", "Spider Mites", "Scale"], 
-            wet: ["Root Rot", "Bacterial Leaf Spot", "Foliar Mealybugs", "Fungus Gnats"], 
-            general: ["Aphids", "Whiteflies", "Scale"]
-        },
-        seasons: {
-            spring: { optimal_temp: [65, 70], night_temp_trigger: [55, 60], water_schedule: "When top inch is dry" },
-            summer: { optimal_temp: [70, 75], night_temp_trigger: [60, 65], water_schedule: "When top inch is dry" },
-            fall:   { optimal_temp: [60, 65], night_temp_trigger: [50, 55], water_schedule: "When top 1.5 - 2 inches is dry" },
-            winter: { optimal_temp: [55, 60], night_temp_trigger: [45, 50], water_schedule: "Allow to dry almost completely" }
+        h1 {
+            font-size: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 10px;
+            color: white;
+            font-weight: 700;
+            text-shadow: 2px 2px var(--moe-pink), -2px -2px var(--mermaid-aqua);
         }
-    }
-};
 
-window.floraDB = floraDB;
-
-// ==========================================
-// 📋 TEMPLATES FOR FUTURE USE 
-// ==========================================
-
-/*
-    // --- TEMPLATE A: SEASONAL INDOOR/OUTDOOR PLANT ---
-    "system_id_name_here": {
-        name: "Display Name",
-        type: "Botanical Category",
-        metabolism: "c3",
-        toxic_pets: false,
-        lunar_affinity: "waxing",
-        stamp_img: "filename.png",
-        temp_floor: 0,
-        temp_ceiling: 100,
-        optimal_temp: [0, 0],
-        min_humidity: 40,
-        vpd_range: [0.8, 1.2],
-        water_frequency: "moderate",
-        water_schedule: "When top inch is dry",
-        wind_tolerance: 15,
-        pest_risks: {
-            dry: ["Spider Mites"],
-            wet: ["Root Rot", "Fungus Gnats"],
-            general: ["Aphids", "Mealybugs"]
-        },
-        seasons: {
-            spring: { optimal_temp: [65, 75], night_temp_trigger: [55, 60], water_schedule: "Water every 5-7 days" },
-            summer: { optimal_temp: [75, 85], night_temp_trigger: [60, 65], water_schedule: "Water every 3-5 days" },
-            fall:   { optimal_temp: [65, 75], night_temp_trigger: [50, 55], water_schedule: "Water every 7-10 days" },
-            winter: { optimal_temp: [55, 65], night_temp_trigger: [45, 50], water_schedule: "Water every 2-3 weeks" }
+        .search-box {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+            width: 100%;
         }
-    },
+        
+        #search-input {
+            flex: 1;
+            padding: 10px 15px;
+            border-radius: 20px;
+            border: 2px solid white;
+            background: var(--inner-bubble);
+            color: var(--deep-sea);
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 700;
+            outline: none;
+            box-shadow: inset 1px 1px 5px rgba(0, 240, 255, 0.1);
+            text-shadow: 1px 1px 0px white;
+        }
+        
+        #search-input::placeholder {
+            color: var(--moe-pink);
+            opacity: 0.8;
+            text-shadow: none;
+        }
+        
+        .search-btn {
+            background: linear-gradient(135deg, var(--mermaid-aqua), var(--moe-pink));
+            border: 2px solid white;
+            border-radius: 50%;
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 240, 255, 0.3);
+            transition: transform 0.2s ease;
+        }
+        .search-btn:active { transform: scale(0.9); }
 
-    // --- TEMPLATE B: LIFECYCLE CROP (e.g. Vegetables/Seeds) ---
-    "system_id_name_here": {
-        name: "Display Name",
-        type: "Botanical Category",
-        metabolism: "c3",
-        toxic_pets: false,
-        lunar_affinity: "new",
-        stamp_img: "filename.png",
-        temp_floor: 32,
-        temp_ceiling: 95,
-        optimal_temp: [60, 75],
-        min_humidity: 40,
-        vpd_range: [0.8, 1.2],
-        water_frequency: "moderate",
-        water_schedule: "Keep soil moist",
-        wind_tolerance: 15,
-        pest_risks: {
-            dry: ["Flea Beetles"],
-            wet: ["Root Rot", "Slugs"],
-            general: ["Aphids"]
-        },
-        life_stages: [
-            { day: 0,  stage: "Germination",  water: "Keep soil moist", temp: [65, 75] },
-            { day: 15, stage: "Seedling",     water: "Moderate moisture", temp: [65, 75] },
-            { day: 45, stage: "Maturing",     water: "Consistent deep soak", temp: [60, 70] },
-            { day: 70, stage: "Harvest",      water: "Low", temp: [55, 65] }
-        ]
-    }
-*/
+        #location-name {
+            font-size: 1rem;
+            color: var(--deep-sea);
+            text-shadow: 1px 1px white;
+            margin-bottom: 15px;
+            font-weight: 700;
+            background: var(--inner-bubble);
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            border: 2px dashed var(--mermaid-aqua);
+        }
+
+        #temp {
+            font-size: 5.5rem;
+            font-weight: 700;
+            margin: 0;
+            color: white;
+            text-shadow: 0 0 20px var(--mermaid-aqua), 3px 3px var(--moe-pink);
+        }
+
+        #feels-like {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--moe-pink);
+            text-shadow: 1px 1px white;
+        }
+
+        #status {
+            font-size: 1.2rem;
+            background: white;
+            color: var(--mermaid-aqua);
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-weight: 700;
+            box-shadow: 4px 4px 0px var(--moe-pink);
+            margin-bottom: 20px;
+            border: 2px solid var(--mermaid-aqua);
+        }
+
+        .tab-section { display: none; animation: fadeIn 0.4s ease; }
+        .tab-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 15px; }
+
+        .stat-box, .wide-box, .celestial-box {
+            background: var(--inner-bubble);
+            border: 2px solid white;
+            border-radius: 25px;
+            padding: 12px 5px;
+            box-shadow: 3px 3px 12px rgba(0, 240, 255, 0.2), inset -3px -3px 10px rgba(255,255,255,0.5);
+            color: var(--deep-sea);
+            font-weight: 700;
+            text-shadow: 1px 1px 0px white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .wide-box { margin-bottom: 15px; padding: 15px; }
+        .celestial-box { margin-bottom: 15px; padding: 15px; }
+
+        .celestial-title {
+            font-size: 0.9rem;
+            color: var(--moe-pink);
+            text-shadow: 1px 1px 0px white;
+            margin-bottom: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-bottom: 2px dotted var(--mermaid-aqua);
+            padding-bottom: 5px;
+            width: 100%;
+        }
+
+        .vibe-title { color: var(--mermaid-aqua); font-weight: 700; font-size: 1.15rem; margin: 5px 0; text-shadow: 1px 1px 0px white; }
+        .vibe-desc { font-size: 0.9rem; color: var(--deep-sea); line-height: 1.4; padding: 0 5px; }
+        
+        .aqi-row {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            padding: 5px 10px;
+            box-sizing: border-box;
+            border-bottom: 1px dotted rgba(255,255,255,0.5);
+            font-size: 0.85rem;
+        }
+        .aqi-row:last-child { border-bottom: none; }
+        .aqi-label { color: var(--deep-sea); text-shadow: 1px 1px 0px white; text-align: left; }
+        .aqi-val { font-weight: 900; color: var(--moe-pink); text-shadow: 1px 1px 0px white; text-align: right; }
+
+        .celestial-timeline {
+            position: relative;
+            padding-left: 20px;
+            margin-left: 15px;
+            margin-top: 10px;
+            margin-bottom: 5px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .celestial-timeline::before {
+            content: '';
+            position: absolute;
+            top: 5px;
+            bottom: 5px;
+            left: 0;
+            border-left: 3px dotted var(--moe-pink);
+        }
+
+        .celestial-event {
+            display: flex;
+            align-items: center;
+            position: relative;
+            width: 100%;
+        }
+
+        .celestial-event .pixel-stamp {
+            width: 45px;
+            height: 45px;
+            position: absolute;
+            left: -44px;
+            border-radius: 8px;
+            border: 2px solid white;
+            box-shadow: 0 0 8px var(--mermaid-aqua);
+            object-fit: cover;
+            background: var(--bubble-glass);
+            margin: 0;
+        }
+
+        .celestial-info {
+            padding-left: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            text-align: left;
+        }
+
+        .stat-icon { font-size: 1.6rem; margin-bottom: 2px; filter: drop-shadow(2px 2px 0px white); }
+        .stat-label { font-size: 0.75rem; text-transform: uppercase; color: var(--moe-pink); letter-spacing: 1px; text-align: left; font-weight: 700; text-shadow: 1px 1px 0px white;}
+        .stat-value { font-size: 1.2rem; margin-top: 2px; text-align: left; color: var(--deep-sea); font-weight: 700; text-shadow: 1px 1px 0px white; display: flex; align-items: center; gap: 6px;}
+        
+        #lunar-botanical-guide { font-size: 0.8rem; color: var(--deep-sea); margin-top: 3px; text-shadow: 1px 1px 0px white; line-height: 1.2; width: 100%; text-align: center; }
+
+        .atmosphere-scanner { margin-bottom: 15px; overflow: hidden; }
+        
+        #diorama-box {
+            width: 100%;
+            height: 200px;
+            border: 3px solid white;
+            border-radius: 15px;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+            background-size: 100% 100%; 
+            background-repeat: no-repeat;
+            background-position: center;
+            transition: background-image 0.5s ease;
+            margin-top: 10px;
+        }
+
+        .sprite {
+            position: absolute;
+            animation: drift linear infinite;
+        }
+
+        @keyframes drift {
+            0% { transform: translateX(-30px); }
+            50% { transform: translateX(30px); }
+            100% { transform: translateX(-30px); }
+        }
+
+        #cloud-scanner-output { font-size: 0.85rem; color: var(--deep-sea); margin-top: 15px; line-height: 1.4; width: 100%; text-align: center; border-top: 2px dotted rgba(255,255,255,0.5); padding-top: 10px; }
+        
+        .uv-wrapper { margin-top: 10px; }
+        .uv-label { font-size: 0.75rem; text-transform: uppercase; color: var(--deep-sea); font-weight: 700; letter-spacing: 1px; }
+        .uv-number { font-size: 2rem; color: var(--moe-pink); font-weight: 900; margin: 0 10px; text-shadow: 1px 1px 0px white; }
+        .uv-message { font-size: 0.7rem; color: var(--mermaid-aqua); margin-top: 5px; font-weight: 700; padding: 5px 10px; background: rgba(255, 255, 255, 0.3); border-radius: 15px; }
+
+        .zone-header { font-size: 0.85rem; color: var(--moe-pink); font-weight: 700; margin: 15px 0 10px 0; text-transform: uppercase; border-bottom: 2px dotted white; padding-bottom: 5px; }
+
+        .agronomy-card {
+            background: rgba(180, 230, 255, 0.5);
+            border: 2px solid white;
+            border-radius: 20px;
+            padding: 12px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            text-align: left;
+            box-shadow: 2px 2px 8px rgba(0, 240, 255, 0.15);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            cursor: pointer;
+            flex-wrap: wrap;
+        }
+        
+        .agronomy-card:active { transform: scale(0.98); }
+
+        .plant-stamp { width: 70px; height: 70px; border-radius: 10px; border: 2px dashed white; object-fit: cover; background: var(--bubble-glass); flex-shrink: 0; box-shadow: 0 0 5px var(--mermaid-aqua); }
+        .plant-info { flex: 1; min-width: 0; }
+        .plant-name { font-weight: 700; color: var(--deep-sea); font-size: 0.95rem; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center; text-shadow: 1px 1px 0px white; }
+        .plant-toxicity { font-size: 0.85rem; filter: drop-shadow(1px 1px 0px white); }
+
+        .tag-container { display: flex; gap: 6px; margin-bottom: 6px; flex-wrap: wrap; }
+        .plant-tag { font-size: 0.65rem; font-weight: 700; padding: 4px 8px; border-radius: 10px; display: inline-flex; align-items: center; color: white; text-transform: uppercase; letter-spacing: 1px; line-height: 1.3; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.5); }
+
+        .help-btn { background: rgba(255,255,255,0.4); border-radius: 50%; width: 15px; height: 15px; display: inline-flex; justify-content: center; align-items: center; font-size: 0.6rem; cursor: help; border: 1px solid white; margin-left: 6px; color: var(--deep-sea); text-shadow: none; transition: 0.2s ease; }
+        .help-btn:active { background: white; transform: scale(0.9); }
+
+        .tag-max { background: linear-gradient(135deg, #00f0ff, #00d084); }
+        .tag-shade { background: linear-gradient(135deg, #ffb347, #ff85c2); }
+        .tag-sanctuary { background: linear-gradient(135deg, #a8a8a8, #7a7a7a); }
+        .tag-action { background: linear-gradient(135deg, #ff9a9e, #fecfef); color: var(--deep-sea); text-shadow: 1px 1px 0px white; border-color: white;}
+        
+        .plant-reason { font-size: 0.75rem; color: var(--deep-sea); line-height: 1.25; text-shadow: 1px 1px 0px rgba(255,255,255,0.8); }
+
+        /* 🎀 CLEAN STATS GRID 🎀 */
+        .plant-details-hidden { display: none; width: 100%; margin-top: 10px; padding-top: 10px; border-top: 2px dotted rgba(255,255,255,0.5); color: var(--deep-sea); }
+        .agronomy-card.expanded .plant-details-hidden { display: block; animation: fadeIn 0.3s ease; }
+
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+
+        /* STATIC (Pink) */
+        .stat-cell-static { background: rgba(255, 133, 194, 0.2); border: 2px dotted var(--moe-pink); border-radius: 10px; padding: 6px 8px; text-align: center; box-shadow: inset 1px 1px 3px rgba(255,255,255,0.4); }
+
+        /* DYNAMIC (Green) */
+        .stat-cell-dynamic { background: rgba(40, 167, 69, 0.2); border: 2px dotted #28a745; border-radius: 10px; padding: 6px 8px; text-align: center; box-shadow: inset 1px 1px 3px rgba(255,255,255,0.4); }
+
+        .stat-label-clean { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; color: var(--moe-pink); font-weight: 700; margin-bottom: 2px; text-shadow: 1px 1px 0px white; }
+        .stat-value-clean { font-size: 0.85rem; font-weight: 700; text-shadow: 1px 1px 0px white; }
+
+        .metabolism-box { background: rgba(0, 240, 255, 0.15); border: 2px dotted var(--moe-pink); border-radius: 10px; padding: 8px; text-align: center; box-shadow: inset 1px 1px 3px rgba(255,255,255,0.4); }
+        .metabolism-text { font-size: 0.8rem; line-height: 1.3; margin-top: 3px; font-weight: 700; text-shadow: 1px 1px 0px white; }
+
+        /* 🎀 LUNAR GLOW EFFECT 🎀 */
+        .lunar-boost-active { color: var(--moe-pink); text-shadow: 0 0 8px var(--moe-pink), 0 0 15px var(--moe-pink); font-weight: 900; }
+
+        /* 🎀 DYNAMIC LIFECYCLE BOX 🎀 */
+        .lifecycle-box { background: rgba(255, 255, 255, 0.3); border: 2px dashed var(--moe-pink); border-radius: 15px; padding: 8px 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: inset 1px 1px 3px rgba(255,255,255,0.4); }
+        .lifecycle-label { font-size: 0.75rem; color: var(--deep-sea); font-weight: 700; text-transform: uppercase; text-shadow: 1px 1px 0px white; }
+        .lifecycle-input-group { display: flex; align-items: center; gap: 5px; }
+        .days-input { width: 45px; padding: 6px; border-radius: 10px; border: 2px solid white; background: var(--inner-bubble); color: var(--moe-pink); font-family: 'Fredoka', sans-serif; font-weight: 900; text-align: center; outline: none; box-shadow: inset 1px 1px 4px rgba(0,240,255,0.2); text-shadow: 1px 1px 0px white;}
+        .days-input::placeholder { color: rgba(255, 133, 194, 0.5); }
+        .lifecycle-btn { background: linear-gradient(135deg, var(--mermaid-aqua), var(--moe-pink)); border: 2px solid white; border-radius: 10px; color: white; font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 0.7rem; padding: 6px 10px; cursor: pointer; box-shadow: 0 2px 5px rgba(0, 240, 255, 0.3); text-shadow: 1px 1px 1px rgba(0,0,0,0.2); transition: 0.2s; }
+        .lifecycle-btn:active { transform: scale(0.9); }
+
+        /* 🌿 FLORA SEARCH BAR 🌿 */
+        .flora-search-container { margin: 15px 0 10px 0; width: 100%; }
+        #flora-search-input { width: 100%; box-sizing: border-box; padding: 10px 15px; border-radius: 20px; border: 2px solid white; background: var(--inner-bubble); color: var(--deep-sea); font-family: 'Fredoka', sans-serif; font-weight: 700; outline: none; box-shadow: inset 1px 1px 5px rgba(0, 240, 255, 0.1); text-shadow: 1px 1px 0px white; }
+        #flora-search-input::placeholder { color: var(--moe-pink); opacity: 0.8; text-shadow: none; }
+
+        .minutely-grid { display: flex; width: 100%; justify-content: space-between; gap: 5px; margin-top: 5px; }
+        .minutely-col { flex: 1; background: var(--bubble-glass); border-radius: 10px; padding: 8px 2px; font-size: 0.75rem; border: 1px dotted white; box-shadow: inset 1px 1px 5px rgba(255,255,255,0.5); }
+        .minutely-time { font-weight: 700; color: var(--moe-pink); margin-bottom: 3px; text-shadow: 1px 1px 0px white;}
+        .minutely-val { font-weight: 700; text-shadow: 1px 1px 0px white; }
+
+        .hourly-container { display: flex; overflow-x: auto; gap: 10px; padding-bottom: 10px; margin-bottom: 15px; }
+        .hourly-box { min-width: 65px; background: var(--inner-bubble); border: 2px solid white; border-radius: 20px; padding: 10px 5px; display: flex; flex-direction: column; align-items: center; box-shadow: 2px 2px 8px rgba(0, 240, 255, 0.15); }
+        .hourly-time { font-size: 0.85rem; color: var(--moe-pink); text-shadow: 1px 1px 0px white; margin-bottom: 3px; font-weight: 700;}
+        .hourly-icon { font-size: 1.3rem; filter: drop-shadow(2px 2px 0px white); margin: 3px 0; }
+        .hourly-temp { font-size: 1.1rem; font-weight: 700; color: var(--mermaid-aqua); text-shadow: 1px 1px 0px white; margin-top: 3px; margin-bottom: 5px; }
+        .hourly-precip { font-size: 0.75rem; color: var(--deep-sea); font-weight: 700; line-height: 1.3; text-shadow: 1px 1px 0px white; margin-top: 2px; }
+
+        .forecast-title { font-size: 1.3rem; margin: 15px 0 10px 0; color: white; font-weight: 700; text-shadow: 2px 2px var(--mermaid-aqua), -1px -1px var(--moe-pink); border-bottom: 3px dotted white; padding-bottom: 5px; }
+        .forecast-item { display: flex; flex-direction: column; background: var(--inner-bubble); margin-bottom: 10px; border-radius: 25px; border: 2px solid white; box-shadow: 2px 2px 8px rgba(0, 240, 255, 0.1); cursor: pointer; transition: transform 0.2s ease; }
+        .forecast-item:active { transform: scale(0.98); }
+        .forecast-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; font-size: 0.95rem; font-weight: 700; color: var(--deep-sea); text-shadow: 1px 1px 0px white; }
+        .forecast-day { width: 50px; text-align: left; color: var(--moe-pink); font-weight: 700;}
+        .forecast-icon { font-size: 1.3rem; filter: drop-shadow(2px 2px 0px white); }
+        
+        .forecast-chance { width: 50px; text-align: center; color: var(--moe-pink); font-size: 0.85rem;}
+        .forecast-volume { width: 50px; text-align: center; color: var(--mermaid-aqua); font-size: 0.85rem;}
+        
+        .forecast-temps { width: 70px; text-align: right; }
+        .min-temp { color: var(--mermaid-aqua); font-size: 0.85rem; margin-left: 5px;}
+        
+        .forecast-details { display: none; padding: 0 18px 15px 18px; font-size: 0.85rem; text-align: left; border-top: 2px dotted rgba(255, 255, 255, 0.5); margin-top: 5px; padding-top: 10px; }
+        .forecast-details p { margin: 4px 0; color: var(--moe-pink); text-shadow: 1px 1px 0px white; }
+        .forecast-details span { color: var(--deep-sea); }
+
+        #loading { font-size: 1.2rem; font-weight: 700; color: white; animation: bounce 1.5s infinite; text-shadow: 2px 2px var(--mermaid-aqua); margin: 20px 0; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+
+        .bottom-nav {
+            display: flex;
+            justify-content: space-between;
+            background: var(--inner-bubble);
+            border: 2px dotted white;
+            border-radius: 30px;
+            padding: 6px;
+            margin-top: 15px;
+            box-shadow: 2px 2px 8px rgba(0, 240, 255, 0.15);
+            gap: 6px;
+        }
+        
+        .nav-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: none;
+            border: none;
+            color: var(--deep-sea);
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 700;
+            font-size: 0.75rem;
+            padding: 12px 0;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.3s ease;
+            text-shadow: 1px 1px 0px white;
+            border-radius: 20px;
+            white-space: nowrap;
+        }
+
+        .nav-btn.active {
+            background: linear-gradient(135deg, var(--mermaid-aqua), var(--moe-pink));
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            box-shadow: inset 0 -2px 0 rgba(0,0,0,0.1);
+        }
+
+        .btn-container { display: flex; gap: 10px; margin-top: 15px; width: 100%; }
+        .refresh-btn { flex: 1; background: linear-gradient(135deg, var(--mermaid-aqua), var(--moe-pink)); border: 3px solid white; padding: 12px 10px; border-radius: 50px; color: white; font-size: 1rem; font-family: 'Fredoka', sans-serif; font-weight: 700; letter-spacing: 1px; cursor: pointer; box-shadow: 0 6px 15px rgba(0, 240, 255, 0.3), inset 0 -3px 0 rgba(0,0,0,0.1); transition: 0.2s; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); }
+        .refresh-btn:active { box-shadow: 0 2px 5px rgba(0, 240, 255, 0.3); transform: translateY(4px); }
+
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(8px); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-content { background: var(--bubble-glass); border: 4px dotted var(--pearl-glow); border-radius: 30px; width: 90%; max-width: 400px; height: 70%; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 0 25px rgba(0, 240, 255, 0.6); }
+        .close-radar-btn { background: var(--moe-pink); color: white; text-align: center; padding: 12px; font-weight: 700; cursor: pointer; text-transform: uppercase; letter-spacing: 2px; border-bottom: 2px dashed white; }
+        #radar-frame { width: 100%; height: 100%; border: none; }
+    </style>
+</head>
+<body>
+
+    <div class="weather-container">
+        <h1>☁️ Right Now</h1>
+        
+        <div class="search-box">
+            <input type="text" id="search-input" placeholder="Search city... 🌺" onkeypress="handleSearchKeyPress(event)">
+            <button class="search-btn" onclick="searchLocation()">🔍</button>
+        </div>
+
+        <div id="location-name">Scanning... (◕‿◕✿)</div>
+        
+        <div id="loading">Locating... 🫧</div>
+        
+        <div id="weather-content" style="display:none;">
+            
+            <div id="tab-now" class="tab-section active">
+                <div id="temp">--°</div>
+                <div id="feels-like">🌡 RealFeel: <span id="apparent">--</span>°</div>
+                <div id="status">(>ω<) VIBING</div>
+
+                <div class="stats-grid" id="main-stats">
+                    <div class="stat-box">
+                        <div class="stat-icon">🌬</div>
+                        <div class="stat-label">Wind</div>
+                        <div class="stat-value"><span id="wind">--</span> mph</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-icon">⚠️</div>
+                        <div class="stat-label">Gusts</div>
+                        <div class="stat-value"><span id="gusts">--</span> mph</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-icon">🌧</div>
+                        <div class="stat-label">Humidity</div>
+                        <div class="stat-value"><span id="humidity">--</span>%</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-icon">💧</div>
+                        <div class="stat-label">Dew Pt</div>
+                        <div class="stat-value"><span id="dewpoint">--</span>°</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-icon">🔭</div>
+                        <div class="stat-label">Visibility</div>
+                        <div class="stat-value"><span id="visibility">--</span> mi</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-icon">🧭</div>
+                        <div class="stat-label">Pressure</div>
+                        <div class="stat-value" style="font-size: 0.85rem;"><span id="pressure">--</span></div>
+                    </div>
+                </div>
+
+                <div class="wide-box">
+                    <div class="celestial-title">🫧 Air Report 🫧</div>
+                    <div class="aqi-row">
+                        <span class="aqi-label">Overall AQI:</span>
+                        <span class="aqi-val" id="aqi-score">Scanning...</span>
+                    </div>
+                    <div class="aqi-row">
+                        <span class="aqi-label">Fine Particles:</span>
+                        <span class="aqi-val" id="aqi-pm25">--</span>
+                    </div>
+                    <div class="aqi-row">
+                        <span class="aqi-label">Dust:</span>
+                        <span class="aqi-val" id="aqi-pm10">--</span>
+                    </div>
+                    <div class="aqi-row">
+                        <span class="aqi-label">Ozone / Smog:</span>
+                        <span class="aqi-val" id="aqi-ozone">--</span>
+                    </div>
+                </div>
+
+                <div class="wide-box">
+                    <div class="celestial-title">🌅 Daily Index</div>
+                    <div class="vibe-title" id="vibe-title">Loading Vibes...</div>
+                    <div class="vibe-desc" id="vibe-desc">...</div>
+                </div>
+            </div>
+
+            <div id="tab-future" class="tab-section">
+                <div class="wide-box" style="padding-bottom: 5px;">
+                    <div class="celestial-title" style="border:none; margin-bottom: 0;">🕛 Next 60 Mins</div>
+                    <div class="minutely-grid" id="minutely-list"></div>
+                </div>
+
+                <div class="forecast-title">🌗 Next 24 Hours </div>
+                <div class="hourly-container" id="hourly-list"></div>
+
+                <div class="forecast-title">🌃 7-Day Outlook</div>
+                <div id="forecast-list"></div>
+            </div>
+
+            <div id="tab-sky" class="tab-section">
+                <div class="wide-box atmosphere-scanner">
+                    <div class="celestial-title">🧴 Sun & UV</div>
+                    <div class="uv-wrapper">
+                        <span class="uv-label">UV Index:</span>
+                        <span id="uv-number" class="uv-number">--</span>
+                    </div>
+                    <div class="uv-message" id="uv-text">Checking the rays...</div>
+                </div>
+
+                <div class="wide-box">
+                    <div class="celestial-title">🌌 Celestial </div>
+                    <div class="celestial-timeline">
+                        <div class="celestial-event">
+                            <img class="pixel-stamp" src="https://i.postimg.cc/pX2NJQ95/fcc21a191313ea7e7ad9f23d615fbdd6.jpg" alt="Rise Stamp">
+                            <div class="celestial-info">
+                                <div class="stat-label">Sunrise</div>
+                                <div class="stat-value" id="sunrise">--:--</div>
+                            </div>
+                        </div>
+                        <div class="celestial-event">
+                            <img class="pixel-stamp" src="https://i.postimg.cc/pX2NJQ9m/fe1fc3ebfafb9d2d765ccfd84af051fa.jpg" alt="Golden Hour Stamp">
+                            <div class="celestial-info">
+                                <div class="stat-label">Golden Hr</div>
+                                <div class="stat-value" id="golden-hour">--:--</div>
+                            </div>
+                        </div>
+                        <div class="celestial-event">
+                            <img class="pixel-stamp" src="https://i.postimg.cc/028g0G6M/3b6149f779ec5e6827f5eb7fdc0b73af.jpg" alt="Set Stamp">
+                            <div class="celestial-info">
+                                <div class="stat-label">Sunset</div>
+                                <div class="stat-value" id="sunset">--:--</div>
+                            </div>
+                        </div>
+                        <div class="celestial-event">
+                            <img class="pixel-stamp" src="https://i.postimg.cc/Fs9tVbff/d1fbe1c35c32494c9290ebf699c16fc6.jpg" alt="Phase Stamp">
+                            <div class="celestial-info">
+                                <div class="stat-label">Phase</div>
+                                <div class="stat-value"><span id="moon-phase">Scanning...</span> <span id="moon-icon">🌙</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="wide-box atmosphere-scanner">
+                    <div class="celestial-title">🪟 Sky Window </div>
+                    <div id="diorama-box"></div>
+                    <div id="cloud-scanner-output">Let's look at the day...</div>
+                </div>
+
+                <div class="wide-box">
+                    <div class="celestial-title">🌌 Night Sky Clarity </div>
+                    <div class="vibe-title" id="stargazer-title">Let's look at the night...</div>
+                    <div class="vibe-desc" id="stargazer-desc">...</div>
+                </div>
+            </div>
+
+            <div id="tab-flora" class="tab-section">
+                <div class="wide-box">
+                    <div class="celestial-title">☘️ Botanical Station </div>
+                    
+                    <div class="vibe-title" style="margin-top: 15px; font-size: 1rem;">🌘 Lunar Cycle Action</div>
+                    <div class="vibe-desc" id="lunar-botanical-guide">Calculating gravity...</div>
+
+                    <div class="vibe-title" style="margin-top: 15px; font-size: 1rem;">🌤 Ambient Air Check</div>
+                    <div class="vibe-desc" id="flora-humidity-guide">Checking moisture...</div>
+                </div>
+                
+                <div class="flora-search-container">
+                    <input type="text" id="flora-search-input" placeholder="Search plants... 🪴" onkeyup="filterFlora()">
+                </div>
+
+                <div id="agronomy-list"></div>
+            </div>
+
+            <div class="bottom-nav">
+                <button class="nav-btn active" onclick="switchTab('tab-now', this)">🌫 NOW</button>
+                <button class="nav-btn" onclick="switchTab('tab-future', this)">🔮 FUTURE</button>
+                <button class="nav-btn" onclick="switchTab('tab-sky', this)">🌠 SKY</button>
+                <button class="nav-btn" onclick="switchTab('tab-flora', this)">🌿 FLORA</button>
+            </div>
+        </div>
+
+        <div class="btn-container">
+            <button class="refresh-btn" onclick="fetchWeather()">REFRESH 🌀</button>
+            <button class="refresh-btn" onclick="openRadar()">📡 LIVE RADAR</button>
+        </div>
+    </div>
+
+    <div id="radar-modal" class="modal">
+        <div class="modal-content">
+            <div class="close-radar-btn" onclick="closeRadar()">🌈 CLOSE RADAR </div>
+            <iframe id="radar-frame" src=""></iframe>
+        </div>
+    </div>
+
+    <script>
+        let myLat = 0;
+        let myLon = 0;
+        let lastWeatherState = null;
+
+        function switchTab(tabId, btnElement) {
+            document.querySelectorAll('.tab-section').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.add('active');
+            btnElement.classList.add('active');
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function filterFlora() {
+            const query = document.getElementById('flora-search-input').value.toLowerCase();
+            const cards = document.querySelectorAll('.agronomy-card');
+            
+            cards.forEach(card => {
+                const plantName = card.querySelector('.plant-name').innerText.toLowerCase();
+                if (plantName.includes(query)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        function updateLifecycle(plantId, days) {
+            window.floraDB[plantId].days_since_planted = days ? parseInt(days) : 0;
+            
+            if(window.lastWeatherState) {
+                const state = window.lastWeatherState;
+                const newResults = window.ClimateEngine.runAnalysis(
+                    state.lat, state.lon, state.weekTempsMin, state.weekTempsMax, state.dailyGusts, state.currentTemp, state.currentHumidity, state.rainTotal, state.moonPhaseStr, state.isDaytime
+                );
+                renderAgronomy(newResults, plantId); 
+            }
+        }
+
+        const weatherMoji = {
+            0: "🌻", 1: "☀️", 2: "🌤️", 3: "⛅",
+            45: "🌥️", 48: "🌫️", 
+            51: "🌦️", 53: "💧", 55: "🌧️", 56: "🥶", 57: "🥶",
+            61: "🌧️", 63: "🌦️", 65: "☔", 66: "🧊", 67: "🧊",
+            71: "❄️", 73: "❄️", 75: "🌨️", 77: "🌨️",
+            80: "🌧️", 81: "☔", 82: "💧", 85: "🌨️", 86: "⛄",
+            95: "⚡", 96: "🌩️", 99: "⛈️"
+        };
+
+        const weatherDescriptions = {
+            0: "Sun Kissed Day", 1: "Sunny & Clear", 2: "A Bit Cloudy", 3: "Overcast Bummer",
+            45: "Soft Mist", 48: "Foggy days", 51: "Light Drizzle", 53: "Drizzle", 55: "Soft Rain",
+            56: "Chilly Drizzle ", 57: "Cold Rain", 61: "Rainy Day", 63: "Steady Rain", 65: "Heavy Rain", 
+            66: "Freezing Rain", 67: "Heavy Ice Rain", 71: "Snowy Sparkles", 73: "Snowing", 75: "Heavy Snow", 
+            77: "Snow Grains", 80: "Sparkly Showers", 81: "Heavy Showers", 82: "Pouring", 
+            85: "Snow Showers", 86: "Heavy Snow Showers", 95: "Stormy Energy", 96: "Thunderstorm", 99: "Crazy Storm"
+        };
+
+        function getDayName(index) {
+            if (index === 0) return "Today";
+            const d = new Date();
+            d.setDate(d.getDate() + index);
+            return d.toLocaleDateString('en-US', { weekday: 'short' });
+        }
+
+        function getMathematicalHour(offset) {
+            if (offset === 0) return "Now";
+            const d = new Date();
+            d.setHours(d.getHours() + offset);
+            let h = d.getHours();
+            const ampm = h >= 12 ? 'pm' : 'am';
+            h = h % 12 || 12;
+            return `${h}${ampm}`;
+        }
+
+        function formatSunTime(utcString) {
+            try {
+                const d = new Date(utcString);
+                return d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+            } catch(e) { return "--:--"; }
+        }
+
+        function getGoldenHour(sunsetUtcString) {
+            try {
+                const d = new Date(sunsetUtcString);
+                d.setHours(d.getHours() - 1);
+                return d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+            } catch(e) { return "--:--"; }
+        }
+
+        function getUVSpeech(uv) {
+            if (uv <= 2) return "Chill rays! Perfect skin day ⋆☁️°";
+            if (uv <= 5) return "Sun is out! Don't forget SPF  ദ്ദി(˵ •̀ ᴗ - ˵ ) ✧";
+            if (uv <= 7) return "Very sunny! Reapply SPF ⋆☀︎｡";
+            if (uv <= 10) return "Super high rays! Protect ur face!  ₊˚⛅.ೃ࿔*";
+            return "Extreme UV! Stay inside .ೃ࿔ ⌂*:･";
+        }
+
+        function getMoonPhaseData() {
+            const now = new Date();
+            const julian = (now.getTime() / 86400000) + 2440587.5;
+            const lunarDays = julian - 2451550.26; 
+            const phase = (lunarDays / 29.53058867) % 1; 
+            const normalizedPhase = phase < 0 ? phase + 1 : phase;
+
+            let b = 0;
+            if (normalizedPhase < 0.015 || normalizedPhase > 0.985) b = 0; 
+            else if (normalizedPhase < 0.235) b = 1; 
+            else if (normalizedPhase < 0.265) b = 2; 
+            else if (normalizedPhase < 0.485) b = 3; 
+            else if (normalizedPhase < 0.515) b = 4; 
+            else if (normalizedPhase < 0.735) b = 5; 
+            else if (normalizedPhase < 0.765) b = 6; 
+            else b = 7; 
+            
+            const phases = [
+                { i: "🌑", n: "New Moon" }, { i: "🌒", n: "Waxing Cres" },
+                { i: "🌓", n: "1st Quarter" }, { i: "🌔", n: "Waxing Gib" },
+                { i: "🌕", n: "Full Moon" }, { i: "🌖", n: "Waning Gib" },
+                { i: "🌗", n: "Last Quarter" }, { i: "🌘", n: "Waning Cres" }
+            ];
+
+            let botanicalGuide = "...";
+            if (normalizedPhase >= 0.015 && normalizedPhase < 0.485) {
+                botanicalGuide = "Moon is Waxing! Moisture is pulling UP into leaves ↑ Optimal time to feed plants & get new growth! (☘︎◠‿◠)";
+            } else if (normalizedPhase >= 0.485 && normalizedPhase < 0.515) {
+                botanicalGuide = "⋆｡°✩ Soil moisture is high! Perfect for soaking seeds, hold off on pruning for now";
+            } else if (normalizedPhase >= 0.515 && normalizedPhase < 0.985) {
+                botanicalGuide = "Moon is Waning! Energy is pulling DOWN to roots ↓ Perfect window to pot water cuttings ₍ꕤᐢ..ᐢ₎";
+            } else {
+                botanicalGuide = "New moon ᶻ 𝗓 𐰁 stop flow is slow & plants are sleepy,, time to prune and take fresh cuttings!!";
+            }
+
+            return { phaseInfo: phases[b], botanicalGuide: botanicalGuide };
+        }
+
+        function setFloraVibe(humidity) {
+            let humidityGuide = "";
+            if (humidity < 30) {
+                humidityGuide = `Current humidity is only ${humidity}%. Super dry air! 𓆈 Mist your plants today and keep aroid cuttings far away from heaters`;
+            } else if (humidity < 50) {
+                humidityGuide = `Current humidity is ${humidity}%. The air is decent, it's a good time to check your propagation jars and top off the water`;
+            } else {
+                humidityGuide = `Current humidity is high at ${humidity}%! Perfect weather to plant your rooted water cuttings into soil`;
+            }
+            document.getElementById('flora-humidity-guide').innerText = humidityGuide;
+        }
+
+        function customRealFeel(temp, wind, humidity) {
+            if (temp <= 50 && wind > 3) {
+                let chill = 35.74 + (0.6215 * temp) - (35.75 * Math.pow(wind, 0.16)) + (0.4275 * temp * Math.pow(wind, 0.16));
+                return Math.round(chill);
+            } else if (temp >= 80) {
+                let heat = -42.379 + 2.04901523*temp + 10.14333127*humidity - 0.22475541*temp*humidity - 0.00683783*temp*temp - 0.05481717*humidity*humidity + 0.00122874*temp*temp*humidity + 0.00085282*temp*humidity*humidity - 0.00000199*temp*temp*humidity*humidity;
+                return Math.round(heat);
+            }
+            return Math.round(temp);
+        }
+
+        function toggleDetails(element) {
+            const detailsDiv = element.querySelector('.forecast-details');
+            if (detailsDiv.style.display === 'block') {
+                detailsDiv.style.display = 'none';
+            } else {
+                detailsDiv.style.display = 'block';
+            }
+        }
+
+        function openRadar() {
+            const frame = document.getElementById('radar-frame');
+            frame.src = `https://embed.windy.com/embed2.html?lat=${myLat}&lon=${myLon}&zoom=8&level=surface&overlay=rain&product=ecmwf&menu=&message=true&marker=true&calendar=now&pressure=&type=map&location=coordinates&detail=&metricWind=mph&metricTemp=%C2%B0F&radarRange=-1`;
+            document.getElementById('radar-modal').style.display = 'flex';
+        }
+
+        function closeRadar() {
+            document.getElementById('radar-modal').style.display = 'none';
+            document.getElementById('radar-frame').src = ""; 
+        }
+
+        function setVibeIndex(temp) {
+            let title = "";
+            let desc = "";
+            if (temp < 10) {
+title = "˚₊ ❄︎ Freezing!! ";
+desc = "Way too icy for humans or plants! Stay under heavy blankets and keep the heater blasting ☃︎";
+} else if (temp < 20) {
+title = "☃︎ Frosty ";
+desc = "Everything is frozen outside! Stick to indoor hobbies where it's warm and cozy ⋆⁺₊❅.";
+} else if (temp < 30) {
+title = "༄ Winter Chill";
+desc = "Put on some thick socks, headphones and make a big bowl of soup! ˚₊ʚ🍲ɞ₊˚";
+} else if (temp < 40) {
+title = "Chilly n Crisp ༄˖°.🍂";
+desc = "everything is chilly, just perfect for clearing your head and reorganizing ⋆✴︎˚｡⋆";
+} else if (temp < 50) {
+title = "Gentle Breeze ˳༄꠶";
+desc = "It's sweater weather! Grab a cup of hot cocoa and watch your favorite movie 🎞️✮⋆˙";
+} else if (temp < 60) {
+title = "°❀⋆°Cool & Warm";
+desc = "Crack the window open just a tiny bit! Perfect atmosphere for reading 📖ྀིྀི ";
+} else if (temp < 70) {
+title = "⋆. 𐙚 ̊ Perfection! ";
+desc = "Windows wide open! Everything feels completely balanced 𓏲ּ𝄢 ";
+} else if (temp < 80) {
+title = "Warm  ˖.𖤓 ݁٠࣪˖˚⋆";
+desc = "It's a sunny day! The plants are loving life, it's a great day to get outside 𖤓";
+} else if (temp < 90) {
+title = "Toasty ☀︎⋆.ೃ࿔*:･";
+desc = "Time to turn on the fan, grab a massive ice drink and keep things simple with low stress vibes (⸝⸝ᵕᴗᵕ⸝⸝)˚˖𓍢ִ໋`🌿:";
+} else if (temp < 100) {
+title = "Scorched ⊹₊🔥⋆｡°✩";
+desc = "Too hot! Close the blinds to keep the sun out, dim your screen brightness, and stay strictly inside with AC ˖.𖤓 ݁٠࣪˖˚⋆";
+} else {
+title = "Heat Warning ⚠️";
+desc = "It is way to hot! Drink lots of water and pay attention to your body today ⊹₊🔥";
+            }
+            document.getElementById('vibe-title').innerText = title;
+            document.getElementById('vibe-desc').innerText = desc;
+        }
+
+        function setNightSkyClarity(isNight, cloudCoverTotal) {
+            const stargazerTitle = document.getElementById('stargazer-title');
+            const stargazerDesc = document.getElementById('stargazer-desc');
+
+            if (!isNight) {
+                stargazerTitle.innerText = "Sun is up ⋆｡˚☀︎｡";
+                stargazerDesc.innerText = "Stars may be out tonight instead!";
+                return;
+            }
+
+            if (cloudCoverTotal < 10) {
+                stargazerTitle.innerText = "Looking for clouds & stars ☾⋆⁺₊✧";
+                stargazerDesc.innerText = "No clouds! Entire constellations are plain as day  ݁⋆⭒˚.⋆";
+            } else if (cloudCoverTotal < 30) {
+                stargazerTitle.innerText = "Looking for stars: good clarity ☾⋆⁺₊✧";
+                stargazerDesc.innerText = "Most major stars are visible! ₊˚⊹☆";
+            } else if (cloudCoverTotal < 60) {
+                stargazerTitle.innerText = "Looking for stars... partial clarity ₊˚⊹☆";
+                stargazerDesc.innerText = "Stars maybe visible from your window ☾⋆⁺₊✧";
+            } else if (cloudCoverTotal < 90) {
+                stargazerTitle.innerText = "Looking for stars..₊˚⊹☆ ";
+                stargazerDesc.innerText = "Only the absolute brightest will cut through ⊹☆";
+            } else {
+                stargazerTitle.innerText = "Constellations not visible!  ݁⋆⭒˚.⋆";
+                stargazerDesc.innerText = "Very overcast, low to no visibility ☾⋆⁺₊✧";
+            }
+        }
+
+        function setAtmosphereScanner(low, mid, high, totalCover, isDay) {
+            const box = document.getElementById('diorama-box');
+            const scannerOutput = document.getElementById('cloud-scanner-output');
+
+            box.style.backgroundImage = isDay ? "url('day.jpg')" : "url('night.jpg')";
+            box.innerHTML = '';
+
+            let sensitiveCover = Math.max(low, mid, high, totalCover);
+
+            if (sensitiveCover <= 5) {
+                scannerOutput.innerText = isDay ? "The sky is perfectly clear! ☀️" : "The void is perfectly clear! 🌌";
+                return;
+            }
+
+            const maxSprites = 24; 
+            const spritesToSpawn = Math.ceil(maxSprites * (sensitiveCover / 100));
+
+            for (let i = 0; i < spritesToSpawn; i++) {
+                const sprite = document.createElement('img');
+                
+                sprite.src = isDay ? 'cloud.png' : 'star.png';
+                sprite.className = 'sprite';
+
+                const size = Math.floor(Math.random() * 40) + 40;
+                sprite.style.width = size + 'px';
+
+                sprite.style.left = Math.floor(Math.random() * 90) + '%';
+                sprite.style.top = Math.floor(Math.random() * 80) + '%';
+                sprite.style.opacity = (Math.random() * 0.4) + 0.5;
+                sprite.style.animationDuration = Math.floor(Math.random() * 15 + 10) + 's';
+
+                box.appendChild(sprite);
+            }
+
+            if (sensitiveCover <= 25) {
+                scannerOutput.innerText = "Just a few clouds drifting by ☁️";
+            } else if (sensitiveCover < 65) {
+                scannerOutput.innerText = "Partially covered sky, Sprites are drifting! ☁️";
+            } else {
+                scannerOutput.innerText = "Heavy cloud cover, Maximum sprites spawned! ☁️";
+            }
+        }
+
+        function handleSearchKeyPress(event) {
+            if (event.key === "Enter") {
+                searchLocation();
+            }
+        }
+
+        async function searchLocation() {
+            const query = document.getElementById('search-input').value.trim();
+            if (!query) return;
+
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('weather-content').style.display = 'none';
+            document.getElementById('loading').innerText = "Searching... 🔍";
+
+            try {
+                const [city, state] = query.split(',').map(text => text.trim());
+                const geoUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=10&language=en&format=json`;
+                const geoRes = await fetch(geoUrl);
+                const geoData = await geoRes.json();
+
+                if (geoData.results && geoData.results.length > 0) {
+                    let place = geoData.results[0]; 
+
+                    if (state) {
+                        const exactMatch = geoData.results.find(location => 
+                            location.admin1 && location.admin1.toLowerCase().includes(state.toLowerCase())
+                        );
+                        
+                        if (exactMatch) {
+                            place = exactMatch;
+                        }
+                    }
+
+                    const locName = place.name + (place.admin1 ? `, ${place.admin1}` : '');
+                    fetchWeather(place.latitude, place.longitude, locName);
+                } else {
+                    document.getElementById('loading').innerText = "City not found! Try again. 🌸";
+                }
+            } catch (e) {
+                document.getElementById('loading').innerText = "Search error! ✖╭╮✖";
+            }
+        }
+
+        function renderAgronomy(engineData, expandId = null) {
+            const container = document.getElementById('agronomy-list');
+            
+            container.innerHTML = `<div class="zone-header">📍 Est. Hardiness Zone: ${engineData.zone.zone}</div>`;
+            
+            engineData.recommendations.forEach(res => {
+                let toxIcon = res.plant.toxic_pets ? "☣︎🐾" : "♡🐾";
+
+                let pTip = res.primaryTooltip.replace(/'/g, "\\'");
+                let sTip = res.secondaryTooltip.replace(/'/g, "\\'");
+
+                let isExpanded = (res.id === expandId) ? "expanded" : "";
+
+                let lifecycleHTML = "";
+                if (res.plant.life_stages) {
+                    let currentDays = res.plant.days_since_planted !== undefined ? res.plant.days_since_planted : "";
+                    let inputId = `days-input-${res.id}`;
+                    lifecycleHTML = `
+                        <div class="lifecycle-box" onclick="event.stopPropagation();">
+                            <div class="lifecycle-label">🌱 Days Since Planted:</div>
+                            <div class="lifecycle-input-group">
+                                <input type="number" id="${inputId}" class="days-input" value="${currentDays}" placeholder="0" onclick="event.stopPropagation();">
+                                <button class="lifecycle-btn" onclick="event.stopPropagation(); updateLifecycle('${res.id}', document.getElementById('${inputId}').value)">SET</button>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                let waterRaw = res.plant.water_schedule ? res.plant.water_schedule.toUpperCase() : "";
+                let formattedWaterNeeds = waterRaw;
+                if (waterRaw.includes(':')) {
+                    let splitText = waterRaw.split(':');
+                    formattedWaterNeeds = `<span style="color: var(--moe-pink); text-shadow: 1px 1px 0px white;">${splitText[0]}:</span>${splitText[1]}`;
+                }
+
+                container.innerHTML += `
+                    <div class="agronomy-card ${isExpanded}" onclick="this.classList.toggle('expanded')">
+                        <div style="display: flex; flex-direction: column; align-items: center; gap: 4px; flex-shrink: 0;">
+                            <img src="${res.plant.stamp_img}" alt="${res.plant.name}" class="plant-stamp" onerror="this.src='https://i.postimg.cc/Fs9tVbff/d1fbe1c35c32494c9290ebf699c16fc6.jpg'">
+                            <span style="font-size: 0.7rem; font-weight: 700; color: var(--deep-sea); text-shadow: 1px 1px 0px white;">Live: ${res.liveVPD}</span>
+                        </div>
+                        
+                        <div class="plant-info">
+                            <div class="plant-name">${res.plant.name} <span class="plant-toxicity">${toxIcon}</span></div>
+                            
+                            <div class="tag-container">
+                                <div class="plant-tag ${res.tagClass}">
+                                    ${res.primaryTag}
+                                    <span class="help-btn" title="${res.primaryTooltip}" onclick="event.stopPropagation(); alert('${pTip}')">?</span>
+                                </div>
+                                <div class="plant-tag tag-action">
+                                    ${res.secondaryTag}
+                                    <span class="help-btn" title="${res.secondaryTooltip}" onclick="event.stopPropagation(); alert('${sTip}')">?</span>
+                                </div>
+                            </div>
+                            
+                            <div class="plant-reason">${res.reason}</div>
+                            
+                            <div class="plant-details-hidden">
+                                ${lifecycleHTML}
+                                <div class="stat-grid">
+                                    <div class="stat-cell-static">
+                                        <div class="stat-label-clean">Ideal VPD</div>
+                                        <div class="stat-value-clean">${res.idealVPDText || 'N/A'}</div>
+                                    </div>
+                                    <div class="stat-cell-static">
+                                        <div class="stat-label-clean">Temp Limits</div>
+                                        <div class="stat-value-clean">${res.plant.temp_floor}° - ${res.plant.temp_ceiling}°</div>
+                                    </div>
+                                    <div class="stat-cell-dynamic">
+                                        <div class="stat-label-clean">Ideal Temp</div>
+                                        <div class="stat-value-clean">${res.plant.optimal_temp[0]}° - ${res.plant.optimal_temp[1]}°</div>
+                                    </div>
+                                    <div class="stat-cell-dynamic">
+                                        <div class="stat-label-clean">Water Needs</div>
+                                        <div class="stat-value-clean">${formattedWaterNeeds}</div>
+                                    </div>
+                                    <div class="stat-cell-static">
+                                        <div class="stat-label-clean">Max Wind</div>
+                                        <div class="stat-value-clean">${res.plant.wind_tolerance} mph</div>
+                                    </div>
+                                    <div class="stat-cell-static">
+                                        <div class="stat-label-clean">Lunar Boost</div>
+                                        <div class="stat-value-clean ${res.isLunarBoostActive ? 'lunar-boost-active' : ''}">${res.plant.lunar_affinity.toUpperCase()}</div>
+                                    </div>
+                                </div>
+                                <div class="metabolism-box">
+                                    <div class="stat-label-clean">Metabolism</div>
+                                    <div class="metabolism-text">${res.respiration}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            filterFlora();
+        }
+
+        async function fetchWeatherData(latitude, longitude) {
+            try {
+                let sunsetUtc = null;
+                try {
+                    const sunUrl = `https://api.sunrise-sunset.org/json?lat=${latitude}&lng=${longitude}&formatted=0`;
+                    const sunRes = await fetch(sunUrl);
+                    const sunData = await sunRes.json();
+                    sunsetUtc = sunData.results.sunset;
+                    document.getElementById('sunrise').innerText = formatSunTime(sunData.results.sunrise);
+                    document.getElementById('sunset').innerText = formatSunTime(sunsetUtc);
+                    document.getElementById('golden-hour').innerText = getGoldenHour(sunsetUtc);
+                } catch (e) {
+                    document.getElementById('sunrise').innerText = "--:--";
+                    document.getElementById('sunset').innerText = "--:--";
+                    document.getElementById('golden-hour').innerText = "--:--";
+                }
+
+                const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,dew_point_2m,surface_pressure,wind_speed_10m,wind_gusts_10m,weather_code,uv_index,visibility,cloud_cover,cloud_cover_low,cloud_cover_mid,cloud_cover_high,is_day&hourly=temperature_2m,weather_code,precipitation_probability,precipitation,cloud_cover,surface_pressure&minutely_15=precipitation&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,uv_index_max,wind_speed_10m_max,wind_gusts_10m_max&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=auto&models=best_match`;
+                const response = await fetch(weatherUrl);
+                const data = await response.json();
+                
+                let aqiData = null;
+                let aqiStatus = "-- (No Data)", pm25Status = "--", pm10Status = "--", ozoneStatus = "--";
+                try {
+                    const aqiUrl = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${latitude}&longitude=${longitude}&current=us_aqi,pm10,pm2_5,ozone&timezone=auto`;
+                    const aqiRes = await fetch(aqiUrl);
+                    aqiData = await aqiRes.json();
+                    
+                    if (aqiData && aqiData.current) {
+                        const aqi = aqiData.current.us_aqi || "--";
+                        if (aqi !== "--") {
+                            aqiStatus = `${aqi} (Good 🌄)`;
+                            if (aqi > 50) aqiStatus = `${aqi} (Moderate 🌫️)`;
+                            if (aqi > 100) aqiStatus = `${aqi} (Poor ⚠️)`;
+                            if (aqi > 150) aqiStatus = `${aqi} (Hazardous 🚫)`;
+                        }
+
+                        const pm25 = aqiData.current.pm2_5 || "--";
+                        if (pm25 !== "--") pm25Status = pm25 > 35 ? "High ⚠️" : pm25 > 12 ? "Moderate 🍂" : "Low 🍃";
+
+                        const pm10 = aqiData.current.pm10 || "--";
+                        if (pm10 !== "--") pm10Status = pm10 > 154 ? "High ⚠️" : pm10 > 54 ? "Moderate 🍂" : "Low 🍃";
+
+                        const ozone = aqiData.current.ozone || "--";
+                        if (ozone !== "--") ozoneStatus = ozone > 120 ? "High ⚠️" : ozone > 60 ? "Moderate ☁️" : "Low 🌸";
+                        
+                        document.getElementById('aqi-pm25').innerText = pm25 !== "--" ? `${pm25} μg/m³ (${pm25Status})` : "--";
+                        document.getElementById('aqi-pm10').innerText = pm10 !== "--" ? `${pm10} μg/m³ (${pm10Status})` : "--";
+                        document.getElementById('aqi-ozone').innerText = ozone !== "--" ? `${ozone} μg/m³ (${ozoneStatus})` : "--";
+                    }
+                } catch (e) {
+                    console.log("AQI data unavailable for this location.");
+                }
+                document.getElementById('aqi-score').innerText = aqiStatus;
+
+                const current = data.current || {};
+                const daily = data.daily || {};
+                const hourly = data.hourly || {};
+
+                const currentTemp = Math.round(current.temperature_2m || 50);
+                document.getElementById('temp').innerText = currentTemp + "°";
+                document.getElementById('wind').innerText = Math.round(current.wind_speed_10m || 0);
+                document.getElementById('gusts').innerText = Math.round(current.wind_gusts_10m || 0);
+                
+                const currentHumidity = current.relative_humidity_2m || 50;
+                document.getElementById('humidity').innerText = currentHumidity; 
+                setFloraVibe(currentHumidity);
+                document.getElementById('dewpoint').innerText = Math.round(current.dew_point_2m || 50);
+                
+                const visMiles = current.visibility ? (current.visibility / 1609.34).toFixed(1) : "--";
+                document.getElementById('visibility').innerText = visMiles;
+                
+                const currentHourIndex = new Date().getHours();
+                const pastPressureIndex = Math.max(0, currentHourIndex - 3); 
+                const pastPressure = (hourly.surface_pressure && hourly.surface_pressure.length > pastPressureIndex) ? hourly.surface_pressure[pastPressureIndex] : 0;
+                const currentPressure = current.surface_pressure || 0;
+                const pressureDiff = currentPressure - pastPressure;
+                
+                let trendIcon = "〰️"; 
+                if (pressureDiff <= -2.0) trendIcon = "📉 (Storm Drop!)";
+                else if (pressureDiff <= -0.5) trendIcon = "📉";
+                else if (pressureDiff >= 2.0) trendIcon = "📈 (Clearing!)";
+                else if (pressureDiff >= 0.5) trendIcon = "📈";
+                
+                const pressureInHg = (currentPressure * 0.02953).toFixed(2);
+                document.getElementById('pressure').innerText = `${pressureInHg} ${trendIcon}`;
+
+                setVibeIndex(currentTemp);
+                
+                const currentCode = current.weather_code || 0;
+                document.getElementById('status').innerText = `${weatherDescriptions[currentCode] || "Vibing"} ${weatherMoji[currentCode] || "✨"}`;
+
+                const myRealFeel = customRealFeel(currentTemp, current.wind_speed_10m || 0, currentHumidity);
+                document.getElementById('apparent').innerText = myRealFeel;
+
+                const currentUV = Math.round(current.uv_index || 0);
+                document.getElementById('uv-number').innerText = currentUV;
+                document.getElementById('uv-text').innerText = getUVSpeech(currentUV);
+
+                const moonData = getMoonPhaseData();
+                document.getElementById('moon-icon').innerText = moonData.phaseInfo.i;
+                document.getElementById('moon-phase').innerText = moonData.phaseInfo.n;
+                document.getElementById('lunar-botanical-guide').innerText = moonData.botanicalGuide;
+
+                const isDaytime = current.is_day === 1;
+                setAtmosphereScanner(
+                    current.cloud_cover_low || 0, 
+                    current.cloud_cover_mid || 0, 
+                    current.cloud_cover_high || 0, 
+                    current.cloud_cover || 0, 
+                    isDaytime
+                );
+
+                const isNight = current.is_day === 0;
+                setNightSkyClarity(isNight, current.cloud_cover || 0);
+
+                const minList = document.getElementById('minutely-list');
+                minList.innerHTML = '';
+                
+                if (data.minutely_15 && data.minutely_15.time && data.minutely_15.time.length > 0) {
+                    const nowMs = Date.now();
+                    let minStartIndex = 0;
+                    
+                    for(let i=0; i < data.minutely_15.time.length; i++) {
+                        if(new Date(data.minutely_15.time[i]).getTime() >= nowMs - (15 * 60000)) { 
+                            minStartIndex = i;
+                            break;
+                        }
+                    }
+
+                    for(let i=0; i<4; i++){
+                        let pVal = data.minutely_15.precipitation[minStartIndex + i] || 0;
+                        let timeLabel = `+${(i+1)*15}m`;
+                        let valText = pVal > 0 ? `${pVal}"` : '0"';
+                        let textColor = pVal > 0 ? 'var(--mermaid-aqua)' : 'var(--deep-sea)';
+                        
+                        minList.innerHTML += `
+                            <div class="minutely-col">
+                                <div class="minutely-time">${timeLabel}</div>
+                                <div class="minutely-val" style="color: ${textColor}">${valText}</div>
+                            </div>
+                        `;
+                    }
+                } else {
+                    minList.innerHTML = `<div style="width:100%; text-align:center; padding:10px; color:var(--deep-sea); font-size:0.8rem; font-weight:700;">No minutely radar available for this zone 🫧</div>`;
+                }
+
+                const hourlyList = document.getElementById('hourly-list');
+                hourlyList.innerHTML = '';
+                if (hourly && hourly.temperature_2m) {
+                    for(let i=0; i < 24; i++) {
+                        const dataIdx = currentHourIndex + i;
+                        if(dataIdx >= hourly.temperature_2m.length) break;
+
+                        const hTime = getMathematicalHour(i);
+                        const hTemp = Math.round(hourly.temperature_2m[dataIdx]);
+                        const hIcon = weatherMoji[hourly.weather_code[dataIdx]] || "✨";
+                        const hPop = hourly.precipitation_probability[dataIdx] || 0;
+                        const hPrecip = hourly.precipitation[dataIdx] || 0;
+                        
+                        hourlyList.innerHTML += `
+                            <div class="hourly-box">
+                                <div class="hourly-time">${hTime}</div>
+                                <div class="hourly-icon">${hIcon}</div>
+                                <div class="hourly-temp">${hTemp}°</div>
+                                <div class="hourly-precip">☂️ ${hPop}%</div>
+                                <div class="hourly-precip">💧 ${hPrecip}"</div>
+                            </div>
+                        `;
+                    }
+                }
+
+                const forecastList = document.getElementById('forecast-list');
+                forecastList.innerHTML = ''; 
+                
+                const safeDailyTempsMax = daily.temperature_2m_max || Array(7).fill(50);
+                const safeDailyTempsMin = daily.temperature_2m_min || Array(7).fill(50);
+                const safeDailyPrecipSum = daily.precipitation_sum || Array(7).fill(0);
+                const safeDailyGusts = daily.wind_gusts_10m_max || Array(7).fill(0);
+
+                if (daily && daily.weather_code) {
+                    for (let i = 0; i < 7; i++) {
+                        const dayName = getDayName(i); 
+                        const emoji = weatherMoji[daily.weather_code[i]] || "✨";
+                        const maxTemp = Math.round(safeDailyTempsMax[i]);
+                        const minTemp = Math.round(safeDailyTempsMin[i]);
+                        const rainTotal = safeDailyPrecipSum[i];
+                        const rainPop = daily.precipitation_probability_max ? daily.precipitation_probability_max[i] : 0;
+                        const uvMax = Math.round((daily.uv_index_max && daily.uv_index_max[i]) ? daily.uv_index_max[i] : 0);
+                        const windMax = Math.round((daily.wind_speed_10m_max && daily.wind_speed_10m_max[i]) ? daily.wind_speed_10m_max[i] : 0);
+
+                        let smartRainText = "No precipitation expected today.";
+                        if (rainPop > 0) {
+                            if (rainPop > 70 && rainTotal > 0.5) smartRainText = "Heavy, sustained rain expected today.";
+                            else if (rainPop < 40 && rainTotal > 0.2) smartRainText = "Low overall chance, but potential for sudden heavy downpours.";
+                            else if (rainPop > 60 && rainTotal < 0.1) smartRainText = "High chance of very light, passing mist or drizzle.";
+                            else if (rainTotal > 0) smartRainText = "Standard scattered showers expected.";
+                        }
+
+                        let rainDisplay = rainTotal > 0 ? `${rainTotal}"` : `${rainPop}%`;
+
+                        forecastList.innerHTML += `
+                            <div class="forecast-item" onclick="toggleDetails(this)">
+                                <div class="forecast-row">
+                                    <div class="forecast-day">${dayName}</div>
+                                    <div class="forecast-icon">${emoji}</div>
+                                    <div class="forecast-chance">☂️ ${rainPop}%</div>
+                                    <div class="forecast-volume">💧 ${rainTotal}"</div>
+                                    <div class="forecast-temps">${maxTemp}° <span class="min-temp">${minTemp}°</span></div>
+                                </div>
+                                <div class="forecast-details">
+                                    <p>🌧️ <span>Analysis:</span> ${smartRainText}</p>
+                                    <p>🌬️ <span>Highest Wind:</span> ${windMax} mph</p>
+                                    <p>🧴 <span>Peak UV Index:</span> ${uvMax}</p>
+                                </div>
+                            </div>
+                        `;
+                    }
+                }
+
+                if (window.ClimateEngine && window.floraDB) {
+                    const rainTotal = safeDailyPrecipSum.reduce((a, b) => a + b, 0);
+                    const moonPhaseStr = moonData.phaseInfo.n;
+                    
+                    window.lastWeatherState = { lat: latitude, lon: longitude, weekTempsMin: safeDailyTempsMin, weekTempsMax: safeDailyTempsMax, dailyGusts: safeDailyGusts, currentTemp: currentTemp, currentHumidity: currentHumidity, rainTotal: rainTotal, moonPhaseStr: moonPhaseStr, isDaytime: isDaytime };
+
+                    const agronomyResults = window.ClimateEngine.runAnalysis(
+                        latitude, longitude, safeDailyTempsMin, safeDailyTempsMax, safeDailyGusts, currentTemp, currentHumidity, rainTotal, moonPhaseStr, isDaytime
+                    );
+
+                    renderAgronomy(agronomyResults);
+                } else {
+                    document.getElementById('agronomy-list').innerHTML = "<p style='font-size:0.8rem; color:var(--deep-sea); text-align:center;'>Waiting for flora_db.js and climate_db.js... 🫧</p>";
+                }
+
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('weather-content').style.display = 'block';
+            } catch (error) {
+                console.error(error);
+                document.getElementById('loading').innerText = "(✖╭╮✖) Data loading error...";
+            }
+        }
+
+        async function fetchWeather(overrideLat = null, overrideLon = null, customName = null) {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('weather-content').style.display = 'none';
+
+            if (overrideLat !== null && overrideLon !== null) {
+                myLat = overrideLat;
+                myLon = overrideLon;
+                document.getElementById('location-name').innerText = `📍 ${customName}`;
+                document.getElementById('loading').innerText = "Downloading data... 🌺";
+                await fetchWeatherData(myLat, myLon);
+            } else {
+                document.getElementById('loading').innerText = "Locating... 📍";
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(async (position) => {
+                        myLat = position.coords.latitude;
+                        myLon = position.coords.longitude;
+                        
+                        try {
+                            const geoUrl = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${myLat}&lon=${myLon}&zoom=14`;
+                            const geoRes = await fetch(geoUrl);
+                            const geoData = await geoRes.json();
+                            const address = geoData.address || {};
+                            const locName = address.neighbourhood || address.suburb || address.village || address.town || address.city || "Deep Sea Vibe Zone";
+                            document.getElementById('location-name').innerText = `📍 ${locName}`;
+                        } catch(e) {
+                            document.getElementById('location-name').innerText = `📍 Lost in the waves`;
+                        }
+                        
+                        await fetchWeatherData(myLat, myLon);
+                    }, (err) => {
+                        document.getElementById('loading').innerText = "Location disabled! Type a city above. 🌸";
+                    }, { enableHighAccuracy: true, timeout: 10000 });
+                } else {
+                    document.getElementById('loading').innerText = "GPS not supported! Use the search bar. 🌸";
+                }
+            }
+        }
+
+        window.addEventListener('load', () => {
+            fetchWeather();
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('sw.js')
+                    .then(registration => console.log('ServiceWorker registered! 🫧'))
+                    .catch(err => console.log('ServiceWorker failed: ', err));
+            }
+        });
+    </script>
+</body>
+</html>
