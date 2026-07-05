@@ -85,6 +85,50 @@ const floraDB = {
     // ==========================================
     // 🌵 CATEGORY 2: THE DESERT HARDY
     // ==========================================
+"zamioculcas zamiifolia": {
+name: "ZZ Plant",
+type: "Succulent",
+metabolism: "cam",
+toxic_pets: true,
+lunar_affinity: "new",
+stamp_img: "zzplant.png",
+temp_floor: 35,
+temp_ceiling: 100,
+optimal_temp: [72, 80],
+min_humidity: 45,
+vpd_range: [0.8, 1.4],
+water_frequency: "low",
+water_schedule: "Water when soil is dry!",
+wind_tolerance: 20,
+pest_risks: {
+dry: ["Spider Mites", "Thrips"],
+wet: ["Mealybugs", "Fungus Gnats"],
+general: ["Scale", "Aphids"]
+},
+seasons: {
+spring: {
+optimal_temp: [70, 80],
+night_temp_trigger: [60, 65],
+water_schedule: "Let soil dry out and water fully!"
+},
+summer: {
+optimal_temp: [75, 90],
+night_temp_trigger: [65, 70],
+water_schedule: "Let soil dry out completely, check monthly!"
+},
+fall: {
+optimal_temp: [70, 75],
+night_temp_trigger: [65, 70],
+water_schedule: "Water every 6 weeks"
+},
+winter: {
+optimal_temp: [65, 70],
+night_temp_trigger: [50, 55],
+water_schedule: "Water once every 2 months"
+}
+}
+},
+    
     "dracaena_trifasciata": {
         name: "Snake Plant",
         type: "Succulent",
