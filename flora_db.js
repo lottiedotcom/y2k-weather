@@ -192,7 +192,7 @@ const floraDB = {
             { day: 0, stage: "Germination", water: "Keep soil moist", temp: [65, 75] },
             { day: 15, stage: "Seedling", water: "Moderate moisture", temp: [65, 75] },
             { day: 45, stage: "Maturing", water: "Consistent deep soak", temp: [60, 70] },
-            { day: 70, stage: "Harvest", water: "Low (Prepare for pull)", temp: [55, 65] }
+            { day: 70, stage: "Harvest", water: "Low", temp: [55, 65] }
         ]
     },
 
