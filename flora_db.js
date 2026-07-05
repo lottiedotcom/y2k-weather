@@ -4,51 +4,34 @@ const floraDB = {
     // ==========================================
     // 🌿 CATEGORY 1: THE INDOOR JUNGLE
     // ==========================================
-"Rhaphidophora_tetrasperma": {
-name: "Mini Monstera",
-type: "Climbing Vine Aroid",
-metabolism: "c3",
-toxic_pets: true,
-lunar_affinity: "waxing",
-stamp_img: "minimonstera.png",
-temp_floor: 55,
-temp_ceiling: 95,
-optimal_temp: [65, 85],
-min_humidity: 40,
-vpd_range: [0.8, 1.1],
-water_frequency: "moderate",
-water_schedule: "Water when top 1-2 of soil is dry!",
-wind_tolerance: 15,
-pest_risks: {
-dry: ["Spider Mites", "Thrips"],
-wet: ["Mealybugs", "Fungus Gnats"],
-general: ["Scale", "Aphids"]
-},
-seasons: {
-spring: {
-optimal_temp: [70, 78],
-night_temp_trigger: [62, 68],
-water_schedule: "Water when top 2 inches of soil is dry"
-},
-summer: {
-optimal_temp: [75, 85],
-night_temp_trigger: [65, 72],
-water_schedule: "Water when 1-2 inch of soil is dry"
-},
-fall: {
-optimal_temp: [68, 74],
-night_temp_trigger: [60, 65],
-water_schedule: "Water when 1/3 of soil is dry"
-},
-winter: {
-optimal_temp: [65, 70],
-night_temp_trigger: [58, 62],
-water_schedule: "Water when 1/2 of soil is dry"
-}
-}
-},
+    "Rhaphidophora_tetrasperma": {
+        name: "Mini Monstera",
+        type: "Climbing Vine Aroid",
+        metabolism: "c3",
+        toxic_pets: true,
+        lunar_affinity: "waxing",
+        stamp_img: "minimonstera.png",
+        temp_floor: 55,
+        temp_ceiling: 95,
+        optimal_temp: [65, 85],
+        min_humidity: 40,
+        vpd_range: [0.8, 1.1],
+        water_frequency: "moderate",
+        water_schedule: "Water when top 1-2 of soil is dry!",
+        wind_tolerance: 15,
+        pest_risks: {
+            dry: ["Spider Mites", "Thrips"],
+            wet: ["Mealybugs", "Fungus Gnats"],
+            general: ["Scale", "Aphids"]
+        },
+        seasons: {
+            spring: { optimal_temp: [70, 78], night_temp_trigger: [62, 68], water_schedule: "Water when top 2 inches of soil is dry" },
+            summer: { optimal_temp: [75, 85], night_temp_trigger: [65, 72], water_schedule: "Water when 1-2 inch of soil is dry" },
+            fall: { optimal_temp: [68, 74], night_temp_trigger: [60, 65], water_schedule: "Water when 1/3 of soil is dry" },
+            winter: { optimal_temp: [65, 70], night_temp_trigger: [58, 62], water_schedule: "Water when 1/2 of soil is dry" }
+        }
+    },
 
-    
     "epipremnum_aureum": {
         name: "Golden Pothos",
         type: "Tropical Epiphyte",
@@ -102,50 +85,33 @@ water_schedule: "Water when 1/2 of soil is dry"
     // ==========================================
     // 🌵 CATEGORY 2: THE DESERT HARDY
     // ==========================================
-"dracaena_trifasciata": {
-name: "Snake Plant",
-type: "Succulent",
-metabolism: "cam",
-toxic_pets: true,
-lunar_affinity: "new",
-stamp_img: "snakeplant.png",
-temp_floor: 50,
-temp_ceiling: 100,
-optimal_temp: [70, 80],
-min_humidity: 30,
-vpd_range: [1.2, 1.6],
-water_frequency: "low",
-water_schedule: "Water when soil is completely dry!",
-wind_tolerance: 25,
-pest_risks: {
-dry: ["Spider Mites", "Thrips"],
-wet: ["Root Mealybugs", "Fungus Gnats", "Mealybugs"],
-general: ["Scale", "Fungal Leaf Spot"]
-},
-seasons: {
-spring: {
-optimal_temp: [70, 80],
-night_temp_trigger: [60, 65],
-water_schedule: "Water when soil is completely dry!"
-},
-summer: {
-optimal_temp: [75, 90],
-night_temp_trigger: [65, 70],
-water_schedule: "Water when soil is completely dry!"
-},
-fall: {
-optimal_temp: [70, 75],
-night_temp_trigger: [55, 60],
-water_schedule: "Water when soil is completely dry!"
-},
-winter: {
-optimal_temp: [65, 70],
-night_temp_trigger: [50, 55],
-water_schedule: "Water when soil is completely dry!"
-}
-}
-},
-
+    "dracaena_trifasciata": {
+        name: "Snake Plant",
+        type: "Succulent",
+        metabolism: "cam",
+        toxic_pets: true,
+        lunar_affinity: "new",
+        stamp_img: "snakeplant.png",
+        temp_floor: 50,
+        temp_ceiling: 100,
+        optimal_temp: [70, 80],
+        min_humidity: 30,
+        vpd_range: [1.2, 1.6],
+        water_frequency: "low",
+        water_schedule: "Water when soil is completely dry!",
+        wind_tolerance: 25,
+        pest_risks: {
+            dry: ["Spider Mites", "Thrips"],
+            wet: ["Root Mealybugs", "Fungus Gnats", "Mealybugs"],
+            general: ["Scale", "Fungal Leaf Spot"]
+        },
+        seasons: {
+            spring: { optimal_temp: [70, 80], night_temp_trigger: [60, 65], water_schedule: "Water when soil is completely dry!" },
+            summer: { optimal_temp: [75, 90], night_temp_trigger: [65, 70], water_schedule: "Water when soil is completely dry!" },
+            fall: { optimal_temp: [70, 75], night_temp_trigger: [55, 60], water_schedule: "Water when soil is completely dry!" },
+            winter: { optimal_temp: [65, 70], night_temp_trigger: [50, 55], water_schedule: "Water when soil is completely dry!" }
+        }
+    },
     
     "schlumbergera_truncata": {
         name: "Thanksgiving cactus",
@@ -199,48 +165,36 @@ water_schedule: "Water when soil is completely dry!"
         }
     },
 
-        // ==========================================
-    // 🍃 CATEGORY 4: ROOT VEGETABLE
     // ==========================================
-"daucus_carota": {
-name: "Carrots",
-type: "Root Vegetable",
-
-// 🔬 LIVE TRACKERS
-metabolism: "c3",
-toxic_pets: false,
-lunar_affinity: "waning",
-stamp_img: "carrot.png",
-
-// 🌡️ BASE LIMITS
-temp_floor: 28,
-temp_ceiling: 85,
-
-// 💧 DEFAULT FALLBACKS (Used if user input is empty/0)
-optimal_temp: [60, 75],
-min_humidity: 50,
-vpd_range: [0.8, 1.4],
-water_frequency: "high",
-water_schedule: "Keep soil moist",
-wind_tolerance: 30,
-
-// 🐛 MULTI-PEST RADAR
-pest_risks: {
-dry: ["Carrot Rust Fly", "Wireworms", "Spider Mites"],
-wet: ["Slugs", "Root Rot"],
-general: ["Aphids"]
-},
-
-// 🌱 GROWTH STAGES (The engine calculates based on user input!)
-life_stages: [
-{ day: 0, stage: "Germination", water: "Keep soil moist", temp: [65, 75] },
-{ day: 15, stage: "Seedling", water: "Moderate moisture", temp: [65, 75] },
-{ day: 45, stage: "Maturing", water: "Consistent deep soak", temp: [60, 70] },
-{ day: 70, stage: "Harvest", water: "Low (Prepare for pull)", temp: [55, 65] }
-]
-},
-
-    
+    // 🥕 CATEGORY 4: ROOT VEGETABLES (Lifecycle)
+    // ==========================================
+    "daucus_carota": {
+        name: "Carrots",
+        type: "Root Vegetable",
+        metabolism: "c3",
+        toxic_pets: false,
+        lunar_affinity: "waning",
+        stamp_img: "carrot.png",
+        temp_floor: 28,
+        temp_ceiling: 85,
+        optimal_temp: [60, 75],
+        min_humidity: 50,
+        vpd_range: [0.8, 1.4],
+        water_frequency: "high",
+        water_schedule: "Keep soil moist",
+        wind_tolerance: 30,
+        pest_risks: {
+            dry: ["Carrot Rust Fly", "Wireworms", "Spider Mites"],
+            wet: ["Slugs", "Root Rot"],
+            general: ["Aphids"]
+        },
+        life_stages: [
+            { day: 0, stage: "Germination", water: "Keep soil moist", temp: [65, 75] },
+            { day: 15, stage: "Seedling", water: "Moderate moisture", temp: [65, 75] },
+            { day: 45, stage: "Maturing", water: "Consistent deep soak", temp: [60, 70] },
+            { day: 70, stage: "Harvest", water: "Low (Prepare for pull)", temp: [55, 65] }
+        ]
+    },
 
     // ==========================================
     // 🍃 CATEGORY 5: VINING PLANTS
@@ -304,3 +258,66 @@ life_stages: [
 
 window.floraDB = floraDB;
 
+// ==========================================
+// 📋 TEMPLATES FOR FUTURE USE 
+// ==========================================
+
+/*
+    // --- TEMPLATE A: SEASONAL INDOOR/OUTDOOR PLANT ---
+    "system_id_name_here": {
+        name: "Display Name",
+        type: "Botanical Category",
+        metabolism: "c3",
+        toxic_pets: false,
+        lunar_affinity: "waxing",
+        stamp_img: "filename.png",
+        temp_floor: 0,
+        temp_ceiling: 100,
+        optimal_temp: [0, 0],
+        min_humidity: 40,
+        vpd_range: [0.8, 1.2],
+        water_frequency: "moderate",
+        water_schedule: "When top inch is dry",
+        wind_tolerance: 15,
+        pest_risks: {
+            dry: ["Spider Mites"],
+            wet: ["Root Rot", "Fungus Gnats"],
+            general: ["Aphids", "Mealybugs"]
+        },
+        seasons: {
+            spring: { optimal_temp: [65, 75], night_temp_trigger: [55, 60], water_schedule: "Water every 5-7 days" },
+            summer: { optimal_temp: [75, 85], night_temp_trigger: [60, 65], water_schedule: "Water every 3-5 days" },
+            fall:   { optimal_temp: [65, 75], night_temp_trigger: [50, 55], water_schedule: "Water every 7-10 days" },
+            winter: { optimal_temp: [55, 65], night_temp_trigger: [45, 50], water_schedule: "Water every 2-3 weeks" }
+        }
+    },
+
+    // --- TEMPLATE B: LIFECYCLE CROP (e.g. Vegetables/Seeds) ---
+    "system_id_name_here": {
+        name: "Display Name",
+        type: "Botanical Category",
+        metabolism: "c3",
+        toxic_pets: false,
+        lunar_affinity: "new",
+        stamp_img: "filename.png",
+        temp_floor: 32,
+        temp_ceiling: 95,
+        optimal_temp: [60, 75],
+        min_humidity: 40,
+        vpd_range: [0.8, 1.2],
+        water_frequency: "moderate",
+        water_schedule: "Keep soil moist",
+        wind_tolerance: 15,
+        pest_risks: {
+            dry: ["Flea Beetles"],
+            wet: ["Root Rot", "Slugs"],
+            general: ["Aphids"]
+        },
+        life_stages: [
+            { day: 0,  stage: "Germination",  water: "Keep soil moist", temp: [65, 75] },
+            { day: 15, stage: "Seedling",     water: "Moderate moisture", temp: [65, 75] },
+            { day: 45, stage: "Maturing",     water: "Consistent deep soak", temp: [60, 70] },
+            { day: 70, stage: "Harvest",      water: "Low", temp: [55, 65] }
+        ]
+    }
+*/
