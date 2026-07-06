@@ -1686,9 +1686,6 @@ desc = "It is way to hot! Drink lots of water and pay attention to your body tod
 
         async function fetchWeatherData(latitude, longitude) {
             try {
-                document.getElementById('loading').style.display = 'block';
-                document.getElementById('weather-content').style.display = 'none';
-
                 let sunsetUtc = null;
                 try {
                     const sunUrl = `https://api.sunrise-sunset.org/json?lat=${latitude}&lng=${longitude}&formatted=0`;
@@ -1742,51 +1739,29 @@ desc = "It is way to hot! Drink lots of water and pay attention to your body tod
                 }
                 document.getElementById('aqi-score').innerText = aqiStatus;
 
-                let currentTemp = Math.round(data.current.temperature_2m || 50);
-                let currentDew = Math.round(data.current.dew_point_2m || 50); 
-                let currentHumidity = data.current.relative_humidity_2m || 50;
-                let currentWind = Math.round(data.current.wind_speed_10m || 0);
-                let currentGust = Math.round(data.current.wind_gusts_10m || 0);
-                let currentPressure = data.current.surface_pressure || 0;
-                let currentPrecip = data.current.precipitation || 0;
+                const current = data.current || {};
+                const daily = data.daily || {};
+                const hourly = data.hourly || {};
 
-                // --- SYNOPTIC DATA OVERRIDE ---
-                try {
-                    const SYNOPTIC_TOKEN = "bad25cb47404454885abc39ae3afc561";
-                    const synopticUrl = `https://api.synopticdata.com/v2/stations/latest?radius=${latitude},${longitude},5&within=60&units=english,speed|mph,precip|in,pres|inhg&vars=air_temp,relative_humidity,dew_point_temperature,wind_speed,wind_gust,pressure,precip_accum&token=${SYNOPTIC_TOKEN}`;
-                    
-                    const synRes = await fetch(synopticUrl);
-                    const synData = await synRes.json();
-                    
-                    if (synData && synData.STATION && synData.STATION.length > 0) {
-                        const stn = synData.STATION[0]; 
-                        const obs = stn.OBSERVATIONS;
-                        
-                        if (obs.air_temp_value_1 && obs.air_temp_value_1.value !== null) currentTemp = Math.round(obs.air_temp_value_1.value);
-                        if (obs.relative_humidity_value_1 && obs.relative_humidity_value_1.value !== null) currentHumidity = Math.round(obs.relative_humidity_value_1.value);
-                        if (obs.dew_point_temperature_value_1 && obs.dew_point_temperature_value_1.value !== null) currentDew = Math.round(obs.dew_point_temperature_value_1.value);
-                        if (obs.wind_speed_value_1 && obs.wind_speed_value_1.value !== null) currentWind = Math.round(obs.wind_speed_value_1.value);
-                        if (obs.wind_gust_value_1 && obs.wind_gust_value_1.value !== null) currentGust = Math.round(obs.wind_gust_value_1.value);
-                        if (obs.pressure_value_1 && obs.pressure_value_1.value !== null) currentPressure = obs.pressure_value_1.value;
-                        if (obs.precip_accum_value_1 && obs.precip_accum_value_1.value !== null) currentPrecip = obs.precip_accum_value_1.value;
-                    }
-                } catch (e) {
-                    console.error("Synoptic fetch failed, using fallback.", e);
-                }
-
+                const currentTemp = Math.round(current.temperature_2m || 50);
+                const currentDew = Math.round(current.dew_point_2m || 50); // Added for Saturation Check
+                
                 document.getElementById('temp').innerText = currentTemp + "°";
-                document.getElementById('wind').innerText = currentWind;
-                document.getElementById('gusts').innerText = currentGust;
+                document.getElementById('wind').innerText = Math.round(current.wind_speed_10m || 0);
+                document.getElementById('gusts').innerText = Math.round(current.wind_gusts_10m || 0);
+                
+                const currentHumidity = current.relative_humidity_2m || 50;
                 document.getElementById('humidity').innerText = currentHumidity; 
                 setFloraVibe(currentHumidity);
                 document.getElementById('dewpoint').innerText = currentDew;
                 
-                const visMiles = data.current.visibility ? (data.current.visibility / 1609.34).toFixed(1) : "--";
+                const visMiles = current.visibility ? (current.visibility / 1609.34).toFixed(1) : "--";
                 document.getElementById('visibility').innerText = visMiles;
                 
                 const currentHourIndex = new Date().getHours();
                 const pastPressureIndex = Math.max(0, currentHourIndex - 3); 
-                const pastPressure = (data.hourly.surface_pressure && data.hourly.surface_pressure.length > pastPressureIndex) ? data.hourly.surface_pressure[pastPressureIndex] : 0;
+                const pastPressure = (hourly.surface_pressure && hourly.surface_pressure.length > pastPressureIndex) ? hourly.surface_pressure[pastPressureIndex] : 0;
+                const currentPressure = current.surface_pressure || 0;
                 const pressureDiff = currentPressure - pastPressure;
                 
                 let trendIcon = "〰️"; 
@@ -1800,11 +1775,13 @@ desc = "It is way to hot! Drink lots of water and pay attention to your body tod
 
                 setVibeIndex(currentTemp);
                 
-                const currentCode = data.current.weather_code || 0;
+                const currentCode = current.weather_code || 0;
+                const currentPrecip = current.precipitation || 0;
 
                 let statusDesc = weatherDescriptions[currentCode] || "Vibing";
                 let statusMoji = weatherMoji[currentCode] || "✨";
 
+                // 🌧️ Rain Override: If the general weather code is lagging but precipitation is actively detected!
                 if (currentPrecip >= 0.05 && currentCode < 50) {
                     statusDesc = "Heavy Rain!";
                     statusMoji = "🌧️";
@@ -1815,6 +1792,7 @@ desc = "It is way to hot! Drink lots of water and pay attention to your body tod
 
                 document.getElementById('status').innerText = `${statusDesc} ${statusMoji}`;
 
+                // --- NEW SATURATION ALERT CHECK ---
                 const saturation = getSaturationStatus(currentTemp, currentDew, currentHumidity);
                 const satAlert = document.getElementById('saturation-alert');
                 if (saturation.isSaturated) {
@@ -1823,11 +1801,12 @@ desc = "It is way to hot! Drink lots of water and pay attention to your body tod
                 } else {
                     satAlert.style.display = 'none';
                 }
+                // ----------------------------------
 
-                const myRealFeel = customRealFeel(currentTemp, currentWind, currentHumidity);
+                const myRealFeel = customRealFeel(currentTemp, current.wind_speed_10m || 0, currentHumidity);
                 document.getElementById('apparent').innerText = myRealFeel;
 
-                const currentUV = Math.round(data.current.uv_index || 0);
+                const currentUV = Math.round(current.uv_index || 0);
                 document.getElementById('uv-number').innerText = currentUV;
                 document.getElementById('uv-text').innerText = getUVSpeech(currentUV);
 
@@ -1836,17 +1815,17 @@ desc = "It is way to hot! Drink lots of water and pay attention to your body tod
                 document.getElementById('moon-phase').innerText = moonData.phaseInfo.n;
                 document.getElementById('lunar-botanical-guide').innerText = moonData.botanicalGuide;
 
-                const isDaytime = data.current.is_day === 1;
+                const isDaytime = current.is_day === 1;
                 setAtmosphereScanner(
-                    data.current.cloud_cover_low || 0, 
-                    data.current.cloud_cover_mid || 0, 
-                    data.current.cloud_cover_high || 0, 
-                    data.current.cloud_cover || 0, 
+                    current.cloud_cover_low || 0, 
+                    current.cloud_cover_mid || 0, 
+                    current.cloud_cover_high || 0, 
+                    current.cloud_cover || 0, 
                     isDaytime
                 );
 
-                const isNight = data.current.is_day === 0;
-                setNightSkyClarity(isNight, data.current.cloud_cover || 0);
+                const isNight = current.is_day === 0;
+                setNightSkyClarity(isNight, current.cloud_cover || 0);
 
                 const minList = document.getElementById('minutely-list');
                 minList.innerHTML = '';
@@ -1880,13 +1859,13 @@ desc = "It is way to hot! Drink lots of water and pay attention to your body tod
                 }
 
                 let propDaysSet = new Set();
-                if (data.hourly && data.hourly.temperature_2m) {
-                    for(let i=0; i < data.hourly.temperature_2m.length; i++) {
-                        let t = data.hourly.temperature_2m[i];
-                        let h = data.hourly.relative_humidity_2m[i];
+                if (hourly && hourly.temperature_2m) {
+                    for(let i=0; i < hourly.temperature_2m.length; i++) {
+                        let t = hourly.temperature_2m[i];
+                        let h = hourly.relative_humidity_2m[i];
                         
                         if (t >= 65 && t <= 80 && h >= 50 && moonData.isGoodPropPhase) {
-                            let dateStr = data.hourly.time[i].split('T')[0]; 
+                            let dateStr = hourly.time[i].split('T')[0]; 
                             propDaysSet.add(dateStr);
                         }
                     }
@@ -1894,17 +1873,17 @@ desc = "It is way to hot! Drink lots of water and pay attention to your body tod
 
                 const hourlyList = document.getElementById('hourly-list');
                 hourlyList.innerHTML = '';
-                if (data.hourly && data.hourly.temperature_2m) {
+                if (hourly && hourly.temperature_2m) {
                     for(let i=0; i < 24; i++) {
                         const dataIdx = currentHourIndex + i;
-                        if(dataIdx >= data.hourly.temperature_2m.length) break;
+                        if(dataIdx >= hourly.temperature_2m.length) break;
 
                         const hTime = getMathematicalHour(i);
-                        const hTemp = Math.round(data.hourly.temperature_2m[dataIdx]);
-                        const hHumid = data.hourly.relative_humidity_2m[dataIdx];
-                        const hIcon = weatherMoji[data.hourly.weather_code[dataIdx]] || "✨";
-                        const hPop = data.hourly.precipitation_probability[dataIdx] || 0;
-                        const hPrecip = data.hourly.precipitation[dataIdx] || 0;
+                        const hTemp = Math.round(hourly.temperature_2m[dataIdx]);
+                        const hHumid = hourly.relative_humidity_2m[dataIdx];
+                        const hIcon = weatherMoji[hourly.weather_code[dataIdx]] || "✨";
+                        const hPop = hourly.precipitation_probability[dataIdx] || 0;
+                        const hPrecip = hourly.precipitation[dataIdx] || 0;
                         
                         const isPropHour = (hTemp >= 65 && hTemp <= 80 && hHumid >= 50 && moonData.isGoodPropPhase);
                         const boxClass = isPropHour ? "hourly-box prop-window" : "hourly-box";
@@ -1924,24 +1903,24 @@ desc = "It is way to hot! Drink lots of water and pay attention to your body tod
                 const forecastList = document.getElementById('forecast-list');
                 forecastList.innerHTML = ''; 
                 
-                const safeDailyTempsMax = data.daily.temperature_2m_max || Array(7).fill(50);
-                const safeDailyTempsMin = data.daily.temperature_2m_min || Array(7).fill(50);
-                const safeDailyPrecipSum = data.daily.precipitation_sum || Array(7).fill(0);
-                const safeDailyGusts = data.daily.wind_gusts_10m_max || Array(7).fill(0);
+                const safeDailyTempsMax = daily.temperature_2m_max || Array(7).fill(50);
+                const safeDailyTempsMin = daily.temperature_2m_min || Array(7).fill(50);
+                const safeDailyPrecipSum = daily.precipitation_sum || Array(7).fill(0);
+                const safeDailyGusts = daily.wind_gusts_10m_max || Array(7).fill(0);
                 
                 let perfectRainDays = []; 
                 let propAlertDays = []; 
 
-                if (data.daily && data.daily.weather_code) {
+                if (daily && daily.weather_code) {
                     for (let i = 0; i < 7; i++) {
                         const dayName = getDayName(i); 
-                        const emoji = weatherMoji[data.daily.weather_code[i]] || "✨";
+                        const emoji = weatherMoji[daily.weather_code[i]] || "✨";
                         const maxTemp = Math.round(safeDailyTempsMax[i]);
                         const minTemp = Math.round(safeDailyTempsMin[i]);
                         const rainTotal = safeDailyPrecipSum[i];
-                        const rainPop = data.daily.precipitation_probability_max ? data.daily.precipitation_probability_max[i] : 0;
-                        const uvMax = Math.round((data.daily.uv_index_max && data.daily.uv_index_max[i]) ? data.daily.uv_index_max[i] : 0);
-                        const windMax = Math.round((data.daily.wind_speed_10m_max && data.daily.wind_speed_10m_max[i]) ? data.daily.wind_speed_10m_max[i] : 0);
+                        const rainPop = daily.precipitation_probability_max ? daily.precipitation_probability_max[i] : 0;
+                        const uvMax = Math.round((daily.uv_index_max && daily.uv_index_max[i]) ? daily.uv_index_max[i] : 0);
+                        const windMax = Math.round((daily.wind_speed_10m_max && daily.wind_speed_10m_max[i]) ? daily.wind_speed_10m_max[i] : 0);
 
                         let safeSoakText = "No precipitation expected today.";
                         if (rainTotal > 0) {
@@ -1959,7 +1938,7 @@ desc = "It is way to hot! Drink lots of water and pay attention to your body tod
                             }
                         }
 
-                        let dStr = data.daily.time[i]; 
+                        let dStr = daily.time[i]; 
                         let isPropDay = propDaysSet.has(dStr);
                         let dayClass = isPropDay ? "forecast-item prop-window" : "forecast-item";
                         let propBadge = isPropDay ? `<div class="prop-badge">PROPAGATION WINDOW</div>` : '';
