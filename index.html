@@ -154,6 +154,23 @@
             border: 2px solid var(--mermaid-aqua);
         }
 
+        /* Saturation Alert Styling */
+        #saturation-alert {
+            display: none;
+            font-size: 0.95rem;
+            color: var(--deep-sea);
+            background: rgba(255, 255, 255, 0.65);
+            padding: 6px 16px;
+            border-radius: 20px;
+            border: 2px dashed var(--mermaid-aqua);
+            font-weight: 700;
+            margin: -10px auto 20px auto;
+            width: fit-content;
+            text-shadow: 1px 1px white;
+            box-shadow: 2px 2px 8px rgba(0, 240, 255, 0.2);
+            animation: fadeIn 0.5s ease;
+        }
+
         .tab-section { display: none; animation: fadeIn 0.4s ease; }
         .tab-section.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
@@ -497,6 +514,8 @@
                 <div id="temp">--°</div>
                 <div id="feels-like">🌡 RealFeel: <span id="apparent">--</span>°</div>
                 <div id="status">(>ω<) VIBING</div>
+                
+                <div id="saturation-alert"></div>
 
                 <div class="stats-grid" id="main-stats">
                     <div class="stat-box">
@@ -630,7 +649,6 @@
 
             <div id="tab-flora" class="tab-section">
                 
-                <!-- 💡 SMART BOTANICAL ALERTS DASHBOARD 💡 -->
                 <div class="wide-box" id="flora-smart-alerts" style="display: none;">
                     <div class="celestial-title">💡 Smart Botanical Alerts</div>
                     <div id="alerts-content" style="display: flex; flex-direction: column; gap: 8px;"></div>
@@ -640,7 +658,6 @@
                     <input type="text" id="flora-search-input" placeholder="Search plants... 🪴" onkeyup="filterFlora()">
                 </div>
 
-                <!-- 📖 THE PLANT DIARY GRID 📖 -->
                 <div class="wide-box" id="diary-container">
                     <div class="celestial-title">✎ Plant Diary</div>
                     
@@ -681,7 +698,6 @@
         </div>
     </div>
 
-    <!-- RADAR MODAL -->
     <div id="radar-modal" class="modal">
         <div class="modal-content">
             <div class="close-radar-btn" onclick="closeRadar()">🌈 CLOSE RADAR </div>
@@ -689,17 +705,27 @@
         </div>
     </div>
 
-    <!-- 📖 DIARY PLANT MODAL 📖 -->
     <div id="diary-plant-modal" class="modal">
         <div class="modal-content" style="height: auto; max-height: 85%;">
             <div class="close-radar-btn" onclick="DiaryManager.closeModal()">🌺 CLOSE DIARY</div>
             <div id="diary-modal-body" style="padding: 15px; overflow-y: auto;">
-                <!-- Content gets dynamically injected here! -->
-            </div>
+                </div>
         </div>
     </div>
 
     <script>
+        // --- NEW HELPER FUNCTION ---
+        function getSaturationStatus(temp, dewPoint, humidity) {
+            const spread = temp - dewPoint;
+            if (spread <= 2 && humidity > 80) {
+                return { isSaturated: true, status: "💧 Saturation: High (Precip Likely)" };
+            } else if (spread <= 4 && humidity > 70) {
+                return { isSaturated: true, status: "💧 Saturation: Building" };
+            }
+            return { isSaturated: false, status: "" };
+        }
+        // ---------------------------
+
         // 📖 PLANT DIARY MANAGER LOGIC 📖
         const DiaryManager = {
             getPinned: function() {
@@ -1368,7 +1394,7 @@ desc = "It is way to hot! Drink lots of water and pay attention to your body tod
                     document.getElementById('golden-hour').innerText = "--:--";
                 }
 
-                const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,dew_point_2m,surface_pressure,wind_speed_10m,wind_gusts_10m,weather_code,uv_index,visibility,cloud_cover,cloud_cover_low,cloud_cover_mid,cloud_cover_high,is_day&hourly=temperature_2m,relative_humidity_2m,weather_code,precipitation_probability,precipitation,cloud_cover,surface_pressure&minutely_15=precipitation&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,uv_index_max,wind_speed_10m_max,wind_gusts_10m_max&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=auto&models=best_match`;
+                const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,dew_point_2m,surface_pressure,wind_speed_10m,wind_gusts_10m,weather_code,uv_index,visibility,cloud_cover,cloud_cover_low,cloud_cover_mid,cloud_cover_high,is_day,precipitation&hourly=temperature_2m,relative_humidity_2m,weather_code,precipitation_probability,precipitation,cloud_cover,surface_pressure&minutely_15=precipitation&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,uv_index_max,wind_speed_10m_max,wind_gusts_10m_max&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=auto&models=best_match,hrrr_conus`;
                 const response = await fetch(weatherUrl);
                 const data = await response.json();
                 
@@ -1411,6 +1437,8 @@ desc = "It is way to hot! Drink lots of water and pay attention to your body tod
                 const hourly = data.hourly || {};
 
                 const currentTemp = Math.round(current.temperature_2m || 50);
+                const currentDew = Math.round(current.dew_point_2m || 50); // Added for Saturation Check
+                
                 document.getElementById('temp').innerText = currentTemp + "°";
                 document.getElementById('wind').innerText = Math.round(current.wind_speed_10m || 0);
                 document.getElementById('gusts').innerText = Math.round(current.wind_gusts_10m || 0);
@@ -1418,7 +1446,7 @@ desc = "It is way to hot! Drink lots of water and pay attention to your body tod
                 const currentHumidity = current.relative_humidity_2m || 50;
                 document.getElementById('humidity').innerText = currentHumidity; 
                 setFloraVibe(currentHumidity);
-                document.getElementById('dewpoint').innerText = Math.round(current.dew_point_2m || 50);
+                document.getElementById('dewpoint').innerText = currentDew;
                 
                 const visMiles = current.visibility ? (current.visibility / 1609.34).toFixed(1) : "--";
                 document.getElementById('visibility').innerText = visMiles;
@@ -1441,7 +1469,32 @@ desc = "It is way to hot! Drink lots of water and pay attention to your body tod
                 setVibeIndex(currentTemp);
                 
                 const currentCode = current.weather_code || 0;
-                document.getElementById('status').innerText = `${weatherDescriptions[currentCode] || "Vibing"} ${weatherMoji[currentCode] || "✨"}`;
+                const currentPrecip = current.precipitation || 0;
+
+                let statusDesc = weatherDescriptions[currentCode] || "Vibing";
+                let statusMoji = weatherMoji[currentCode] || "✨";
+
+                // 🌧️ Rain Override: If the general weather code is lagging but precipitation is actively detected!
+                if (currentPrecip >= 0.05 && currentCode < 50) {
+                    statusDesc = "Heavy Rain!";
+                    statusMoji = "🌧️";
+                } else if (currentPrecip > 0 && currentCode < 50) {
+                    statusDesc = "Raining";
+                    statusMoji = "💧";
+                }
+
+                document.getElementById('status').innerText = `${statusDesc} ${statusMoji}`;
+
+                // --- NEW SATURATION ALERT CHECK ---
+                const saturation = getSaturationStatus(currentTemp, currentDew, currentHumidity);
+                const satAlert = document.getElementById('saturation-alert');
+                if (saturation.isSaturated) {
+                    satAlert.innerText = saturation.status;
+                    satAlert.style.display = 'block';
+                } else {
+                    satAlert.style.display = 'none';
+                }
+                // ----------------------------------
 
                 const myRealFeel = customRealFeel(currentTemp, current.wind_speed_10m || 0, currentHumidity);
                 document.getElementById('apparent').innerText = myRealFeel;
