@@ -444,14 +444,16 @@
         #loading { font-size: 1.2rem; font-weight: 700; color: white; animation: bounce 1.5s infinite; text-shadow: 2px 2px var(--mermaid-aqua); margin: 20px 0; }
         @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
 
-        .bottom-nav {
+        /* MOVED NAV TABS CSS */
+        .top-nav {
             display: flex;
             justify-content: space-between;
             background: var(--inner-bubble);
             border: 2px dotted white;
             border-radius: 30px;
             padding: 6px;
-            margin-top: 15px;
+            margin-bottom: 15px; 
+            margin-top: 0;
             box-shadow: 2px 2px 8px rgba(0, 240, 255, 0.15);
             gap: 6px;
         }
@@ -587,6 +589,13 @@
         
         <div id="weather-content" style="display:none;">
             
+            <div class="top-nav">
+                <button class="nav-btn active" onclick="switchTab('tab-now', this)">🌫 NOW</button>
+                <button class="nav-btn" onclick="switchTab('tab-future', this)">🔮 FUTURE</button>
+                <button class="nav-btn" onclick="switchTab('tab-sky', this)">🌠 SKY</button>
+                <button class="nav-btn" onclick="switchTab('tab-flora', this)">🌿 FLORA</button>
+            </div>
+
             <div id="tab-now" class="tab-section active">
                 <div id="temp">--°</div>
                 <div id="feels-like">🌡 RealFeel: <span id="apparent">--</span>°</div>
@@ -783,13 +792,6 @@
                 </div>
 
                 <div id="agronomy-list"></div>
-            </div>
-
-            <div class="bottom-nav">
-                <button class="nav-btn active" onclick="switchTab('tab-now', this)">🌫 NOW</button>
-                <button class="nav-btn" onclick="switchTab('tab-future', this)">🔮 FUTURE</button>
-                <button class="nav-btn" onclick="switchTab('tab-sky', this)">🌠 SKY</button>
-                <button class="nav-btn" onclick="switchTab('tab-flora', this)">🌿 FLORA</button>
             </div>
         </div>
 
