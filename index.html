@@ -744,13 +744,11 @@
                         <input type="file" id="import-diary-input" style="display:none" accept=".json" onchange="DiaryManager.importDiary(event)">
                     </div>
 
-                    <!-- Shelf Toggle Buttons -->
                     <div class="shelf-toggle-container">
                         <button id="btn-mother-shelf" class="shelf-toggle-btn active" onclick="toggleShelfView('mother')">🪴 Mother Station</button>
                         <button id="btn-nursery-shelf" class="shelf-toggle-btn" onclick="toggleShelfView('nursery')">🧪 Nursery</button>
                     </div>
 
-                    <!-- MOTHER SHELF VIEW -->
                     <div id="mother-shelf-view">
                         <div class="diary-tier-label">𖦹 ˚ 𓇼 Water now!</div>
                         <div class="diary-tier" id="diary-tier-1"></div>
@@ -762,7 +760,6 @@
                         <div class="diary-tier" id="diary-tier-3"></div>
                     </div>
 
-                    <!-- NURSERY SHELF VIEW (Propagations) -->
                     <div id="nursery-shelf-view" style="display: none;">
                         <div class="diary-tier-label">𖦹 ˚ 𓇼 Needs Water Change!</div>
                         <div class="diary-tier" id="nursery-tier-1"></div>
@@ -927,34 +924,38 @@
 
             waterPlant: function(plantId) {
                 if (confirm("Are you sure you watered this plant? This will reset the schedule!")) {
-                    let data = this.getPinned();
-                    if(data[plantId]) {
-                        data[plantId].lastWatered = Date.now();
-                        this.savePinned(data);
-                        this.closeModal();
-                    }
+                    try {
+                        let data = this.getPinned();
+                        if(data[plantId]) {
+                            data[plantId].lastWatered = Date.now();
+                            this.savePinned(data);
+                            this.closeModal();
+                        }
+                    } catch (e) { console.error('Error watering:', e); }
                 }
             },
 
             // --- PROPAGATE LOGIC ---
             propagatePlant: function(parentId) {
-                let data = this.getPinned();
-                const uniqueId = `${parentId}-prop-${Date.now()}`;
-                
-                data[uniqueId] = {
-                    lastWatered: 0,
-                    isPropagation: true,
-                    parentId: parentId,
-                    dateStarted: new Date().toISOString().split('T')[0],
-                    vesselType: 'Plastic Bottle',
-                    nodeType: 'Stem Node',
-                    rootProgress: 'none'
-                };
-                
-                this.savePinned(data);
-                this.closeModal();
-                alert(`🌱 Cutting taken! It has been moved to your Nursery.`);
-                toggleShelfView('nursery');
+                try {
+                    let data = this.getPinned();
+                    const uniqueId = `${parentId}-prop-${Date.now()}`;
+                    
+                    data[uniqueId] = {
+                        lastWatered: 0,
+                        isPropagation: true,
+                        parentId: parentId,
+                        dateStarted: new Date().toISOString().split('T')[0],
+                        vesselType: 'Plastic Bottle',
+                        nodeType: 'Stem Node',
+                        rootProgress: 'none'
+                    };
+                    
+                    this.savePinned(data);
+                    this.closeModal();
+                    alert(`🌱 Cutting taken! It has been moved to your Nursery.`);
+                    toggleShelfView('nursery');
+                } catch(e) { console.error('Error propagating:', e); alert('Error copying to nursery!'); }
             },
 
             updatePropProgress: function(plantId, status) {
@@ -962,7 +963,6 @@
                 if(data[plantId]) {
                     data[plantId].rootProgress = status;
                     this.savePinned(data);
-                    // Re-render the expanded view to show the new advice
                     this.openExpandedView(plantId); 
                 }
             },
@@ -992,17 +992,21 @@
 
                 if (!isProp) {
                     // --- MOTHER PLANT VIEW ---
-                    let currentDays = res.plant.days_since_planted !== undefined ? res.plant.days_since_planted : "";
-                    let inputId = `diary-days-input-${res.id}`;
-                    lifecycleHTML = `
-                        <div class="lifecycle-box" style="margin-top: 10px;">
-                            <div class="lifecycle-label">🌱 Days Since Planted:</div>
-                            <div class="lifecycle-input-group">
-                                <input type="number" id="${inputId}" class="days-input" value="${currentDays}" placeholder="0">
-                                <button class="lifecycle-btn" onclick="updateLifecycle('${res.id}', document.getElementById('${inputId}').value); DiaryManager.openExpandedView('${res.id}')">SET</button>
+                    // ONLY trigger "Days Since Planted" if the plant specifically has a crop cycle AND not a season.
+                    if (res.plant.cycle && !res.plant.season) {
+                        let currentDays = res.plant.days_since_planted !== undefined ? res.plant.days_since_planted : "";
+                        let inputId = `diary-days-input-${res.id}`;
+                        lifecycleHTML = `
+                            <div class="lifecycle-box" style="margin-top: 10px;">
+                                <div class="lifecycle-label">🌱 Days Since Planted:</div>
+                                <div class="lifecycle-input-group">
+                                    <input type="number" id="${inputId}" class="days-input" value="${currentDays}" placeholder="0">
+                                    <button class="lifecycle-btn" onclick="updateLifecycle('${res.id}', document.getElementById('${inputId}').value); DiaryManager.openExpandedView('${res.id}')">SET</button>
+                                </div>
                             </div>
-                        </div>
-                    `;
+                        `;
+                    }
+
                     propagateBtnHTML = `<button class="propagate-btn" onclick="DiaryManager.propagatePlant('${res.id}')">propagate</button>`;
                     
                     let waterRaw = res.plant.water_schedule ? res.plant.water_schedule.toUpperCase() : "";
@@ -1116,91 +1120,105 @@
                 document.getElementById('diary-plant-modal').style.display = 'flex';
             },
 
-            renderGrid: function() {
-                const data = this.getPinned();
-                
-                // Get Mother Tiers
-                const tier1 = document.getElementById('diary-tier-1'); 
-                const tier2 = document.getElementById('diary-tier-2'); 
-                const tier3 = document.getElementById('diary-tier-3'); 
-                
-                // Get Nursery Tiers
-                const nTier1 = document.getElementById('nursery-tier-1'); 
-                const nTier2 = document.getElementById('nursery-tier-2'); 
-                const nTier3 = document.getElementById('nursery-tier-3'); 
-
-                if(!tier1 || !nTier1) return;
-
-                // Clear all grids
-                tier1.innerHTML = ''; tier2.innerHTML = ''; tier3.innerHTML = '';
-                nTier1.innerHTML = ''; nTier2.innerHTML = ''; nTier3.innerHTML = '';
-
-                let hasMothers = false;
-                let hasBabies = false;
-                const now = Date.now();
-
-                Object.keys(data).forEach(id => {
-                    let baseId = id;
-                    let isProp = false;
-                    
-                    if (id.includes('-prop-')) {
-                        isProp = true;
-                        baseId = id.split('-prop-')[0];
-                        hasBabies = true;
-                    } else {
-                        hasMothers = true;
-                    }
-
-                    const plantData = window.floraDB[baseId];
-                    if (!plantData) return;
-
-                    // If it's a cutting, water changes are usually needed faster than soil watering.
-                    let freq = isProp ? 5 : 14; 
-                    if (!isProp) {
-                        if (plantData.water_frequency === "high") freq = 3;
-                        else if (plantData.water_frequency === "moderate") freq = 7;
-                        else if (plantData.water_frequency === "low") freq = 14;
-                        else if (plantData.water_frequency === "very_low") freq = 30;
-                    }
-
-                    const msSinceWatered = now - data[id].lastWatered;
-                    const daysSinceWatered = msSinceWatered / (1000 * 60 * 60 * 24);
-                    const daysUntilWatering = freq - daysSinceWatered;
-
-                    let targetTier;
-                    
-                    // Route to correct shelf and tier
-                    if (isProp) {
-                        if (data[id].lastWatered === 0) targetTier = nTier1; 
-                        else if (daysSinceWatered < 1.5) targetTier = nTier3; 
-                        else if (daysUntilWatering <= 2) targetTier = nTier1; 
-                        else if (daysUntilWatering <= 4 || daysSinceWatered >= (freq / 2)) targetTier = nTier2; 
-                        else targetTier = nTier3; 
-                    } else {
-                        if (data[id].lastWatered === 0) targetTier = tier1; 
-                        else if (daysSinceWatered < 1.5) targetTier = tier3; 
-                        else if (daysUntilWatering <= 3) targetTier = tier1; 
-                        else if (daysUntilWatering <= 7 || daysSinceWatered >= (freq / 2)) targetTier = tier2; 
-                        else targetTier = tier3; 
-                    }
-
-                    // Add a tiny bottle icon to cutting names so they stand out
-                    let displayName = isProp ? `🧪 ${plantData.name}` : plantData.name;
-
-                    const stampHTML = `
-                        <div class="diary-stamp-container" onclick="DiaryManager.openExpandedView('${id}')">
-                            <img src="${plantData.stamp_img}" alt="${plantData.name}" class="diary-stamp" onerror="this.src='https://i.postimg.cc/Fs9tVbff/d1fbe1c35c32494c9290ebf699c16fc6.jpg'">
-                            <div class="diary-stamp-name">${displayName}</div>
-                        </div>
-                    `;
-                    targetTier.innerHTML += stampHTML;
-                });
-
-                if (!hasMothers) {
-                    tier2.innerHTML = `<div style="width: 100%; text-align: center; color: var(--deep-sea); font-size: 0.8rem; font-weight: 700; opacity: 0.6;">No plants pinned yet 📌</div>`;
+            // --- SAFELY CLOSE MODAL ---
+            closeModal: function() {
+                try {
+                    document.getElementById('diary-plant-modal').style.display = 'none';
+                    this.renderGrid();
+                } catch(e) { 
+                    console.error('Error rendering grid on close:', e); 
                 }
-                if (!hasBabies) {
-                    nTier2.innerHTML = `<div style="width: 100%; text-align: center; color: var(--deep-sea); font-size: 0.8rem; font-weight: 700; opacity: 0.6;">Nursery is empty 🧪</div>`;
+            },
+
+            renderGrid: function() {
+                try {
+                    const data = this.getPinned();
+                    
+                    // Get Mother Tiers
+                    const tier1 = document.getElementById('diary-tier-1'); 
+                    const tier2 = document.getElementById('diary-tier-2'); 
+                    const tier3 = document.getElementById('diary-tier-3'); 
+                    
+                    // Get Nursery Tiers
+                    const nTier1 = document.getElementById('nursery-tier-1'); 
+                    const nTier2 = document.getElementById('nursery-tier-2'); 
+                    const nTier3 = document.getElementById('nursery-tier-3'); 
+
+                    if(!tier1 || !nTier1) return;
+
+                    // Clear all grids
+                    tier1.innerHTML = ''; tier2.innerHTML = ''; tier3.innerHTML = '';
+                    nTier1.innerHTML = ''; nTier2.innerHTML = ''; nTier3.innerHTML = '';
+
+                    let hasMothers = false;
+                    let hasBabies = false;
+                    const now = Date.now();
+
+                    Object.keys(data).forEach(id => {
+                        let baseId = id;
+                        let isProp = false;
+                        
+                        if (id.includes('-prop-')) {
+                            isProp = true;
+                            baseId = id.split('-prop-')[0];
+                            hasBabies = true;
+                        } else {
+                            hasMothers = true;
+                        }
+
+                        const plantData = window.floraDB[baseId];
+                        if (!plantData) return;
+
+                        // If it's a cutting, water changes are usually needed faster than soil watering.
+                        let freq = isProp ? 5 : 14; 
+                        if (!isProp) {
+                            if (plantData.water_frequency === "high") freq = 3;
+                            else if (plantData.water_frequency === "moderate") freq = 7;
+                            else if (plantData.water_frequency === "low") freq = 14;
+                            else if (plantData.water_frequency === "very_low") freq = 30;
+                        }
+
+                        const msSinceWatered = now - data[id].lastWatered;
+                        const daysSinceWatered = msSinceWatered / (1000 * 60 * 60 * 24);
+                        const daysUntilWatering = freq - daysSinceWatered;
+
+                        let targetTier = tier3; // Default fallback to prevent missing tiers
+                        
+                        // Route to correct shelf and tier
+                        if (isProp) {
+                            if (data[id].lastWatered === 0) targetTier = nTier1; 
+                            else if (daysSinceWatered < 1.5) targetTier = nTier3; 
+                            else if (daysUntilWatering <= 2) targetTier = nTier1; 
+                            else if (daysUntilWatering <= 4 || daysSinceWatered >= (freq / 2)) targetTier = nTier2; 
+                            else targetTier = nTier3; 
+                        } else {
+                            if (data[id].lastWatered === 0) targetTier = tier1; 
+                            else if (daysSinceWatered < 1.5) targetTier = tier3; 
+                            else if (daysUntilWatering <= 3) targetTier = tier1; 
+                            else if (daysUntilWatering <= 7 || daysSinceWatered >= (freq / 2)) targetTier = tier2; 
+                            else targetTier = tier3; 
+                        }
+
+                        // Add a tiny bottle icon to cutting names so they stand out
+                        let displayName = isProp ? `🧪 ${plantData.name}` : plantData.name;
+
+                        const stampHTML = `
+                            <div class="diary-stamp-container" onclick="DiaryManager.openExpandedView('${id}')">
+                                <img src="${plantData.stamp_img}" alt="${plantData.name}" class="diary-stamp" onerror="this.src='https://i.postimg.cc/Fs9tVbff/d1fbe1c35c32494c9290ebf699c16fc6.jpg'">
+                                <div class="diary-stamp-name">${displayName}</div>
+                            </div>
+                        `;
+                        targetTier.innerHTML += stampHTML;
+                    });
+
+                    if (!hasMothers) {
+                        tier2.innerHTML = `<div style="width: 100%; text-align: center; color: var(--deep-sea); font-size: 0.8rem; font-weight: 700; opacity: 0.6;">No plants pinned yet 📌</div>`;
+                    }
+                    if (!hasBabies) {
+                        nTier2.innerHTML = `<div style="width: 100%; text-align: center; color: var(--deep-sea); font-size: 0.8rem; font-weight: 700; opacity: 0.6;">Nursery is empty 🧪</div>`;
+                    }
+                } catch (err) {
+                    console.error("Grid rendering failed:", err);
                 }
             }
         };
@@ -1573,7 +1591,8 @@ desc = "It is way to hot! Drink lots of water and pay attention to your body tod
                 let pinIcon = pinnedData[res.id] ? "📍" : "📌";
 
                 let lifecycleHTML = "";
-                if (res.plant.life_stages) {
+                // Only if the plant specifically has a cycle and is not seasonal
+                if (res.plant.cycle && !res.plant.season) {
                     let currentDays = res.plant.days_since_planted !== undefined ? res.plant.days_since_planted : "";
                     let inputId = `days-input-${res.id}`;
                     lifecycleHTML = `
