@@ -516,6 +516,59 @@
             text-shadow: 1px 1px 0px white;
         }
         .sync-btn:active { transform: scale(0.95); }
+
+        /* Shelf Toggle Button Styling */
+        .shelf-toggle-container {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+            width: 100%;
+        }
+        .shelf-toggle-btn {
+            flex: 1;
+            background: var(--inner-bubble);
+            border: 2px dotted white;
+            border-radius: 20px;
+            padding: 10px 5px;
+            color: var(--deep-sea);
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 700;
+            font-size: 0.8rem;
+            cursor: pointer;
+            box-shadow: 2px 2px 8px rgba(0, 240, 255, 0.15);
+            transition: 0.3s ease;
+            text-shadow: 1px 1px 0px white;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .shelf-toggle-btn.active {
+            background: linear-gradient(135deg, var(--mermaid-aqua), var(--moe-pink));
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            border: 2px solid white;
+        }
+
+        /* Propagate Button Styling */
+        .propagate-btn {
+            width: 100%;
+            margin-top: 10px;
+            background: linear-gradient(135deg, rgba(0, 240, 255, 0.3), rgba(0, 208, 132, 0.3));
+            border: 2px dashed #00d084;
+            border-radius: 15px;
+            padding: 8px;
+            color: var(--deep-sea);
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 240, 255, 0.2);
+            transition: 0.2s;
+            text-shadow: 1px 1px 0px white;
+            text-transform: lowercase;
+            letter-spacing: 2px;
+        }
+        .propagate-btn:active { transform: scale(0.98); }
+
     </style>
 </head>
 <body>
@@ -690,15 +743,36 @@
                         <button class="sync-btn" onclick="document.getElementById('import-diary-input').click()">📂 IMPORT</button>
                         <input type="file" id="import-diary-input" style="display:none" accept=".json" onchange="DiaryManager.importDiary(event)">
                     </div>
-                    
-                    <div class="diary-tier-label">𖦹 ˚ 𓇼 Water now!</div>
-                    <div class="diary-tier" id="diary-tier-1"></div>
-                    
-                    <div class="diary-tier-label">₊‧ ଳ Check water soon</div>
-                    <div class="diary-tier" id="diary-tier-2"></div>
-                    
-                    <div class="diary-tier-label">⋆.˚ 𓆉 Hydrated</div>
-                    <div class="diary-tier" id="diary-tier-3"></div>
+
+                    <!-- Shelf Toggle Buttons -->
+                    <div class="shelf-toggle-container">
+                        <button id="btn-mother-shelf" class="shelf-toggle-btn active" onclick="toggleShelfView('mother')">🪴 Mother Station</button>
+                        <button id="btn-nursery-shelf" class="shelf-toggle-btn" onclick="toggleShelfView('nursery')">🧪 Nursery</button>
+                    </div>
+
+                    <!-- MOTHER SHELF VIEW -->
+                    <div id="mother-shelf-view">
+                        <div class="diary-tier-label">𖦹 ˚ 𓇼 Water now!</div>
+                        <div class="diary-tier" id="diary-tier-1"></div>
+                        
+                        <div class="diary-tier-label">₊‧ ଳ Check water soon</div>
+                        <div class="diary-tier" id="diary-tier-2"></div>
+                        
+                        <div class="diary-tier-label">⋆.˚ 𓆉 Hydrated</div>
+                        <div class="diary-tier" id="diary-tier-3"></div>
+                    </div>
+
+                    <!-- NURSERY SHELF VIEW (Propagations) -->
+                    <div id="nursery-shelf-view" style="display: none;">
+                        <div class="diary-tier-label">𖦹 ˚ 𓇼 Needs Water Change!</div>
+                        <div class="diary-tier" id="nursery-tier-1"></div>
+                        
+                        <div class="diary-tier-label">₊‧ ଳ Check Roots</div>
+                        <div class="diary-tier" id="nursery-tier-2"></div>
+                        
+                        <div class="diary-tier-label">⋆.˚ 𓆉 Fresh Water</div>
+                        <div class="diary-tier" id="nursery-tier-3"></div>
+                    </div>
                 </div>
 
                 <div class="wide-box">
@@ -756,6 +830,27 @@
         }
         // ---------------------------
 
+        // --- VIEW TOGGLE LOGIC ---
+        function toggleShelfView(viewType) {
+            const motherView = document.getElementById('mother-shelf-view');
+            const nurseryView = document.getElementById('nursery-shelf-view');
+            const btnMother = document.getElementById('btn-mother-shelf');
+            const btnNursery = document.getElementById('btn-nursery-shelf');
+
+            if (viewType === 'mother') {
+                motherView.style.display = 'block';
+                nurseryView.style.display = 'none';
+                btnMother.classList.add('active');
+                btnNursery.classList.remove('active');
+            } else {
+                motherView.style.display = 'none';
+                nurseryView.style.display = 'block';
+                btnMother.classList.remove('active');
+                btnNursery.classList.add('active');
+            }
+        }
+        // -------------------------
+
         // 📖 PLANT DIARY MANAGER LOGIC 📖
         const DiaryManager = {
             getPinned: function() {
@@ -768,7 +863,7 @@
                 if (typeof filterFlora === "function") filterFlora(); 
             },
 
-            // --- NEW EXPORT / IMPORT LOGIC ---
+            // --- EXPORT / IMPORT LOGIC ---
             exportDiary: function() {
                 const data = this.getPinned();
                 const snapshot = {
@@ -800,7 +895,6 @@
                         if (parsed.data) {
                             this.savePinned(parsed.data);
                             alert("🪴 Diary restored successfully!");
-                            // Reset the input so the same file can be selected again if needed
                             document.getElementById('import-diary-input').value = "";
                         } else {
                             alert("Oops! This file doesn't look like a valid diary snapshot. ✖╭╮✖");
@@ -842,10 +936,49 @@
                 }
             },
 
+            // --- PROPAGATE LOGIC ---
+            propagatePlant: function(parentId) {
+                let data = this.getPinned();
+                const uniqueId = `${parentId}-prop-${Date.now()}`;
+                
+                data[uniqueId] = {
+                    lastWatered: 0,
+                    isPropagation: true,
+                    parentId: parentId,
+                    dateStarted: new Date().toISOString().split('T')[0],
+                    vesselType: 'Plastic Bottle',
+                    nodeType: 'Stem Node',
+                    rootProgress: 'none'
+                };
+                
+                this.savePinned(data);
+                this.closeModal();
+                alert(`🌱 Cutting taken! It has been moved to your Nursery.`);
+                toggleShelfView('nursery');
+            },
+
+            updatePropProgress: function(plantId, status) {
+                let data = this.getPinned();
+                if(data[plantId]) {
+                    data[plantId].rootProgress = status;
+                    this.savePinned(data);
+                    // Re-render the expanded view to show the new advice
+                    this.openExpandedView(plantId); 
+                }
+            },
+            // ---------------------------
+
             openExpandedView: function(plantId) {
+                let baseId = plantId;
+                let isProp = false;
+                if (plantId.includes('-prop-')) {
+                    isProp = true;
+                    baseId = plantId.split('-prop-')[0];
+                }
+
                 if (!window.latestAgronomyResults) return;
                 
-                const res = window.latestAgronomyResults.find(r => r.id === plantId);
+                const res = window.latestAgronomyResults.find(r => r.id === baseId);
                 if (!res) return;
 
                 let toxIcon = res.plant.toxic_pets ? "☣︎🐾" : "♡🐾";
@@ -853,7 +986,12 @@
                 let sTip = res.secondaryTooltip.replace(/'/g, "\\'");
 
                 let lifecycleHTML = "";
-                if (res.plant.life_stages) {
+                let propagateBtnHTML = "";
+                let statGridHTML = "";
+                let propTrackerHTML = "";
+
+                if (!isProp) {
+                    // --- MOTHER PLANT VIEW ---
                     let currentDays = res.plant.days_since_planted !== undefined ? res.plant.days_since_planted : "";
                     let inputId = `diary-days-input-${res.id}`;
                     lifecycleHTML = `
@@ -865,14 +1003,85 @@
                             </div>
                         </div>
                     `;
+                    propagateBtnHTML = `<button class="propagate-btn" onclick="DiaryManager.propagatePlant('${res.id}')">propagate</button>`;
+                    
+                    let waterRaw = res.plant.water_schedule ? res.plant.water_schedule.toUpperCase() : "";
+                    let formattedWaterNeeds = waterRaw;
+                    if (waterRaw.includes(':')) {
+                        let splitText = waterRaw.split(':');
+                        formattedWaterNeeds = `<span style="color: var(--moe-pink); text-shadow: 1px 1px 0px white;">${splitText[0]}:</span>${splitText[1]}`;
+                    }
+
+                    statGridHTML = `
+                        <div class="stat-grid">
+                            <div class="stat-cell-static">
+                                <div class="stat-label-clean">Ideal VPD</div>
+                                <div class="stat-value-clean">${res.idealVPDText || (Array.isArray(res.plant.vpd_range) ? res.plant.vpd_range[0] + ' - ' + res.plant.vpd_range[1] : 'Split (Day/Night)')}</div>
+                            </div>
+                            <div class="stat-cell-static">
+                                <div class="stat-label-clean">Temp Limits</div>
+                                <div class="stat-value-clean">${res.plant.temp_floor}° - ${res.plant.temp_ceiling}°</div>
+                            </div>
+                            <div class="stat-cell-dynamic">
+                                <div class="stat-label-clean">Ideal Temp</div>
+                                <div class="stat-value-clean">${res.plant.optimal_temp[0]}° - ${res.plant.optimal_temp[1]}°</div>
+                            </div>
+                            <div class="stat-cell-dynamic">
+                                <div class="stat-label-clean">Water Needs</div>
+                                <div class="stat-value-clean">${formattedWaterNeeds}</div>
+                            </div>
+                            <div class="stat-cell-static">
+                                <div class="stat-label-clean">Max Wind</div>
+                                <div class="stat-value-clean">${res.plant.wind_tolerance} mph</div>
+                            </div>
+                            <div class="stat-cell-static">
+                                <div class="stat-label-clean">Lunar Boost</div>
+                                <div class="stat-value-clean ${res.isLunarBoostActive ? 'lunar-boost-active' : ''}">${res.plant.lunar_affinity.toUpperCase()}</div>
+                            </div>
+                        </div>
+                        <div class="metabolism-box">
+                            <div class="stat-label-clean">Metabolism</div>
+                            <div class="metabolism-text">${res.respiration}</div>
+                        </div>
+                    `;
+                } else {
+                    // --- CUTTING / PROPAGATION VIEW ---
+                    let diaryData = this.getPinned();
+                    let propData = diaryData[plantId] || {};
+                    let daysProp = Math.floor((Date.now() - new Date(propData.dateStarted).getTime()) / (1000 * 60 * 60 * 24)) || 0;
+                    let rootStatus = propData.rootProgress || 'none';
+                    let advice = "";
+                    
+                    if (rootStatus === 'none') advice = "Keep in indirect light, avoid direct sun. Change water every 5 days. 💧";
+                    else if (rootStatus === 'small') advice = "Roots are appearing! Keep water topped off, keep the water clear. 🌱";
+                    else if (rootStatus === 'robust') advice = "Potting threshold approaching! Check Ambient Air: if humid, transition to soil. 🪴";
+
+                    propagateBtnHTML = `<div style="text-align: center; color: var(--moe-pink); font-weight: 700; margin-top: 10px; font-size: 0.8rem; border-bottom: 2px dotted rgba(255,255,255,0.5); padding-bottom: 5px;">🧪 Nursery Specimen</div>`;
+                    
+                    propTrackerHTML = `
+                        <div class="lifecycle-box" style="margin-top: 10px; flex-direction: column; align-items: flex-start; gap: 8px;">
+                            <div class="lifecycle-label">⏳ Propagating for: <span style="color: var(--moe-pink);">${daysProp} days</span></div>
+                            <div class="lifecycle-label">🏺 Vessel: <span style="color: var(--mermaid-aqua);">Plastic Bottle</span></div>
+                            <div class="lifecycle-label">🧬 Node: <span style="color: var(--mermaid-aqua);">Stem Node</span></div>
+                            
+                            <div style="width: 100%; border-top: 2px dotted rgba(255,255,255,0.5); margin: 5px 0;"></div>
+                            
+                            <div class="lifecycle-label" style="color: var(--moe-pink);">🔍 Weekly Root Check:</div>
+                            <select style="width: 100%; padding: 8px; border-radius: 10px; border: 2px solid white; background: var(--inner-bubble); color: var(--deep-sea); font-family: 'Fredoka', sans-serif; font-weight: 700; outline: none; box-shadow: inset 1px 1px 4px rgba(0,240,255,0.2);" onchange="DiaryManager.updatePropProgress('${plantId}', this.value)">
+                                <option value="none" ${rootStatus === 'none' ? 'selected' : ''}>Still Callousing / No Roots</option>
+                                <option value="small" ${rootStatus === 'small' ? 'selected' : ''}>Small Roots (< 1 inch)</option>
+                                <option value="robust" ${rootStatus === 'robust' ? 'selected' : ''}>Robust Roots (> 2 inches)</option>
+                            </select>
+                            
+                            <div style="background: rgba(255,255,255,0.6); padding: 10px; border-radius: 10px; font-size: 0.8rem; color: var(--deep-sea); margin-top: 5px; text-shadow: 1px 1px 0px white; line-height: 1.4; border: 1px dashed var(--mermaid-aqua); width: 100%; box-sizing: border-box;">
+                                <b>Advice:</b> ${advice}
+                            </div>
+                        </div>
+                    `;
                 }
 
-                let waterRaw = res.plant.water_schedule ? res.plant.water_schedule.toUpperCase() : "";
-                let formattedWaterNeeds = waterRaw;
-                if (waterRaw.includes(':')) {
-                    let splitText = waterRaw.split(':');
-                    formattedWaterNeeds = `<span style="color: var(--moe-pink); text-shadow: 1px 1px 0px white;">${splitText[0]}:</span>${splitText[1]}`;
-                }
+                let displayName = isProp ? `Cutting: ${res.plant.name}` : res.plant.name;
+                let waterBtnText = isProp ? "💧 WATER CHANGED / TOPPED OFF!" : "💧 YES, I WATERED IT!";
 
                 const modalBody = document.getElementById('diary-modal-body');
                 modalBody.innerHTML = `
@@ -884,7 +1093,7 @@
                         
                         <div class="plant-info">
                             <div class="plant-name-header">
-                                <div class="plant-name">${res.plant.name} <span class="plant-toxicity">${toxIcon}</span></div>
+                                <div class="plant-name">${displayName} <span class="plant-toxicity">${toxIcon}</span></div>
                             </div>
                             
                             <div class="tag-container">
@@ -895,104 +1104,104 @@
                             <div class="plant-reason">${res.reason}</div>
                             
                             <div class="plant-details-hidden" style="display: block;">
-                                ${lifecycleHTML}
-                                <div class="stat-grid">
-                                    <div class="stat-cell-static">
-                                        <div class="stat-label-clean">Ideal VPD</div>
-                                        <div class="stat-value-clean">${res.idealVPDText || 'N/A'}</div>
-                                    </div>
-                                    <div class="stat-cell-static">
-                                        <div class="stat-label-clean">Temp Limits</div>
-                                        <div class="stat-value-clean">${res.plant.temp_floor}° - ${res.plant.temp_ceiling}°</div>
-                                    </div>
-                                    <div class="stat-cell-dynamic">
-                                        <div class="stat-label-clean">Ideal Temp</div>
-                                        <div class="stat-value-clean">${res.plant.optimal_temp[0]}° - ${res.plant.optimal_temp[1]}°</div>
-                                    </div>
-                                    <div class="stat-cell-dynamic">
-                                        <div class="stat-label-clean">Water Needs</div>
-                                        <div class="stat-value-clean">${formattedWaterNeeds}</div>
-                                    </div>
-                                    <div class="stat-cell-static">
-                                        <div class="stat-label-clean">Max Wind</div>
-                                        <div class="stat-value-clean">${res.plant.wind_tolerance} mph</div>
-                                    </div>
-                                    <div class="stat-cell-static">
-                                        <div class="stat-label-clean">Lunar Boost</div>
-                                        <div class="stat-value-clean ${res.isLunarBoostActive ? 'lunar-boost-active' : ''}">${res.plant.lunar_affinity.toUpperCase()}</div>
-                                    </div>
-                                </div>
-                                <div class="metabolism-box">
-                                    <div class="stat-label-clean">Metabolism</div>
-                                    <div class="metabolism-text">${res.respiration}</div>
-                                </div>
+                                ${propagateBtnHTML}
+                                ${isProp ? propTrackerHTML : lifecycleHTML}
+                                ${statGridHTML}
                             </div>
                         </div>
                     </div>
-                    <button class="refresh-btn" style="width: 100%; margin-top: 15px; background: linear-gradient(135deg, #00d084, #00f0ff); border: 2px dashed white;" onclick="DiaryManager.waterPlant('${res.id}')">💧 YES, I WATERED IT!</button>
+                    <button class="refresh-btn" style="width: 100%; margin-top: 15px; background: linear-gradient(135deg, #00d084, #00f0ff); border: 2px dashed white;" onclick="DiaryManager.waterPlant('${plantId}')">${waterBtnText}</button>
                 `;
 
                 document.getElementById('diary-plant-modal').style.display = 'flex';
             },
 
-            closeModal: function() {
-                document.getElementById('diary-plant-modal').style.display = 'none';
-                this.renderGrid();
-            },
-
             renderGrid: function() {
                 const data = this.getPinned();
+                
+                // Get Mother Tiers
                 const tier1 = document.getElementById('diary-tier-1'); 
                 const tier2 = document.getElementById('diary-tier-2'); 
                 const tier3 = document.getElementById('diary-tier-3'); 
+                
+                // Get Nursery Tiers
+                const nTier1 = document.getElementById('nursery-tier-1'); 
+                const nTier2 = document.getElementById('nursery-tier-2'); 
+                const nTier3 = document.getElementById('nursery-tier-3'); 
 
-                if(!tier1 || !tier2 || !tier3) return;
+                if(!tier1 || !nTier1) return;
 
+                // Clear all grids
                 tier1.innerHTML = ''; tier2.innerHTML = ''; tier3.innerHTML = '';
+                nTier1.innerHTML = ''; nTier2.innerHTML = ''; nTier3.innerHTML = '';
 
-                if(Object.keys(data).length === 0) {
-                    tier2.innerHTML = `<div style="width: 100%; text-align: center; color: var(--deep-sea); font-size: 0.8rem; font-weight: 700; opacity: 0.6;">No plants pinned yet 📌</div>`;
-                    return;
-                }
-
+                let hasMothers = false;
+                let hasBabies = false;
                 const now = Date.now();
 
                 Object.keys(data).forEach(id => {
-                    const plantData = window.floraDB[id];
+                    let baseId = id;
+                    let isProp = false;
+                    
+                    if (id.includes('-prop-')) {
+                        isProp = true;
+                        baseId = id.split('-prop-')[0];
+                        hasBabies = true;
+                    } else {
+                        hasMothers = true;
+                    }
+
+                    const plantData = window.floraDB[baseId];
                     if (!plantData) return;
 
-                    let freq = 14; 
-                    if (plantData.water_frequency === "high") freq = 3;
-                    else if (plantData.water_frequency === "moderate") freq = 7;
-                    else if (plantData.water_frequency === "low") freq = 14;
-                    else if (plantData.water_frequency === "very_low") freq = 30;
+                    // If it's a cutting, water changes are usually needed faster than soil watering.
+                    let freq = isProp ? 5 : 14; 
+                    if (!isProp) {
+                        if (plantData.water_frequency === "high") freq = 3;
+                        else if (plantData.water_frequency === "moderate") freq = 7;
+                        else if (plantData.water_frequency === "low") freq = 14;
+                        else if (plantData.water_frequency === "very_low") freq = 30;
+                    }
 
                     const msSinceWatered = now - data[id].lastWatered;
                     const daysSinceWatered = msSinceWatered / (1000 * 60 * 60 * 24);
                     const daysUntilWatering = freq - daysSinceWatered;
 
-                    let targetTier = tier3; 
+                    let targetTier;
                     
-                    if (data[id].lastWatered === 0) {
-                        targetTier = tier1; 
-                    } else if (daysSinceWatered < 1.5) {
-                        targetTier = tier3; 
-                    } else if (daysUntilWatering <= 3) {
-                        targetTier = tier1; 
-                    } else if (daysUntilWatering <= 7 || daysSinceWatered >= (freq / 2)) {
-                        targetTier = tier2; 
+                    // Route to correct shelf and tier
+                    if (isProp) {
+                        if (data[id].lastWatered === 0) targetTier = nTier1; 
+                        else if (daysSinceWatered < 1.5) targetTier = nTier3; 
+                        else if (daysUntilWatering <= 2) targetTier = nTier1; 
+                        else if (daysUntilWatering <= 4 || daysSinceWatered >= (freq / 2)) targetTier = nTier2; 
+                        else targetTier = nTier3; 
                     } else {
-                        targetTier = tier3; 
+                        if (data[id].lastWatered === 0) targetTier = tier1; 
+                        else if (daysSinceWatered < 1.5) targetTier = tier3; 
+                        else if (daysUntilWatering <= 3) targetTier = tier1; 
+                        else if (daysUntilWatering <= 7 || daysSinceWatered >= (freq / 2)) targetTier = tier2; 
+                        else targetTier = tier3; 
                     }
+
+                    // Add a tiny bottle icon to cutting names so they stand out
+                    let displayName = isProp ? `🧪 ${plantData.name}` : plantData.name;
 
                     const stampHTML = `
                         <div class="diary-stamp-container" onclick="DiaryManager.openExpandedView('${id}')">
                             <img src="${plantData.stamp_img}" alt="${plantData.name}" class="diary-stamp" onerror="this.src='https://i.postimg.cc/Fs9tVbff/d1fbe1c35c32494c9290ebf699c16fc6.jpg'">
-                            <div class="diary-stamp-name">${plantData.name}</div>
+                            <div class="diary-stamp-name">${displayName}</div>
                         </div>
                     `;
                     targetTier.innerHTML += stampHTML;
                 });
+
+                if (!hasMothers) {
+                    tier2.innerHTML = `<div style="width: 100%; text-align: center; color: var(--deep-sea); font-size: 0.8rem; font-weight: 700; opacity: 0.6;">No plants pinned yet 📌</div>`;
+                }
+                if (!hasBabies) {
+                    nTier2.innerHTML = `<div style="width: 100%; text-align: center; color: var(--deep-sea); font-size: 0.8rem; font-weight: 700; opacity: 0.6;">Nursery is empty 🧪</div>`;
+                }
             }
         };
         window.DiaryManager = DiaryManager;
