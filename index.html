@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🌦 Weather</title>
+    <title>🌦 weather</title>
     
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#ff85c2">
@@ -492,6 +492,30 @@
         .modal-content { background: var(--bubble-glass); border: 4px dotted var(--pearl-glow); border-radius: 30px; width: 90%; max-width: 400px; height: 70%; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 0 25px rgba(0, 240, 255, 0.6); }
         .close-radar-btn { background: var(--moe-pink); color: white; text-align: center; padding: 12px; font-weight: 700; cursor: pointer; text-transform: uppercase; letter-spacing: 2px; border-bottom: 2px dashed white; }
         #radar-frame { width: 100%; height: 100%; border: none; }
+
+        /* Sync Button Styling */
+        .sync-btn-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            width: 100%;
+        }
+        .sync-btn {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.5);
+            border: 2px dashed var(--mermaid-aqua);
+            border-radius: 20px;
+            padding: 8px 5px;
+            color: var(--deep-sea);
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 700;
+            font-size: 0.75rem;
+            cursor: pointer;
+            box-shadow: 2px 2px 8px rgba(0, 240, 255, 0.15);
+            transition: 0.2s ease;
+            text-shadow: 1px 1px 0px white;
+        }
+        .sync-btn:active { transform: scale(0.95); }
     </style>
 </head>
 <body>
@@ -661,6 +685,12 @@
                 <div class="wide-box" id="diary-container">
                     <div class="celestial-title">✎ Plant Diary</div>
                     
+                    <div class="sync-btn-container">
+                        <button class="sync-btn" onclick="DiaryManager.exportDiary()">💾 EXPORT</button>
+                        <button class="sync-btn" onclick="document.getElementById('import-diary-input').click()">📂 IMPORT</button>
+                        <input type="file" id="import-diary-input" style="display:none" accept=".json" onchange="DiaryManager.importDiary(event)">
+                    </div>
+                    
                     <div class="diary-tier-label">𖦹 ˚ 𓇼 Water now!</div>
                     <div class="diary-tier" id="diary-tier-1"></div>
                     
@@ -737,6 +767,51 @@
                 this.renderGrid();
                 if (typeof filterFlora === "function") filterFlora(); 
             },
+
+            // --- NEW EXPORT / IMPORT LOGIC ---
+            exportDiary: function() {
+                const data = this.getPinned();
+                const snapshot = {
+                    version: "1.0",
+                    timestamp: new Date().toISOString().split('T')[0],
+                    data: data
+                };
+                
+                const blob = new Blob([JSON.stringify(snapshot, null, 2)], { type: "application/json" });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = `my-plant-diary-${snapshot.timestamp}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                alert("🌸 Diary snapshot downloaded!");
+            },
+
+            importDiary: function(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        const parsed = JSON.parse(e.target.result);
+                        if (parsed.data) {
+                            this.savePinned(parsed.data);
+                            alert("🪴 Diary restored successfully!");
+                            // Reset the input so the same file can be selected again if needed
+                            document.getElementById('import-diary-input').value = "";
+                        } else {
+                            alert("Oops! This file doesn't look like a valid diary snapshot. ✖╭╮✖");
+                        }
+                    } catch (error) {
+                        alert("Error reading file! ✖╭╮✖");
+                    }
+                };
+                reader.readAsText(file);
+            },
+            // ---------------------------------
 
             togglePin: function(plantId) {
                 let data = this.getPinned();
