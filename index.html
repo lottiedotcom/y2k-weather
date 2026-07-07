@@ -554,7 +554,7 @@
         .propagate-btn {
             width: 100%;
             margin-top: 10px;
-            margin-bottom: 15px;
+            margin-bottom: 25px;
             display: block;
             background: linear-gradient(135deg, rgba(0, 240, 255, 0.3), rgba(0, 208, 132, 0.3));
             border: 2px dashed #00d084;
@@ -1044,12 +1044,6 @@
                         formattedWaterNeeds = `<span style="color: var(--moe-pink); text-shadow: 1px 1px 0px white;">${splitText[0]}:</span>${splitText[1]}`;
                     }
 
-                    // Check if we are displaying Indoor or Outdoor VPD
-                    const indoorT = localStorage.getItem('indoorTemp');
-                    const indoorH = localStorage.getItem('indoorHum');
-                    const isIndoorActive = (indoorT !== null && indoorT !== "" && indoorH !== null && indoorH !== "");
-                    const vpdLabel = isIndoorActive ? "Live Indoor VPD" : "Live Outdoor VPD";
-
                     statGridHTML = `
                         <div class="stat-grid">
                             <div class="stat-cell-static">
@@ -1124,7 +1118,13 @@
                 const indoorT = localStorage.getItem('indoorTemp');
                 const indoorH = localStorage.getItem('indoorHum');
                 const isIndoorActive = (indoorT !== null && indoorT !== "" && indoorH !== null && indoorH !== "");
-                const vpdLabel = isIndoorActive ? `Live Indoor: ${res.liveVPD}` : `Live Outdoor: ${res.liveVPD}`;
+                
+                let displayVpd = res.liveVPD;
+                if (isIndoorActive && window.ClimateEngine && typeof window.ClimateEngine.calculateVPD === "function") {
+                    displayVpd = window.ClimateEngine.calculateVPD(parseFloat(indoorT), parseFloat(indoorH));
+                }
+                let formattedVpd = !isNaN(parseFloat(displayVpd)) ? parseFloat(displayVpd).toFixed(2) : displayVpd;
+                const vpdLabel = isIndoorActive ? `Live Indoor: ${formattedVpd}` : `Live Outdoor: ${formattedVpd}`;
 
                 const modalBody = document.getElementById('diary-modal-body');
                 modalBody.innerHTML = `
@@ -1639,6 +1639,7 @@ desc = "It is way to hot! Drink lots of water and pay attention to your body tod
                 let pinIcon = pinnedData[res.id] ? "📍" : "📌";
 
                 let lifecycleHTML = "";
+                // Only if the plant specifically has a cycle and is not seasonal
                 if (res.plant.cycle && !res.plant.season) {
                     let currentDays = res.plant.days_since_planted !== undefined ? res.plant.days_since_planted : "";
                     let inputId = `days-input-${res.id}`;
@@ -1663,11 +1664,16 @@ desc = "It is way to hot! Drink lots of water and pay attention to your body tod
                 // Override liveVPD if using indoor sensor
                 let liveTemp = useIndoor ? parseFloat(indoorT) : engineData.currentTemp;
                 let liveHum = useIndoor ? parseFloat(indoorH) : engineData.currentHumidity;
-                let vpdCalc = "...";
+                let vpdCalc = res.liveVPD;
                 if(window.ClimateEngine && typeof window.ClimateEngine.calculateVPD === "function") {
                      vpdCalc = window.ClimateEngine.calculateVPD(liveTemp, liveHum);
                 }
-                let vpdLabel = useIndoor ? `Live Indoor: ${vpdCalc}` : `Live Outdoor: ${res.liveVPD}`;
+                
+                // Format the displayed VPD to 2 decimal places
+                let formattedVpd = !isNaN(parseFloat(vpdCalc)) ? parseFloat(vpdCalc).toFixed(2) : vpdCalc;
+                let outVpd = !isNaN(parseFloat(res.liveVPD)) ? parseFloat(res.liveVPD).toFixed(2) : res.liveVPD;
+                
+                let vpdLabel = useIndoor ? `Live Indoor: ${formattedVpd}` : `Live Outdoor: ${outVpd}`;
 
                 container.innerHTML += `
                     <div class="agronomy-card ${isExpanded}" onclick="this.classList.toggle('expanded')">
@@ -2131,4 +2137,3 @@ desc = "It is way to hot! Drink lots of water and pay attention to your body tod
     </script>
 </body>
 </html>
-
