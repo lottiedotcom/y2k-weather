@@ -587,13 +587,25 @@
 
             <div id="login-container" class="wide-box" style="margin-bottom: 20px;">
                 <div class="celestial-title">🌸 Cloud Login 🌸</div>
+                
                 <input type="text" id="username" placeholder="Username" class="days-input" style="width: 80%; margin-bottom: 8px; border-radius: 20px;">
-                <input type="password" id="password" placeholder="Password" class="days-input" style="width: 80%; margin-bottom: 12px; border-radius: 20px;">
+                
+                <!-- Password wrapper for the eye icon -->
+                <div style="position: relative; width: 80%; margin-bottom: 8px;">
+                    <input type="password" id="password" placeholder="Password" class="days-input" style="width: 100%; box-sizing: border-box; border-radius: 20px; padding-right: 35px;">
+                    <button type="button" onclick="togglePassword()" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 1.1rem; opacity: 0.7;">👁️</button>
+                </div>
+
+                <!-- Privacy Disclaimer -->
+                <div class="vibe-desc" style="font-size: 0.75rem; color: var(--deep-sea); width: 85%; margin-bottom: 15px; line-height: 1.3; text-shadow: 1px 1px 0px white; background: rgba(255,255,255,0.3); padding: 8px; border-radius: 15px; border: 1px dashed var(--moe-pink);">
+                    ⚠️ <b>Privacy first!</b> No email required. Please do <b>NOT</b> use a real password from your bank or social media. Pick something cute and easy to remember! 🎀
+                </div>
+
                 <div style="display: flex; gap: 10px; width: 80%;">
                     <button class="sync-btn" onclick="DiaryManager.login()">LOGIN</button>
                     <button class="sync-btn" onclick="DiaryManager.register()">REGISTER</button>
                 </div>
-                <div id="auth-message" style="color: var(--moe-pink); font-size: 0.8rem; margin-top: 10px; text-shadow: 1px 1px 0px white;"></div>
+                <div id="auth-message" style="color: var(--moe-pink); font-size: 0.85rem; margin-top: 10px; text-shadow: 1px 1px 0px white; font-weight: 700;"></div>
             </div>
             
             <div class="top-nav">
@@ -833,6 +845,15 @@
     </div>
 
     <script>
+        function togglePassword() {
+            const pwdInput = document.getElementById('password');
+            if (pwdInput.type === 'password') {
+                pwdInput.type = 'text';
+            } else {
+                pwdInput.type = 'password';
+            }
+        }
+
         function getSaturationStatus(temp, dewPoint, humidity) {
             const spread = temp - dewPoint;
             if (spread <= 2 && humidity > 80) {
@@ -2194,4 +2215,3 @@
     </script>
 </body>
 </html>
-
