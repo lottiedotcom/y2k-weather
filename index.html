@@ -340,9 +340,6 @@
         .plant-name-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 5px; width: 100%;}
         .plant-name { font-weight: 700; color: var(--deep-sea); font-size: 0.95rem; text-shadow: 1px 1px 0px white; display: flex; align-items: center; gap: 5px; }
         .plant-toxicity { font-size: 0.85rem; filter: drop-shadow(1px 1px 0px white); }
-        .pin-btn { background: rgba(255,255,255,0.4); border: 2px solid white; border-radius: 50%; width: 28px; height: 28px; display: inline-flex; justify-content: center; align-items: center; font-size: 0.85rem; cursor: pointer; color: var(--deep-sea); text-shadow: none; transition: 0.2s ease; box-shadow: 0 2px 4px rgba(0,240,255,0.2); }
-        .pin-btn.pinned { background: var(--moe-pink); border-color: var(--moe-pink); color: white; }
-        .pin-btn:active { transform: scale(0.9); }
 
         .tag-container { display: flex; gap: 6px; margin-bottom: 6px; flex-wrap: wrap; }
         .plant-tag { font-size: 0.65rem; font-weight: 700; padding: 4px 8px; border-radius: 10px; display: inline-flex; align-items: center; color: white; text-transform: uppercase; letter-spacing: 1px; line-height: 1.3; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.5); }
@@ -387,10 +384,16 @@
 
         .diary-tier { display: flex; flex-wrap: wrap; gap: 8px; padding: 10px; min-height: 70px; background: rgba(255,255,255,0.2); border: 2px dashed rgba(255,255,255,0.6); border-radius: 15px; margin-bottom: 10px; width: 100%; box-sizing: border-box; justify-content: flex-start; align-items: flex-start;}
         .diary-tier-label { font-size: 0.75rem; font-weight: 700; color: var(--deep-sea); text-transform: uppercase; width: 100%; text-align: left; margin-bottom: 4px; text-shadow: 1px 1px 0px white; }
-        .diary-stamp-container { display: flex; flex-direction: column; align-items: center; cursor: pointer; width: 60px; transition: transform 0.2s ease; }
+        .diary-stamp-container { display: flex; flex-direction: column; align-items: center; cursor: pointer; width: 60px; transition: transform 0.2s ease; position: relative; }
         .diary-stamp-container:active { transform: scale(0.9); }
         .diary-stamp { width: 50px; height: 50px; border-radius: 12px; border: 2px solid white; box-shadow: 0 2px 5px rgba(0, 240, 255, 0.4); object-fit: cover; background: var(--bubble-glass); }
         .diary-stamp-name { font-size: 0.6rem; font-weight: 700; color: var(--deep-sea); text-shadow: 1px 1px 0px white; text-align: center; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
+
+        /* Status Dots */
+        .status-dot { width: 12px; height: 12px; border-radius: 50%; border: 2px solid white; position: absolute; top: -4px; right: 2px; box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+        .dot-green { background: #00d084; }
+        .dot-yellow { background: #ffb347; }
+        .dot-red { background: #ff4d4d; }
 
         .minutely-grid { display: flex; width: 100%; justify-content: space-between; gap: 5px; margin-top: 5px; }
         .minutely-col { flex: 1; background: var(--bubble-glass); border-radius: 10px; padding: 8px 2px; font-size: 0.75rem; border: 1px dotted white; box-shadow: inset 1px 1px 5px rgba(255,255,255,0.5); }
@@ -452,7 +455,7 @@
             margin-bottom: 15px; 
             margin-top: 0;
             box-shadow: 2px 2px 8px rgba(0, 240, 255, 0.15);
-            gap: 6px;
+            gap: 4px;
         }
         
         .nav-btn {
@@ -465,8 +468,8 @@
             color: var(--deep-sea);
             font-family: 'Fredoka', sans-serif;
             font-weight: 700;
-            font-size: 0.75rem;
-            padding: 12px 0;
+            font-size: 0.65rem;
+            padding: 10px 0;
             cursor: pointer;
             text-transform: uppercase;
             letter-spacing: 1px;
@@ -548,7 +551,7 @@
         .propagate-btn {
             width: 100%;
             margin-top: 10px;
-            margin-bottom: 25px;
+            margin-bottom: 15px;
             display: block;
             background: linear-gradient(135deg, rgba(0, 240, 255, 0.3), rgba(0, 208, 132, 0.3));
             border: 2px dashed #00d084;
@@ -566,6 +569,27 @@
             letter-spacing: 2px;
         }
         .propagate-btn:active { transform: scale(0.98); }
+        
+        .delete-btn {
+            width: 100%;
+            margin-bottom: 25px;
+            display: block;
+            background: rgba(255, 77, 77, 0.2);
+            border: 2px dashed #ff4d4d;
+            border-radius: 15px;
+            padding: 10px;
+            color: #ff4d4d;
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(255, 77, 77, 0.2);
+            transition: 0.2;
+            text-shadow: 1px 1px 0px white;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .delete-btn:active { transform: scale(0.98); }
 
     </style>
 </head>
@@ -590,13 +614,11 @@
                 
                 <input type="text" id="username" placeholder="Username" class="days-input" style="width: 80%; margin-bottom: 8px; border-radius: 20px;">
                 
-                <!-- Password wrapper for the eye icon -->
                 <div style="position: relative; width: 80%; margin-bottom: 8px;">
                     <input type="password" id="password" placeholder="Password" class="days-input" style="width: 100%; box-sizing: border-box; border-radius: 20px; padding-right: 35px;">
                     <button type="button" onclick="togglePassword()" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 1.1rem; opacity: 0.7;">👁️</button>
                 </div>
 
-                <!-- Privacy Disclaimer -->
                 <div class="vibe-desc" style="font-size: 0.75rem; color: var(--deep-sea); width: 85%; margin-bottom: 15px; line-height: 1.3; text-shadow: 1px 1px 0px white; background: rgba(255,255,255,0.3); padding: 8px; border-radius: 15px; border: 1px dashed var(--moe-pink);">
                     ⚠️ <b>Privacy first!</b> No email required. Please do <b>NOT</b> use a real password from your bank or social media. Pick something cute and easy to remember! 🎀
                 </div>
@@ -613,8 +635,10 @@
                 <button class="nav-btn" onclick="switchTab('tab-future', this)">🔮 FUTURE</button>
                 <button class="nav-btn" onclick="switchTab('tab-sky', this)">🌠 SKY</button>
                 <button class="nav-btn" onclick="switchTab('tab-flora', this)">🌿 FLORA</button>
+                <button class="nav-btn" onclick="switchTab('tab-diary', this)">📖 DIARY</button>
             </div>
 
+            <!-- TAB: NOW -->
             <div id="tab-now" class="tab-section active">
                 <div id="temp">--°</div>
                 <div id="feels-like">🌡 RealFeel: <span id="apparent">--</span>°</div>
@@ -682,6 +706,7 @@
                 </div>
             </div>
 
+            <!-- TAB: FUTURE -->
             <div id="tab-future" class="tab-section">
                 <div class="wide-box" style="padding-bottom: 5px;">
                     <div class="celestial-title" style="border:none; margin-bottom: 0;">🕛 Next 60 Mins</div>
@@ -695,6 +720,7 @@
                 <div id="forecast-list"></div>
             </div>
 
+            <!-- TAB: SKY -->
             <div id="tab-sky" class="tab-section">
                 <div class="wide-box atmosphere-scanner">
                     <div class="celestial-title">🧴 Sun & UV</div>
@@ -752,6 +778,7 @@
                 </div>
             </div>
 
+            <!-- TAB: FLORA (Search & Database) -->
             <div id="tab-flora" class="tab-section">
                 
                 <div class="wide-box" id="flora-smart-alerts" style="display: none;">
@@ -768,18 +795,38 @@
                     <div class="vibe-desc" style="margin-top: 5px; font-size: 0.7rem;">(Calculates indoor VPD, outdoor data remains for safety)</div>
                 </div>
 
+                <div class="wide-box">
+                    <div class="celestial-title">☘️ Botanical Station </div>
+                    <div class="vibe-title" style="margin-top: 15px; font-size: 1rem;">🌘 Lunar Cycle Action</div>
+                    <div class="vibe-desc" id="lunar-botanical-guide">Calculating gravity...</div>
+                    <div class="vibe-title" style="margin-top: 15px; font-size: 1rem;">🌤 Ambient Air Check</div>
+                    <div class="vibe-desc" id="flora-humidity-guide">Checking moisture...</div>
+                </div>
+
                 <div class="flora-search-container">
-                    <input type="text" id="flora-search-input" placeholder="Search plants... 🪴" onkeyup="filterFlora()">
+                    <input type="text" id="flora-search-input" placeholder="Search the plant database... 🪴" onkeyup="filterFlora()">
+                </div>
+
+                <div id="agronomy-list"></div>
+            </div>
+
+            <!-- TAB: DIARY (Personal Plants) -->
+            <div id="tab-diary" class="tab-section">
+                
+                <!-- Add New Plant Form -->
+                <div class="wide-box" style="background: rgba(255, 255, 255, 0.3);">
+                    <div class="celestial-title">➕ Add to Diary</div>
+                    <select id="plant-select" class="days-input" style="width: 100%; margin-bottom: 8px; border-radius: 15px; font-size: 0.85rem; text-align: left;"></select>
+                    <input type="text" id="plant-nickname" placeholder="Custom Nickname (e.g. Monstera Corner)" class="days-input" style="width: 100%; margin-bottom: 8px; border-radius: 15px; font-size: 0.85rem; text-align: left; box-sizing: border-box;">
+                    <select id="shelf-select" class="days-input" style="width: 100%; margin-bottom: 12px; border-radius: 15px; font-size: 0.85rem; text-align: left;">
+                        <option value="mother">🪴 Mother Station</option>
+                        <option value="nursery">🧪 Nursery</option>
+                    </select>
+                    <button class="sync-btn" style="width: 100%; background: linear-gradient(135deg, var(--mermaid-aqua), var(--moe-pink)); color: white; border: 2px solid white;" onclick="DiaryManager.addPlant()">ADD NEW PLANT</button>
                 </div>
 
                 <div class="wide-box" id="diary-container">
-                    <div class="celestial-title">✎ Plant Diary</div>
-                    
-                    <div class="sync-btn-container">
-                        <button class="sync-btn" onclick="DiaryManager.exportDiary()">💾 EXPORT</button>
-                        <button class="sync-btn" onclick="document.getElementById('import-diary-input').click()">📂 IMPORT</button>
-                        <input type="file" id="import-diary-input" style="display:none" accept=".json" onchange="DiaryManager.importDiary(event)">
-                    </div>
+                    <div class="celestial-title">✎ My Plants</div>
 
                     <div class="shelf-toggle-container">
                         <button id="btn-mother-shelf" class="shelf-toggle-btn active" onclick="toggleShelfView('mother')">🪴 Mother Station</button>
@@ -808,19 +855,8 @@
                         <div class="diary-tier" id="nursery-tier-3"></div>
                     </div>
                 </div>
-
-                <div class="wide-box">
-                    <div class="celestial-title">☘️ Botanical Station </div>
-                    
-                    <div class="vibe-title" style="margin-top: 15px; font-size: 1rem;">🌘 Lunar Cycle Action</div>
-                    <div class="vibe-desc" id="lunar-botanical-guide">Calculating gravity...</div>
-
-                    <div class="vibe-title" style="margin-top: 15px; font-size: 1rem;">🌤 Ambient Air Check</div>
-                    <div class="vibe-desc" id="flora-humidity-guide">Checking moisture...</div>
-                </div>
-
-                <div id="agronomy-list"></div>
             </div>
+
         </div>
 
         <div class="btn-container">
@@ -883,9 +919,9 @@
             }
         }
 
-        // 📖 PLANT DIARY MANAGER LOGIC WITH CLOUD SYNC 📖
+        // 📖 PLANT DIARY MANAGER LOGIC WITH CLOUD SYNC & DATABASE 📖
         const DiaryManager = {
-            diaryData: {}, 
+            plants: [], // Array of plant objects from database
             userId: localStorage.getItem('floraUserId') || null,
 
             authAction: async function(action) {
@@ -909,7 +945,7 @@
                         localStorage.setItem('floraUserId', data.userId);
                         msg.innerText = data.message;
                         document.getElementById('login-container').style.display = 'none';
-                        this.init(); // Load their specific data
+                        this.init(); 
                     } else {
                         msg.innerText = data.error;
                     }
@@ -922,8 +958,6 @@
             init: async function() {
                 if (!this.userId) {
                     document.getElementById('login-container').style.display = 'flex';
-                    this.diaryData = JSON.parse(localStorage.getItem('plantDiary')) || {};
-                    this.renderGrid();
                     return;
                 }
                 document.getElementById('login-container').style.display = 'none';
@@ -934,45 +968,51 @@
                     });
                     if (response.ok) {
                         const json = await response.json();
-                        if (json.data && Object.keys(json.data).length > 0) {
-                            this.diaryData = json.data;
-                            localStorage.setItem('plantDiary', JSON.stringify(this.diaryData)); 
-                        } else {
-                            this.diaryData = JSON.parse(localStorage.getItem('plantDiary')) || {};
-                        }
+                        this.plants = json.plants || [];
                     }
                 } catch (e) {
                     console.error("Cloud fetch failed", e);
-                    this.diaryData = JSON.parse(localStorage.getItem('plantDiary')) || {};
                 }
+                this.populatePlantList();
                 this.renderGrid();
             },
 
-            getPinned: function() {
-                return this.diaryData;
+            populatePlantList: function() {
+                const select = document.getElementById('plant-select');
+                if (select && window.floraDB) {
+                    select.innerHTML = Object.keys(window.floraDB).map(id => 
+                        `<option value="${id}">${window.floraDB[id].name}</option>`
+                    ).join('');
+                }
             },
 
-            savePinned: async function(data) {
-                this.diaryData = data;
-                localStorage.setItem('plantDiary', JSON.stringify(data)); 
+            addPlant: async function() {
+                const templateId = document.getElementById('plant-select').value;
+                const nicknameInput = document.getElementById('plant-nickname').value.trim();
+                const nickname = nicknameInput || window.floraDB[templateId].name;
+                const shelf = document.getElementById('shelf-select').value;
                 
-                if (this.userId) {
-                    try {
-                        await fetch('/api/db', {
-                            method: 'POST',
-                            headers: { 
-                                'Content-Type': 'application/json',
-                                'user-id': this.userId
-                            },
-                            body: JSON.stringify({ plantData: data })
-                        });
-                    } catch (e) {
-                        console.error('Failed to sync to cloud', e);
-                    }
+                await fetch('/api/db', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'user-id': this.userId },
+                    body: JSON.stringify({ plant_template_id: templateId, nickname: nickname, shelf_type: shelf })
+                });
+                
+                document.getElementById('plant-nickname').value = '';
+                alert(`🪴 Added ${nickname} to your diary!`);
+                this.init();
+            },
+
+            deletePlant: async function(id) {
+                if(confirm("Are you sure you want to delete this plant forever? 🥀")) {
+                    await fetch('/api/db', {
+                        method: 'DELETE',
+                        headers: { 'Content-Type': 'application/json', 'user-id': this.userId },
+                        body: JSON.stringify({ id: id })
+                    });
+                    this.closeModal();
+                    this.init();
                 }
-                
-                this.renderGrid();
-                if (typeof filterFlora === "function") filterFlora(); 
             },
 
             updateIndoorClimate: function() {
@@ -990,119 +1030,46 @@
                 }
             },
 
-            exportDiary: function() {
-                const data = this.getPinned();
-                const snapshot = {
-                    version: "1.0",
-                    timestamp: new Date().toISOString().split('T')[0],
-                    data: data
-                };
-                
-                const blob = new Blob([JSON.stringify(snapshot, null, 2)], { type: "application/json" });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement("a");
-                a.href = url;
-                a.download = `my-plant-diary-${snapshot.timestamp}.json`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-                alert("🌸 Diary snapshot downloaded!");
-            },
-
-            importDiary: function(event) {
-                const file = event.target.files[0];
-                if (!file) return;
-
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    try {
-                        const parsed = JSON.parse(e.target.result);
-                        if (parsed.data) {
-                            this.savePinned(parsed.data);
-                            alert("🪴 Diary restored successfully!");
-                            document.getElementById('import-diary-input').value = "";
-                        } else {
-                            alert("Oops! This file doesn't look like a valid diary snapshot. ✖╭╮✖");
-                        }
-                    } catch (error) {
-                        alert("Error reading file! ✖╭╮✖");
-                    }
-                };
-                reader.readAsText(file);
-            },
-
-            togglePin: function(plantId) {
-                let data = { ...this.getPinned() };
-                if (data[plantId]) {
-                    delete data[plantId]; 
-                } else {
-                    data[plantId] = { lastWatered: 0 }; 
-                }
-                this.savePinned(data);
-                
-                if(window.lastWeatherState) {
-                    const state = window.lastWeatherState;
-                    const newResults = window.ClimateEngine.runAnalysis(
-                        state.lat, state.lon, state.weekTempsMin, state.weekTempsMax, state.dailyGusts, state.currentTemp, state.currentHumidity, state.rainTotal, state.moonPhaseStr, state.isDaytime
-                    );
-                    if (typeof renderAgronomy === "function") renderAgronomy(newResults);
-                }
-            },
-
-            waterPlant: function(plantId) {
+            waterPlant: async function(id) {
                 if (confirm("Are you sure you watered this plant? This will reset the schedule!")) {
-                    try {
-                        let data = { ...this.getPinned() };
-                        if(data[plantId]) {
-                            data[plantId].lastWatered = Date.now();
-                            this.savePinned(data);
-                            this.closeModal();
-                        }
-                    } catch (e) { console.error('Error watering:', e); }
-                }
-            },
-
-            propagatePlant: function(parentId) {
-                try {
-                    let data = { ...this.getPinned() };
-                    const uniqueId = `${parentId}-prop-${Date.now()}`;
-                    
-                    data[uniqueId] = {
-                        lastWatered: 0,
-                        isPropagation: true,
-                        parentId: parentId,
-                        dateStarted: new Date().toISOString().split('T')[0],
-                        vesselType: 'Plastic Bottle',
-                        nodeType: 'Stem Node',
-                        rootProgress: 'none'
-                    };
-                    
-                    this.savePinned(data);
+                    await fetch('/api/db', {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json', 'user-id': this.userId },
+                        body: JSON.stringify({ id: id })
+                    });
                     this.closeModal();
-                    alert(`🌱 Cutting taken! It has been moved to your Nursery.`);
-                    toggleShelfView('nursery');
-                } catch(e) { console.error('Error propagating:', e); alert('Error copying to nursery!'); }
-            },
-
-            updatePropProgress: function(plantId, status) {
-                let data = { ...this.getPinned() };
-                if(data[plantId]) {
-                    data[plantId].rootProgress = status;
-                    this.savePinned(data);
-                    this.openExpandedView(plantId); 
+                    this.init();
                 }
             },
 
-            openExpandedView: function(plantId) {
-                let baseId = plantId;
-                let isProp = false;
-                if (plantId.includes('-prop-')) {
-                    isProp = true;
-                    baseId = plantId.split('-prop-')[0];
-                }
+            propagatePlant: async function(parentId) {
+                const parent = this.plants.find(p => p.id === parentId);
+                if (!parent) return;
 
+                const templateId = parent.plant_template_id;
+                const newNickname = `Prop: ${parent.nickname}`;
+                
+                await fetch('/api/db', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'user-id': this.userId },
+                    body: JSON.stringify({ plant_template_id: templateId, nickname: newNickname, shelf_type: 'nursery' })
+                });
+                
+                this.closeModal();
+                alert(`🌱 Cutting taken! It has been moved to your Nursery.`);
+                toggleShelfView('nursery');
+                this.init();
+            },
+
+            openExpandedView: function(dbId) {
                 if (!window.latestAgronomyResults) return;
+
+                // Find the specific plant from the DB array
+                const myPlant = this.plants.find(p => p.id === dbId);
+                if (!myPlant) return;
+
+                const baseId = myPlant.plant_template_id;
+                const isProp = myPlant.shelf_type === 'nursery';
                 
                 const res = window.latestAgronomyResults.find(r => r.id === baseId);
                 if (!res) return;
@@ -1125,13 +1092,13 @@
                                 <div class="lifecycle-label">🌱 Days Since Planted:</div>
                                 <div class="lifecycle-input-group">
                                     <input type="number" id="${inputId}" class="days-input" value="${currentDays}" placeholder="0">
-                                    <button class="lifecycle-btn" onclick="updateLifecycle('${res.id}', document.getElementById('${inputId}').value); DiaryManager.openExpandedView('${res.id}')">SET</button>
+                                    <button class="lifecycle-btn" onclick="updateLifecycle('${res.id}', document.getElementById('${inputId}').value)">SET</button>
                                 </div>
                             </div>
                         `;
                     }
 
-                    propagateBtnHTML = `<button class="propagate-btn" onclick="DiaryManager.propagatePlant('${res.id}')">propagate</button>`;
+                    propagateBtnHTML = `<button class="propagate-btn" onclick="DiaryManager.propagatePlant(${myPlant.id})">propagate</button>`;
                     
                     let waterRaw = res.plant.water_schedule ? res.plant.water_schedule.toUpperCase() : "";
                     let formattedWaterNeeds = waterRaw;
@@ -1173,15 +1140,8 @@
                         </div>
                     `;
                 } else {
-                    let diaryData = this.getPinned();
-                    let propData = diaryData[plantId] || {};
-                    let daysProp = Math.floor((Date.now() - new Date(propData.dateStarted).getTime()) / (1000 * 60 * 60 * 24)) || 0;
-                    let rootStatus = propData.rootProgress || 'none';
-                    let advice = "";
-                    
-                    if (rootStatus === 'none') advice = "Keep in indirect light, avoid direct sun. Change water every 5 days. 💧";
-                    else if (rootStatus === 'small') advice = "Roots are appearing! Keep water topped off, keep the water clear. 🌱";
-                    else if (rootStatus === 'robust') advice = "Potting threshold approaching! Check Ambient Air: if humid, transition to soil. 🪴";
+                    let daysProp = Math.floor((Date.now() - new Date(myPlant.created_at).getTime()) / (1000 * 60 * 60 * 24)) || 0;
+                    let advice = "Keep in indirect light, avoid direct sun. Change water every 5 days. 💧";
 
                     propagateBtnHTML = `<div style="text-align: center; color: var(--moe-pink); font-weight: 700; margin-top: 10px; font-size: 0.8rem; border-bottom: 2px dotted rgba(255,255,255,0.5); padding-bottom: 5px;">🧪 Nursery Specimen</div>`;
                     
@@ -1191,15 +1151,6 @@
                             <div class="lifecycle-label">🏺 Vessel: <span style="color: var(--mermaid-aqua);">Plastic Bottle</span></div>
                             <div class="lifecycle-label">🧬 Node: <span style="color: var(--mermaid-aqua);">Stem Node</span></div>
                             
-                            <div style="width: 100%; border-top: 2px dotted rgba(255,255,255,0.5); margin: 5px 0;"></div>
-                            
-                            <div class="lifecycle-label" style="color: var(--moe-pink);">🔍 Weekly Root Check:</div>
-                            <select style="width: 100%; padding: 8px; border-radius: 10px; border: 2px solid white; background: var(--inner-bubble); color: var(--deep-sea); font-family: 'Fredoka', sans-serif; font-weight: 700; outline: none; box-shadow: inset 1px 1px 4px rgba(0,240,255,0.2);" onchange="DiaryManager.updatePropProgress('${plantId}', this.value)">
-                                <option value="none" ${rootStatus === 'none' ? 'selected' : ''}>Still Callousing / No Roots</option>
-                                <option value="small" ${rootStatus === 'small' ? 'selected' : ''}>Small Roots (&lt; 1 inch)</option>
-                                <option value="robust" ${rootStatus === 'robust' ? 'selected' : ''}>Robust Roots (&gt; 2 inches)</option>
-                            </select>
-                            
                             <div style="background: rgba(255,255,255,0.6); padding: 10px; border-radius: 10px; font-size: 0.8rem; color: var(--deep-sea); margin-top: 5px; text-shadow: 1px 1px 0px white; line-height: 1.4; border: 1px dashed var(--mermaid-aqua); width: 100%; box-sizing: border-box;">
                                 <b>Advice:</b> ${advice}
                             </div>
@@ -1207,7 +1158,7 @@
                     `;
                 }
 
-                let displayName = isProp ? `Cutting: ${res.plant.name}` : res.plant.name;
+                let displayName = isProp ? `🧪 ${myPlant.nickname}` : myPlant.nickname;
                 let waterBtnText = isProp ? "💧 WATER CHANGED / TOPPED OFF!" : "💧 YES, I WATERED IT!";
 
                 const indoorT = localStorage.getItem('indoorTemp');
@@ -1248,7 +1199,8 @@
                             </div>
                         </div>
                     </div>
-                    <button class="refresh-btn" style="width: 100%; margin-top: 15px; background: linear-gradient(135deg, #00d084, #00f0ff); border: 2px dashed white;" onclick="DiaryManager.waterPlant('${plantId}')">${waterBtnText}</button>
+                    <button class="refresh-btn" style="width: 100%; margin-top: 15px; margin-bottom: 10px; background: linear-gradient(135deg, #00d084, #00f0ff); border: 2px dashed white;" onclick="DiaryManager.waterPlant(${myPlant.id})">${waterBtnText}</button>
+                    <button class="delete-btn" onclick="DiaryManager.deletePlant(${myPlant.id})">🗑️ DELETE FOREVER</button>
                 `;
 
                 document.getElementById('diary-plant-modal').style.display = 'flex';
@@ -1267,8 +1219,6 @@
                 try {
                     document.getElementById('indoor-temp-input').value = localStorage.getItem('indoorTemp') || "";
                     document.getElementById('indoor-hum-input').value = localStorage.getItem('indoorHum') || "";
-
-                    const data = this.getPinned();
                     
                     const tier1 = document.getElementById('diary-tier-1'); 
                     const tier2 = document.getElementById('diary-tier-2'); 
@@ -1287,20 +1237,13 @@
                     let hasBabies = false;
                     const now = Date.now();
 
-                    Object.keys(data).forEach(id => {
-                        let baseId = id;
-                        let isProp = false;
-                        
-                        if (id.includes('-prop-')) {
-                            isProp = true;
-                            baseId = id.split('-prop-')[0];
-                            hasBabies = true;
-                        } else {
-                            hasMothers = true;
-                        }
-
-                        const plantData = window.floraDB[baseId];
+                    this.plants.forEach(plantObj => {
+                        const isProp = plantObj.shelf_type === 'nursery';
+                        const plantData = window.floraDB[plantObj.plant_template_id];
                         if (!plantData) return;
+
+                        if (isProp) hasBabies = true;
+                        else hasMothers = true;
 
                         let freq = isProp ? 5 : 14; 
                         if (!isProp) {
@@ -1310,32 +1253,29 @@
                             else if (plantData.water_frequency === "very_low") freq = 30;
                         }
 
-                        const msSinceWatered = now - data[id].lastWatered;
+                        const lastWateredTime = plantObj.last_watered_at ? new Date(plantObj.last_watered_at).getTime() : 0;
+                        const msSinceWatered = now - lastWateredTime;
                         const daysSinceWatered = msSinceWatered / (1000 * 60 * 60 * 24);
                         const daysUntilWatering = freq - daysSinceWatered;
 
                         let targetTier = tier3; 
+                        let dotColor = 'green';
                         
                         if (isProp) {
-                            if (data[id].lastWatered === 0) targetTier = nTier1; 
-                            else if (daysSinceWatered < 1.5) targetTier = nTier3; 
-                            else if (daysUntilWatering <= 2) targetTier = nTier1; 
-                            else if (daysUntilWatering <= 4 || daysSinceWatered >= (freq / 2)) targetTier = nTier2; 
-                            else targetTier = nTier3; 
+                            if (lastWateredTime === 0 || daysUntilWatering <= 2) { targetTier = nTier1; dotColor = 'red'; }
+                            else if (daysUntilWatering <= 4 || daysSinceWatered >= (freq / 2)) { targetTier = nTier2; dotColor = 'yellow'; }
+                            else { targetTier = nTier3; dotColor = 'green'; }
                         } else {
-                            if (data[id].lastWatered === 0) targetTier = tier1; 
-                            else if (daysSinceWatered < 1.5) targetTier = tier3; 
-                            else if (daysUntilWatering <= 3) targetTier = tier1; 
-                            else if (daysUntilWatering <= 7 || daysSinceWatered >= (freq / 2)) targetTier = tier2; 
-                            else targetTier = tier3; 
+                            if (lastWateredTime === 0 || daysUntilWatering <= 3) { targetTier = tier1; dotColor = 'red'; }
+                            else if (daysUntilWatering <= 7 || daysSinceWatered >= (freq / 2)) { targetTier = tier2; dotColor = 'yellow'; }
+                            else { targetTier = tier3; dotColor = 'green'; }
                         }
 
-                        let displayName = isProp ? `🧪 ${plantData.name}` : plantData.name;
-
                         const stampHTML = `
-                            <div class="diary-stamp-container" onclick="DiaryManager.openExpandedView('${id}')">
+                            <div class="diary-stamp-container" onclick="DiaryManager.openExpandedView(${plantObj.id})">
                                 <img src="${plantData.stamp_img}" alt="${plantData.name}" class="diary-stamp" onerror="this.src='https://i.postimg.cc/Fs9tVbff/d1fbe1c35c32494c9290ebf699c16fc6.jpg'">
-                                <div class="diary-stamp-name">${displayName}</div>
+                                <div class="status-dot dot-${dotColor}"></div>
+                                <div class="diary-stamp-name">${plantObj.nickname}</div>
                             </div>
                         `;
                         targetTier.innerHTML += stampHTML;
@@ -1365,7 +1305,7 @@
             document.getElementById(tabId).classList.add('active');
             btnElement.classList.add('active');
 
-            if (tabId === 'tab-flora') {
+            if (tabId === 'tab-flora' || tabId === 'tab-diary') {
                 document.getElementById('weather-search-box').style.display = 'none';
             } else {
                 document.getElementById('weather-search-box').style.display = 'flex';
@@ -1701,7 +1641,6 @@
 
         function renderAgronomy(engineData, expandId = null) {
             const container = document.getElementById('agronomy-list');
-            const pinnedData = window.DiaryManager ? window.DiaryManager.getPinned() : {};
             
             container.innerHTML = `<div class="zone-header">📍 Est. Hardiness Zone: ${engineData.zone.zone}</div>`;
             window.latestAgronomyResults = engineData.recommendations; 
@@ -1717,8 +1656,6 @@
                 let sTip = res.secondaryTooltip.replace(/'/g, "\\'");
 
                 let isExpanded = (res.id === expandId) ? "expanded" : "";
-                let isPinnedClass = pinnedData[res.id] ? "pinned" : "";
-                let pinIcon = pinnedData[res.id] ? "📍" : "📌";
 
                 let lifecycleHTML = "";
                 if (res.plant.cycle && !res.plant.season) {
@@ -1763,7 +1700,6 @@
                         <div class="plant-info">
                             <div class="plant-name-header">
                                 <div class="plant-name">${res.plant.name} <span class="plant-toxicity">${toxIcon}</span></div>
-                                <button class="pin-btn ${isPinnedClass}" onclick="event.stopPropagation(); DiaryManager.togglePin('${res.id}')">${pinIcon}</button>
                             </div>
                             
                             <div class="tag-container">
@@ -2215,3 +2151,4 @@
     </script>
 </body>
 </html>
+
