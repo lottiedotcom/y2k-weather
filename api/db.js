@@ -7,7 +7,7 @@ module.exports = async (req, res) => {
 
     try {
         if (req.method === 'GET') {
-            const result = await pool.query('SELECT * FROM plant_instances WHERE user_id = $1', [userId]);
+            const result = await pool.query('SELECT * FROM plant_instances WHERE user_id = $1 ORDER BY created_at ASC', [userId]);
             res.status(200).json({ plants: result.rows });
         } 
         else if (req.method === 'POST') {
@@ -18,6 +18,11 @@ module.exports = async (req, res) => {
             );
             res.status(200).json({ message: 'Added!' });
         } 
+        else if (req.method === 'PUT') {
+            const { id } = req.body;
+            await pool.query('UPDATE plant_instances SET last_watered_at = CURRENT_TIMESTAMP WHERE id = $1 AND user_id = $2', [id, userId]);
+            res.status(200).json({ message: 'Watered!' });
+        }
         else if (req.method === 'DELETE') {
             const { id } = req.body;
             await pool.query('DELETE FROM plant_instances WHERE id = $1 AND user_id = $2', [id, userId]);
