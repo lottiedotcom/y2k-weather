@@ -6,14 +6,21 @@ const pool = new Pool({
 
 module.exports = async (req, res) => {
   try {
+    const userId = req.headers['user-id']; 
+    if (!userId) return res.status(401).json({ error: 'Not logged in' });
+
     if (req.method === 'GET') {
-      // Load the most recently saved plant data
-      const result = await pool.query('SELECT data FROM plants ORDER BY id DESC LIMIT 1');
+      const result = await pool.query('SELECT data FROM plants WHERE user_id = $1', [userId]);
       res.status(200).json({ data: result.rows.length > 0 ? result.rows[0].data : {} });
     } else if (req.method === 'POST') {
-      // Save new plant data
       const { plantData } = req.body;
-      await pool.query('INSERT INTO plants (data) VALUES ($1)', [plantData]);
+      const existing = await pool.query('SELECT id FROM plants WHERE user_id = $1', [userId]);
+      
+      if (existing.rows.length > 0) {
+          await pool.query('UPDATE plants SET data = $1 WHERE user_id = $2', [plantData, userId]);
+      } else {
+          await pool.query('INSERT INTO plants (user_id, data) VALUES ($1, $2)', [userId, plantData]);
+      }
       res.status(200).json({ message: 'Saved to cloud!' });
     }
   } catch (error) {
