@@ -584,6 +584,17 @@
         <div id="loading">Locating... 🫧</div>
         
         <div id="weather-content" style="display:none;">
+
+            <div id="login-container" class="wide-box" style="margin-bottom: 20px;">
+                <div class="celestial-title">🌸 Cloud Login 🌸</div>
+                <input type="text" id="username" placeholder="Username" class="days-input" style="width: 80%; margin-bottom: 8px; border-radius: 20px;">
+                <input type="password" id="password" placeholder="Password" class="days-input" style="width: 80%; margin-bottom: 12px; border-radius: 20px;">
+                <div style="display: flex; gap: 10px; width: 80%;">
+                    <button class="sync-btn" onclick="DiaryManager.login()">LOGIN</button>
+                    <button class="sync-btn" onclick="DiaryManager.register()">REGISTER</button>
+                </div>
+                <div id="auth-message" style="color: var(--moe-pink); font-size: 0.8rem; margin-top: 10px; text-shadow: 1px 1px 0px white;"></div>
+            </div>
             
             <div class="top-nav">
                 <button class="nav-btn active" onclick="switchTab('tab-now', this)">🌫 NOW</button>
@@ -854,10 +865,52 @@
         // 📖 PLANT DIARY MANAGER LOGIC WITH CLOUD SYNC 📖
         const DiaryManager = {
             diaryData: {}, 
+            userId: localStorage.getItem('floraUserId') || null,
+
+            authAction: async function(action) {
+                const u = document.getElementById('username').value;
+                const p = document.getElementById('password').value;
+                const msg = document.getElementById('auth-message');
+                
+                if (!u || !p) { msg.innerText = "Need username and password!"; return; }
+                msg.innerText = "Connecting...";
+
+                try {
+                    const res = await fetch('/api/auth', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ action: action, username: u, password: p })
+                    });
+                    const data = await res.json();
+                    
+                    if (res.ok) {
+                        this.userId = data.userId;
+                        localStorage.setItem('floraUserId', data.userId);
+                        msg.innerText = data.message;
+                        document.getElementById('login-container').style.display = 'none';
+                        this.init(); // Load their specific data
+                    } else {
+                        msg.innerText = data.error;
+                    }
+                } catch(e) { msg.innerText = "Network error!"; }
+            },
+
+            login: function() { this.authAction('login'); },
+            register: function() { this.authAction('register'); },
 
             init: async function() {
+                if (!this.userId) {
+                    document.getElementById('login-container').style.display = 'flex';
+                    this.diaryData = JSON.parse(localStorage.getItem('plantDiary')) || {};
+                    this.renderGrid();
+                    return;
+                }
+                document.getElementById('login-container').style.display = 'none';
+
                 try {
-                    const response = await fetch('/api/db');
+                    const response = await fetch('/api/db', {
+                        headers: { 'user-id': this.userId }
+                    });
                     if (response.ok) {
                         const json = await response.json();
                         if (json.data && Object.keys(json.data).length > 0) {
@@ -868,7 +921,7 @@
                         }
                     }
                 } catch (e) {
-                    console.error("Cloud fetch failed, using local storage fallback:", e);
+                    console.error("Cloud fetch failed", e);
                     this.diaryData = JSON.parse(localStorage.getItem('plantDiary')) || {};
                 }
                 this.renderGrid();
@@ -882,14 +935,19 @@
                 this.diaryData = data;
                 localStorage.setItem('plantDiary', JSON.stringify(data)); 
                 
-                try {
-                    await fetch('/api/db', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ plantData: data })
-                    });
-                } catch (e) {
-                    console.error('Failed to sync changes to cloud database:', e);
+                if (this.userId) {
+                    try {
+                        await fetch('/api/db', {
+                            method: 'POST',
+                            headers: { 
+                                'Content-Type': 'application/json',
+                                'user-id': this.userId
+                            },
+                            body: JSON.stringify({ plantData: data })
+                        });
+                    } catch (e) {
+                        console.error('Failed to sync to cloud', e);
+                    }
                 }
                 
                 this.renderGrid();
