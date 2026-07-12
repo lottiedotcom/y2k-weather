@@ -468,7 +468,7 @@
             color: var(--deep-sea);
             font-family: 'Fredoka', sans-serif;
             font-weight: 700;
-            font-size: 0.65rem;
+            font-size: 0.75rem;
             padding: 10px 0;
             cursor: pointer;
             text-transform: uppercase;
@@ -635,7 +635,6 @@
                 <button class="nav-btn" onclick="switchTab('tab-future', this)">🔮 FUTURE</button>
                 <button class="nav-btn" onclick="switchTab('tab-sky', this)">🌠 SKY</button>
                 <button class="nav-btn" onclick="switchTab('tab-flora', this)">🌿 FLORA</button>
-                <button class="nav-btn" onclick="switchTab('tab-diary', this)">📖 DIARY</button>
             </div>
 
             <!-- TAB: NOW -->
@@ -778,83 +777,89 @@
                 </div>
             </div>
 
-            <!-- TAB: FLORA (Search & Database) -->
+            <!-- TAB: FLORA (Search, Database & Diary Toggle) -->
             <div id="tab-flora" class="tab-section">
                 
-                <div class="wide-box" id="flora-smart-alerts" style="display: none;">
-                    <div class="celestial-title">💡 Smart Botanical Alerts</div>
-                    <div id="alerts-content" style="display: flex; flex-direction: column; gap: 8px;"></div>
-                </div>
-
-                <div class="wide-box" style="background: rgba(255, 255, 255, 0.3);">
-                    <div class="celestial-title">🏠 Indoor Environment</div>
-                    <div style="display: flex; gap: 10px; justify-content: center;">
-                        <input type="number" id="indoor-temp-input" placeholder="Temp °F" class="days-input" style="width: 80px;" oninput="DiaryManager.updateIndoorClimate()">
-                        <input type="number" id="indoor-hum-input" placeholder="Hum %" class="days-input" style="width: 80px;" oninput="DiaryManager.updateIndoorClimate()">
-                    </div>
-                    <div class="vibe-desc" style="margin-top: 5px; font-size: 0.7rem;">(Calculates indoor VPD, outdoor data remains for safety)</div>
-                </div>
-
-                <div class="wide-box">
-                    <div class="celestial-title">☘️ Botanical Station </div>
-                    <div class="vibe-title" style="margin-top: 15px; font-size: 1rem;">🌘 Lunar Cycle Action</div>
-                    <div class="vibe-desc" id="lunar-botanical-guide">Calculating gravity...</div>
-                    <div class="vibe-title" style="margin-top: 15px; font-size: 1rem;">🌤 Ambient Air Check</div>
-                    <div class="vibe-desc" id="flora-humidity-guide">Checking moisture...</div>
-                </div>
-
-                <div class="flora-search-container">
-                    <input type="text" id="flora-search-input" placeholder="Search the plant database... 🪴" onkeyup="filterFlora()">
-                </div>
-
-                <div id="agronomy-list"></div>
-            </div>
-
-            <!-- TAB: DIARY (Personal Plants) -->
-            <div id="tab-diary" class="tab-section">
+                <!-- Diary Toggle Button -->
+                <button id="diary-toggle-btn" class="sync-btn" style="width: 100%; margin-bottom: 15px; padding: 12px; font-size: 0.9rem; background: rgba(255, 255, 255, 0.5); border: 2px dashed var(--mermaid-aqua);" onclick="toggleDiaryView()">📖 OPEN MY DIARY</button>
                 
-                <!-- Add New Plant Form -->
-                <div class="wide-box" style="background: rgba(255, 255, 255, 0.3);">
-                    <div class="celestial-title">➕ Add to Diary</div>
-                    <select id="plant-select" class="days-input" style="width: 100%; margin-bottom: 8px; border-radius: 15px; font-size: 0.85rem; text-align: left;"></select>
-                    <input type="text" id="plant-nickname" placeholder="Custom Nickname (e.g. Monstera Corner)" class="days-input" style="width: 100%; margin-bottom: 8px; border-radius: 15px; font-size: 0.85rem; text-align: left; box-sizing: border-box;">
-                    <select id="shelf-select" class="days-input" style="width: 100%; margin-bottom: 12px; border-radius: 15px; font-size: 0.85rem; text-align: left;">
-                        <option value="mother">🪴 Mother Station</option>
-                        <option value="nursery">🧪 Nursery</option>
-                    </select>
-                    <button class="sync-btn" style="width: 100%; background: linear-gradient(135deg, var(--mermaid-aqua), var(--moe-pink)); color: white; border: 2px solid white;" onclick="DiaryManager.addPlant()">ADD NEW PLANT</button>
+                <!-- THE FLORA DATABASE VIEW -->
+                <div id="flora-database-view">
+                    <div class="wide-box" id="flora-smart-alerts" style="display: none;">
+                        <div class="celestial-title">💡 Smart Botanical Alerts</div>
+                        <div id="alerts-content" style="display: flex; flex-direction: column; gap: 8px;"></div>
+                    </div>
+
+                    <div class="wide-box" style="background: rgba(255, 255, 255, 0.3);">
+                        <div class="celestial-title">🏠 Indoor Environment</div>
+                        <div style="display: flex; gap: 10px; justify-content: center;">
+                            <input type="number" id="indoor-temp-input" placeholder="Temp °F" class="days-input" style="width: 80px;" oninput="DiaryManager.updateIndoorClimate()">
+                            <input type="number" id="indoor-hum-input" placeholder="Hum %" class="days-input" style="width: 80px;" oninput="DiaryManager.updateIndoorClimate()">
+                        </div>
+                        <div class="vibe-desc" style="margin-top: 5px; font-size: 0.7rem;">(Calculates indoor VPD, outdoor data remains for safety)</div>
+                    </div>
+
+                    <div class="wide-box">
+                        <div class="celestial-title">☘️ Botanical Station </div>
+                        <div class="vibe-title" style="margin-top: 15px; font-size: 1rem;">🌘 Lunar Cycle Action</div>
+                        <div class="vibe-desc" id="lunar-botanical-guide">Calculating gravity...</div>
+                        <div class="vibe-title" style="margin-top: 15px; font-size: 1rem;">🌤 Ambient Air Check</div>
+                        <div class="vibe-desc" id="flora-humidity-guide">Checking moisture...</div>
+                    </div>
+
+                    <div class="flora-search-container">
+                        <input type="text" id="flora-search-input" placeholder="Search the plant database... 🪴" onkeyup="filterFlora()">
+                    </div>
+
+                    <div id="agronomy-list"></div>
                 </div>
 
-                <div class="wide-box" id="diary-container">
-                    <div class="celestial-title">✎ My Plants</div>
-
-                    <div class="shelf-toggle-container">
-                        <button id="btn-mother-shelf" class="shelf-toggle-btn active" onclick="toggleShelfView('mother')">🪴 Mother Station</button>
-                        <button id="btn-nursery-shelf" class="shelf-toggle-btn" onclick="toggleShelfView('nursery')">🧪 Nursery</button>
+                <!-- THE PERSONAL DIARY VIEW -->
+                <div id="flora-diary-view" style="display: none;">
+                    <!-- Add New Plant Form -->
+                    <div class="wide-box" style="background: rgba(255, 255, 255, 0.3);">
+                        <div class="celestial-title">➕ Add to Diary</div>
+                        <select id="plant-select" class="days-input" style="width: 100%; margin-bottom: 8px; border-radius: 15px; font-size: 0.85rem; text-align: left;"></select>
+                        <input type="text" id="plant-nickname" placeholder="Custom Nickname (e.g. Monstera Corner)" class="days-input" style="width: 100%; margin-bottom: 8px; border-radius: 15px; font-size: 0.85rem; text-align: left; box-sizing: border-box;">
+                        <select id="shelf-select" class="days-input" style="width: 100%; margin-bottom: 12px; border-radius: 15px; font-size: 0.85rem; text-align: left;">
+                            <option value="mother">🪴 Mother Station</option>
+                            <option value="nursery">🧪 Nursery</option>
+                        </select>
+                        <button class="sync-btn" style="width: 100%; background: linear-gradient(135deg, var(--mermaid-aqua), var(--moe-pink)); color: white; border: 2px solid white;" onclick="DiaryManager.addPlant()">ADD NEW PLANT</button>
                     </div>
 
-                    <div id="mother-shelf-view">
-                        <div class="diary-tier-label">𖦹 ˚ 𓇼 Water now!</div>
-                        <div class="diary-tier" id="diary-tier-1"></div>
-                        
-                        <div class="diary-tier-label">₊‧ ଳ Check water soon</div>
-                        <div class="diary-tier" id="diary-tier-2"></div>
-                        
-                        <div class="diary-tier-label">⋆.˚ 𓆉 Hydrated</div>
-                        <div class="diary-tier" id="diary-tier-3"></div>
-                    </div>
+                    <div class="wide-box" id="diary-container">
+                        <div class="celestial-title">✎ My Plants</div>
 
-                    <div id="nursery-shelf-view" style="display: none;">
-                        <div class="diary-tier-label">𖦹 ˚ 𓇼 Needs Water Change!</div>
-                        <div class="diary-tier" id="nursery-tier-1"></div>
-                        
-                        <div class="diary-tier-label">₊‧ ଳ Check Roots</div>
-                        <div class="diary-tier" id="nursery-tier-2"></div>
-                        
-                        <div class="diary-tier-label">⋆.˚ 𓆉 Fresh Water</div>
-                        <div class="diary-tier" id="nursery-tier-3"></div>
+                        <div class="shelf-toggle-container">
+                            <button id="btn-mother-shelf" class="shelf-toggle-btn active" onclick="toggleShelfView('mother')">🪴 Mother Station</button>
+                            <button id="btn-nursery-shelf" class="shelf-toggle-btn" onclick="toggleShelfView('nursery')">🧪 Nursery</button>
+                        </div>
+
+                        <div id="mother-shelf-view">
+                            <div class="diary-tier-label">𖦹 ˚ 𓇼 Water now!</div>
+                            <div class="diary-tier" id="diary-tier-1"></div>
+                            
+                            <div class="diary-tier-label">₊‧ ଳ Check water soon</div>
+                            <div class="diary-tier" id="diary-tier-2"></div>
+                            
+                            <div class="diary-tier-label">⋆.˚ 𓆉 Hydrated</div>
+                            <div class="diary-tier" id="diary-tier-3"></div>
+                        </div>
+
+                        <div id="nursery-shelf-view" style="display: none;">
+                            <div class="diary-tier-label">𖦹 ˚ 𓇼 Needs Water Change!</div>
+                            <div class="diary-tier" id="nursery-tier-1"></div>
+                            
+                            <div class="diary-tier-label">₊‧ ଳ Check Roots</div>
+                            <div class="diary-tier" id="nursery-tier-2"></div>
+                            
+                            <div class="diary-tier-label">⋆.˚ 𓆉 Fresh Water</div>
+                            <div class="diary-tier" id="nursery-tier-3"></div>
+                        </div>
                     </div>
                 </div>
+
             </div>
 
         </div>
@@ -881,6 +886,33 @@
     </div>
 
     <script>
+        // Toggle Diary View
+        let isDiaryOpen = false;
+        function toggleDiaryView() {
+            isDiaryOpen = !isDiaryOpen;
+            const dbView = document.getElementById('flora-database-view');
+            const diaryView = document.getElementById('flora-diary-view');
+            const toggleBtn = document.getElementById('diary-toggle-btn');
+            
+            if (isDiaryOpen) {
+                dbView.style.display = 'none';
+                diaryView.style.display = 'block';
+                toggleBtn.innerHTML = '🌿 BACK TO DATABASE';
+                toggleBtn.style.background = 'linear-gradient(135deg, var(--mermaid-aqua), var(--moe-pink))';
+                toggleBtn.style.color = 'white';
+                toggleBtn.style.border = '2px solid white';
+                toggleBtn.style.textShadow = '1px 1px 2px rgba(0,0,0,0.3)';
+            } else {
+                dbView.style.display = 'block';
+                diaryView.style.display = 'none';
+                toggleBtn.innerHTML = '📓 Diary';
+                toggleBtn.style.background = 'rgba(255, 255, 255, 0.5)';
+                toggleBtn.style.color = 'var(--deep-sea)';
+                toggleBtn.style.border = '2px dashed var(--mermaid-aqua)';
+                toggleBtn.style.textShadow = '1px 1px 0px white';
+            }
+        }
+
         function togglePassword() {
             const pwdInput = document.getElementById('password');
             if (pwdInput.type === 'password') {
@@ -1148,7 +1180,7 @@
                     propTrackerHTML = `
                         <div class="lifecycle-box" style="margin-top: 10px; flex-direction: column; align-items: flex-start; gap: 8px;">
                             <div class="lifecycle-label">⏳ Propagating for: <span style="color: var(--moe-pink);">${daysProp} days</span></div>
-                            <div class="lifecycle-label">🏺 Vessel: <span style="color: var(--mermaid-aqua);">Plastic Bottle</span></div>
+                            <div class="lifecycle-label">🏺 container: <span style="color: var(--mermaid-aqua);">Plastic Bottle</span></div>
                             <div class="lifecycle-label">🧬 Node: <span style="color: var(--mermaid-aqua);">Stem Node</span></div>
                             
                             <div style="background: rgba(255,255,255,0.6); padding: 10px; border-radius: 10px; font-size: 0.8rem; color: var(--deep-sea); margin-top: 5px; text-shadow: 1px 1px 0px white; line-height: 1.4; border: 1px dashed var(--mermaid-aqua); width: 100%; box-sizing: border-box;">
@@ -1305,7 +1337,7 @@
             document.getElementById(tabId).classList.add('active');
             btnElement.classList.add('active');
 
-            if (tabId === 'tab-flora' || tabId === 'tab-diary') {
+            if (tabId === 'tab-flora') {
                 document.getElementById('weather-search-box').style.display = 'none';
             } else {
                 document.getElementById('weather-search-box').style.display = 'flex';
