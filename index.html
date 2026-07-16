@@ -1285,7 +1285,21 @@
                             else if (plantData.water_frequency === "very_low") freq = 30;
                         }
 
-                        const lastWateredTime = plantObj.last_watered_at ? new Date(plantObj.last_watered_at).getTime() : 0;
+                        // ---> THE FIX IS RIGHT HERE <---
+                        // We safely parse the string, swap the space for a 'T', and ensure it reads correctly everywhere!
+                        let lastWateredTime = 0;
+                        if (plantObj.last_watered_at) {
+                            let dateStr = String(plantObj.last_watered_at);
+                            if (dateStr.includes(' ')) {
+                                dateStr = dateStr.replace(' ', 'T');
+                                if (!dateStr.endsWith('Z')) dateStr += 'Z';
+                            }
+                            lastWateredTime = new Date(dateStr).getTime();
+                            if (isNaN(lastWateredTime)) {
+                                lastWateredTime = parseFloat(plantObj.last_watered_at);
+                            }
+                        }
+
                         const msSinceWatered = now - lastWateredTime;
                         const daysSinceWatered = msSinceWatered / (1000 * 60 * 60 * 24);
                         const daysUntilWatering = freq - daysSinceWatered;
@@ -2183,4 +2197,3 @@
     </script>
 </body>
 </html>
-
