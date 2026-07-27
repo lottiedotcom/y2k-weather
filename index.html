@@ -13,8 +13,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&display=swap" rel="stylesheet">
 
-    <!-- Offline fallback database -->
-    <script src="flora_db.js"></script>
     <script src="climate_db.js"></script>
 
     <style>
@@ -452,6 +450,7 @@
                     <div class="wide-box" style="background: rgba(255, 255, 255, 0.3);">
                         <div class="celestial-title">➕ Add to Diary</div>
                         
+                        <!-- NATIVE SEARCH BAR REPLACEMENT -->
                         <input list="plant-datalist" id="plant-select-input" placeholder="🔍 Search plant database..." class="days-input" style="width: 100%; margin-bottom: 8px; border-radius: 15px; font-size: 0.85rem; text-align: left; box-sizing: border-box;">
                         <datalist id="plant-datalist"></datalist>
 
@@ -564,8 +563,6 @@
 
                 <div id="admin-panel" style="display: none; margin-top: 15px;">
                     <div class="wide-box" style="background: rgba(255, 255, 255, 0.3); margin-bottom: 0;">
-                        <button class="sync-btn" style="width: 100%; background: linear-gradient(135deg, #ff9a9e, #fecfef); color: var(--deep-sea); font-weight: 900; border: 2px solid white; margin-bottom: 15px;" onclick="DiaryManager.migrateOldDatabase()">🚀 MIGRATE OLD DATABASE TO CLOUD</button>
-                        
                         <div class="celestial-title">☁️ Master Database Uploader</div>
                         <div class="vibe-desc" style="margin-bottom: 10px; font-size: 0.75rem;">Add a new master template directly to your Postgres cloud database.</div>
                         
@@ -789,38 +786,6 @@
             plants: [], 
             sessionToken: localStorage.getItem('floraSessionToken') || null,
 
-            migrateOldDatabase: async function() {
-                if (!confirm("This will upload all plants from your old flora_db.js into the Cloud Database. Proceed?")) return;
-                
-                document.getElementById('loading').innerText = "Migrating to Cloud... 🚀";
-                document.getElementById('loading').style.display = 'block';
-
-                let count = 0;
-                for (const id in window.floraDB) {
-                    const p = window.floraDB[id];
-                    try {
-                        await fetch('/api/db', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json', 'session-token': this.sessionToken, 'db-type': 'template' },
-                            body: JSON.stringify({
-                                id: id, name: p.name, stamp_img: p.stamp_img, toxic_pets: p.toxic_pets || false, 
-                                water_frequency: p.water_frequency || 'moderate', water_schedule: p.water_schedule || '', 
-                                vpd_min: p.vpd_range ? p.vpd_range[0] : 0.8, vpd_max: p.vpd_range ? p.vpd_range[1] : 1.2, 
-                                temp_floor: p.temp_floor || 50, temp_ceiling: p.temp_ceiling || 95, 
-                                opt_min: p.optimal_temp ? p.optimal_temp[0] : 65, opt_max: p.optimal_temp ? p.optimal_temp[1] : 80, 
-                                wind_tolerance: p.wind_tolerance || 15, lunar_affinity: p.lunar_affinity || 'waxing', 
-                                cycle: p.cycle || 'perennial', season: p.season || null, 
-                                winter_temp_floor: p.winter_temp_floor || null, winter_temp_ceiling: p.winter_temp_ceiling || null
-                            })
-                        });
-                        count++;
-                    } catch(e) { console.log("Skipped " + id); }
-                }
-                document.getElementById('loading').style.display = 'none';
-                alert(`✅ Migration Complete! Attempted to upload ${count} old plants to the Cloud.`);
-                this.init();
-            },
-
             authAction: async function(action) {
                 const u = document.getElementById('username').value;
                 const p = document.getElementById('password').value;
@@ -933,6 +898,7 @@
                     try { tplJson = JSON.parse(text); } catch(e) {}
 
                     if (tplRes.ok && tplJson && tplJson.templates) {
+                        if (!window.floraDB) window.floraDB = {}; // Prevent crash if old DB is wiped
                         tplJson.templates.forEach(t => {
                             window.floraDB[t.id] = {
                                 name: t.name,
@@ -943,7 +909,8 @@
                                 vpd_range: [parseFloat(t.vpd_min), parseFloat(t.vpd_max)],
                                 temp_floor: t.temp_floor,
                                 temp_ceiling: t.temp_ceiling,
-                                optimal_temp: [t.opt_min, t.opt_max],
+                                opt_min: t.opt_min,
+                                opt_max: t.opt_max,
                                 wind_tolerance: t.wind_tolerance,
                                 lunar_affinity: t.lunar_affinity,
                                 cycle: t.cycle,
@@ -2288,3 +2255,4 @@
     </script>
 </body>
 </html>
+
