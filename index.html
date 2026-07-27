@@ -13,7 +13,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&display=swap" rel="stylesheet">
 
-    <!-- Offline fallback database -->
     <script src="flora_db.js"></script>
     <script src="climate_db.js"></script>
 
@@ -62,7 +61,6 @@
             position: relative;
         }
 
-        /* CUSTOM GEAR ICON */
         .settings-gear {
             position: absolute;
             top: 25px;
@@ -86,18 +84,8 @@
         }
         .settings-gear:active { transform: scale(0.9); }
 
-        h1 {
-            font-size: 1.5rem;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            margin-bottom: 10px;
-            color: white;
-            font-weight: 700;
-            text-shadow: 2px 2px var(--moe-pink), -2px -2px var(--mermaid-aqua);
-        }
-
+        h1 { font-size: 1.5rem; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 10px; color: white; font-weight: 700; text-shadow: 2px 2px var(--moe-pink), -2px -2px var(--mermaid-aqua); }
         .search-box { display: flex; gap: 8px; margin-bottom: 15px; width: 100%; }
-        
         #search-input { flex: 1; padding: 10px 15px; border-radius: 20px; border: 2px solid white; background: var(--inner-bubble); color: var(--deep-sea); font-family: 'Fredoka', sans-serif; font-weight: 700; outline: none; box-shadow: inset 1px 1px 5px rgba(0, 240, 255, 0.1); text-shadow: 1px 1px 0px white; }
         #search-input::placeholder { color: var(--moe-pink); opacity: 0.8; text-shadow: none; }
         
@@ -116,7 +104,6 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
         .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 15px; }
-
         .stat-box, .wide-box, .celestial-box { background: var(--inner-bubble); border: 2px solid white; border-radius: 25px; padding: 12px 5px; box-shadow: 3px 3px 12px rgba(0, 240, 255, 0.2), inset -3px -3px 10px rgba(255,255,255,0.5); color: var(--deep-sea); font-weight: 700; text-shadow: 1px 1px 0px white; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .wide-box { margin-bottom: 15px; padding: 15px; }
 
@@ -143,12 +130,9 @@
         #lunar-botanical-guide { font-size: 0.8rem; color: var(--deep-sea); margin-top: 3px; text-shadow: 1px 1px 0px white; line-height: 1.2; width: 100%; text-align: center; }
 
         .atmosphere-scanner { margin-bottom: 15px; overflow: hidden; }
-        
         #diorama-box { width: 100%; height: 200px; border: 3px solid white; border-radius: 15px; box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.2); position: relative; overflow: hidden; background-size: 100% 100%; background-repeat: no-repeat; background-position: center; transition: background-image 0.5s ease; margin-top: 10px; }
-
         .sprite { position: absolute; animation: drift linear infinite; }
         @keyframes drift { 0% { transform: translateX(-30px); } 50% { transform: translateX(30px); } 100% { transform: translateX(-30px); } }
-
         #cloud-scanner-output { font-size: 0.85rem; color: var(--deep-sea); margin-top: 15px; line-height: 1.4; width: 100%; text-align: center; border-top: 2px dotted rgba(255,255,255,0.5); padding-top: 10px; }
         
         .uv-wrapper { margin-top: 10px; }
@@ -185,10 +169,8 @@
         .agronomy-card.expanded .plant-details-hidden { display: block; animation: fadeIn 0.3s ease; }
 
         .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
-
         .stat-cell-static { background: rgba(255, 133, 194, 0.2); border: 2px dotted var(--moe-pink); border-radius: 10px; padding: 6px 8px; text-align: center; box-shadow: inset 1px 1px 3px rgba(255,255,255,0.4); }
         .stat-cell-dynamic { background: rgba(40, 167, 69, 0.2); border: 2px dotted #28a745; border-radius: 10px; padding: 6px 8px; text-align: center; box-shadow: inset 1px 1px 3px rgba(255,255,255,0.4); }
-
         .stat-label-clean { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; color: var(--moe-pink); font-weight: 700; margin-bottom: 2px; text-shadow: 1px 1px 0px white; }
         .stat-value-clean { font-size: 0.85rem; font-weight: 700; text-shadow: 1px 1px 0px white; }
 
@@ -430,7 +412,7 @@
                 </div>
             </div>
 
-            <!-- TAB: FLORA (Search, Database & Diary Toggle) -->
+            <!-- TAB: FLORA -->
             <div id="tab-flora" class="tab-section">
                 
                 <button id="diary-toggle-btn" class="sync-btn" style="width: 100%; margin-bottom: 15px; padding: 12px; font-size: 0.9rem; background: rgba(255, 255, 255, 0.5); border: 2px dashed var(--mermaid-aqua);" onclick="toggleDiaryView()">📖 OPEN MY DIARY</button>
@@ -481,7 +463,6 @@
                             <option value="mother">🪴 Mother Station</option>
                             <option value="nursery">🧪 Nursery</option>
                         </select>
-                        <!-- CHANGED TEXT COLOR TO BLACK FOR VISIBILITY -->
                         <button class="sync-btn" style="width: 100%; background: linear-gradient(135deg, var(--mermaid-aqua), var(--moe-pink)); color: black; font-weight: 900; border: 2px solid white;" onclick="DiaryManager.addPlant()">ADD NEW PLANT</button>
                     </div>
 
@@ -525,13 +506,12 @@
         </div>
     </div>
 
-    <!-- SETTINGS MODAL (CONTAINS LOGIN, PROFILE & ADMIN PANEL) -->
+    <!-- SETTINGS MODAL -->
     <div id="settings-modal" class="modal">
         <div class="modal-content" style="height: auto; max-height: 85%;">
             <div class="close-radar-btn" onclick="toggleSettingsModal()">⚙️ CLOSE SETTINGS</div>
             <div style="padding: 15px; overflow-y: auto;">
                 
-                <!-- LOGIN UI -->
                 <div id="login-container" class="wide-box" style="margin-bottom: 0; box-shadow: none;">
                     <div class="celestial-title">🌸 Cloud Login 🌸</div>
                     
@@ -574,7 +554,6 @@
                     <div id="auth-message" style="color: var(--moe-pink); font-size: 0.85rem; margin-top: 10px; text-shadow: 1px 1px 0px white; font-weight: 700;"></div>
                 </div>
 
-                <!-- USER PROFILE HEADER -->
                 <div id="user-profile-header" style="display: none; flex-direction: column; align-items: center; gap: 10px; background: rgba(255,255,255,0.4); padding: 15px; border-radius: 20px; border: 2px dashed var(--moe-pink); margin-bottom: 0;">
                     <div style="font-size: 1.1rem; font-weight: 700; color: var(--deep-sea); text-shadow: 1px 1px 0px white;">☁️ Connected to Cloud</div>
                     <div style="font-size: 0.85rem; color: var(--moe-pink); font-weight: 700; margin-bottom: 5px;">Logged in as: <span id="display-username"></span></div>
@@ -582,7 +561,6 @@
                     <button onclick="DiaryManager.logout()" style="width: 100%; background: var(--moe-pink); color: white; border: 2px solid white; border-radius: 15px; font-weight: 700; font-family: 'Fredoka'; padding: 10px; font-size: 0.85rem; cursor: pointer; box-shadow: 0 2px 5px rgba(255, 133, 194, 0.4);">LOGOUT</button>
                 </div>
 
-                <!-- ADMIN PANEL (ONLY SHOWS IF LOGGED IN AS PLUM) -->
                 <div id="admin-panel" style="display: none; margin-top: 15px;">
                     <div class="wide-box" style="background: rgba(255, 255, 255, 0.3); margin-bottom: 0;">
                         <div class="celestial-title">☁️ Master Database Uploader</div>
@@ -2238,3 +2216,4 @@
     </script>
 </body>
 </html>
+
