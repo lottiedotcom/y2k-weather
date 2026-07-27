@@ -5,7 +5,6 @@ module.exports = async (req, res) => {
     const token = req.headers['session-token'];
     const dbType = req.headers['db-type'] || 'instance';
 
-    // 1. Fetch Master Templates (No auth required, public read)
     if (dbType === 'template' && req.method === 'GET') {
         try {
             const result = await pool.query('SELECT * FROM plant_templates');
@@ -24,20 +23,18 @@ module.exports = async (req, res) => {
         const userId = userRes.rows[0].id;
         const username = userRes.rows[0].username;
 
-        // 2. Upload Master Template (Admin Only)
         if (dbType === 'template' && req.method === 'POST') {
             if (username.toLowerCase() !== 'plum') return res.status(403).json({ error: 'Admin access denied.' });
             
             const t = req.body;
             await pool.query(
-                `INSERT INTO plant_templates (id, name, stamp_img, toxic_pets, water_frequency, water_schedule, vpd_min, vpd_max, temp_floor, temp_ceiling, opt_min, opt_max, wind_tolerance, lunar_affinity, cycle, season) 
-                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)`,
-                [t.id, t.name, t.stamp_img, t.toxic_pets, t.water_frequency, t.water_schedule, t.vpd_min, t.vpd_max, t.temp_floor, t.temp_ceiling, t.opt_min, t.opt_max, t.wind_tolerance, t.lunar_affinity, t.cycle, t.season]
+                `INSERT INTO plant_templates (id, name, stamp_img, toxic_pets, water_frequency, water_schedule, vpd_min, vpd_max, temp_floor, temp_ceiling, opt_min, opt_max, wind_tolerance, lunar_affinity, cycle, season, winter_temp_floor, winter_temp_ceiling) 
+                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18)`,
+                [t.id, t.name, t.stamp_img, t.toxic_pets, t.water_frequency, t.water_schedule, t.vpd_min, t.vpd_max, t.temp_floor, t.temp_ceiling, t.opt_min, t.opt_max, t.wind_tolerance, t.lunar_affinity, t.cycle, t.season, t.winter_temp_floor, t.winter_temp_ceiling]
             );
             return res.status(200).json({ message: 'Template safely uploaded to Cloud!' });
         }
 
-        // 3. User's Personal Plant Diary Routes
         if (req.method === 'GET') {
             const result = await pool.query(
                 'SELECT id, user_id, plant_template_id, nickname, shelf_type, custom_image, last_watered_at, created_at FROM plant_instances WHERE user_id = $1 ORDER BY created_at ASC', 
