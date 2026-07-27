@@ -5,6 +5,7 @@ module.exports = async (req, res) => {
     const token = req.headers['session-token'];
     const dbType = req.headers['db-type'] || 'instance';
 
+    // 1. Fetch Master Templates (No auth required, public read)
     if (dbType === 'template' && req.method === 'GET') {
         try {
             const result = await pool.query('SELECT * FROM plant_templates');
@@ -23,6 +24,7 @@ module.exports = async (req, res) => {
         const userId = userRes.rows[0].id;
         const username = userRes.rows[0].username;
 
+        // 2. Upload Master Template (Admin Only)
         if (dbType === 'template' && req.method === 'POST') {
             if (username.toLowerCase() !== 'plum') return res.status(403).json({ error: 'Admin access denied.' });
             
@@ -35,11 +37,10 @@ module.exports = async (req, res) => {
             return res.status(200).json({ message: 'Template safely uploaded to Cloud!' });
         }
 
+        // 3. User's Personal Plant Diary Routes
         if (req.method === 'GET') {
             const result = await pool.query(
-                `SELECT id, user_id, plant_template_id, nickname, shelf_type, custom_image,
-                EXTRACT(EPOCH FROM last_watered_at) * 1000 AS last_watered_at, 
-                created_at FROM plant_instances WHERE user_id = $1 ORDER BY created_at ASC`, 
+                'SELECT id, user_id, plant_template_id, nickname, shelf_type, custom_image, last_watered_at, created_at FROM plant_instances WHERE user_id = $1 ORDER BY created_at ASC', 
                 [userId]
             );
             res.status(200).json({ plants: result.rows });
