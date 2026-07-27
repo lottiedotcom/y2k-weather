@@ -13,6 +13,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&display=swap" rel="stylesheet">
 
+    <!-- Offline fallback database -->
     <script src="flora_db.js"></script>
     <script src="climate_db.js"></script>
 
@@ -795,9 +796,12 @@
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ action: action, username: u, password: p })
                     });
-                    const data = await res.json();
                     
-                    if (res.ok) {
+                    const text = await res.text();
+                    let data;
+                    try { data = JSON.parse(text); } catch(e) {}
+                    
+                    if (res.ok && data) {
                         this.sessionToken = data.token;
                         localStorage.setItem('floraSessionToken', data.token);
                         localStorage.setItem('floraUsername', data.username);
@@ -815,9 +819,11 @@
                         
                         this.init(); 
                     } else {
-                        msg.innerText = data.error;
+                        const err = data ? data.error : "RAW ERROR: " + text.substring(0, 100);
+                        msg.innerText = err;
+                        if (!data) alert("API AUTH CRASH: " + err);
                     }
-                } catch(e) { msg.innerText = "Network error!"; }
+                } catch(e) { msg.innerText = "Network error: " + e.message; }
             },
 
             recoverAction: async function() {
@@ -835,9 +841,12 @@
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ action: 'recover', username: u, recoveryKey: key, newPassword: newPwd })
                     });
-                    const data = await res.json();
                     
-                    if (res.ok) {
+                    const text = await res.text();
+                    let data;
+                    try { data = JSON.parse(text); } catch(e) {}
+                    
+                    if (res.ok && data) {
                         this.sessionToken = data.token;
                         localStorage.setItem('floraSessionToken', data.token);
                         localStorage.setItem('floraUsername', data.username);
@@ -852,9 +861,11 @@
                         alert("Password successfully reset! 🌸");
                         this.init(); 
                     } else {
-                        msg.innerText = data.error;
+                        const err = data ? data.error : "RAW ERROR: " + text.substring(0, 100);
+                        msg.innerText = err;
+                        if (!data) alert("API AUTH CRASH: " + err);
                     }
-                } catch(e) { msg.innerText = "Network error!"; }
+                } catch(e) { msg.innerText = "Network error: " + e.message; }
             },
 
             logout: function() {
@@ -878,27 +889,31 @@
 
                 try {
                     const tplRes = await fetch('/api/db', { headers: { 'db-type': 'template' } });
-                    if (tplRes.ok) {
-                        const tplJson = await tplRes.json();
-                        if (tplJson.templates) {
-                            tplJson.templates.forEach(t => {
-                                window.floraDB[t.id] = {
-                                    name: t.name,
-                                    stamp_img: t.stamp_img || 'https://i.postimg.cc/Fs9tVbff/d1fbe1c35c32494c9290ebf699c16fc6.jpg',
-                                    toxic_pets: t.toxic_pets,
-                                    water_frequency: t.water_frequency,
-                                    water_schedule: t.water_schedule,
-                                    vpd_range: [parseFloat(t.vpd_min), parseFloat(t.vpd_max)],
-                                    temp_floor: t.temp_floor,
-                                    temp_ceiling: t.temp_ceiling,
-                                    optimal_temp: [t.opt_min, t.opt_max],
-                                    wind_tolerance: t.wind_tolerance,
-                                    lunar_affinity: t.lunar_affinity,
-                                    cycle: t.cycle,
-                                    season: (!t.season || t.season === 'null') ? null : t.season
-                                };
-                            });
-                        }
+                    const text = await tplRes.text();
+                    let tplJson;
+                    try { tplJson = JSON.parse(text); } catch(e) {}
+
+                    if (tplRes.ok && tplJson && tplJson.templates) {
+                        tplJson.templates.forEach(t => {
+                            window.floraDB[t.id] = {
+                                name: t.name,
+                                stamp_img: t.stamp_img || 'https://i.postimg.cc/Fs9tVbff/d1fbe1c35c32494c9290ebf699c16fc6.jpg',
+                                toxic_pets: t.toxic_pets,
+                                water_frequency: t.water_frequency,
+                                water_schedule: t.water_schedule,
+                                vpd_range: [parseFloat(t.vpd_min), parseFloat(t.vpd_max)],
+                                temp_floor: t.temp_floor,
+                                temp_ceiling: t.temp_ceiling,
+                                optimal_temp: [t.opt_min, t.opt_max],
+                                wind_tolerance: t.wind_tolerance,
+                                lunar_affinity: t.lunar_affinity,
+                                cycle: t.cycle,
+                                season: (!t.season || t.season === 'null') ? null : t.season
+                            };
+                        });
+                    } else if (!tplRes.ok) {
+                        const err = tplJson ? tplJson.error : "RAW CRASH TEXT: " + text.substring(0, 100);
+                        alert("API DATABASE TEMPLATE CRASH: " + err);
                     }
                 } catch (e) {
                     console.error("Failed to load cloud templates", e);
@@ -926,14 +941,20 @@
                     const response = await fetch('/api/db', {
                         headers: { 'session-token': this.sessionToken }
                     });
-                    if (response.ok) {
-                        const json = await response.json();
+                    
+                    const text = await response.text();
+                    let json;
+                    try { json = JSON.parse(text); } catch(e) {}
+
+                    if (response.ok && json) {
                         this.plants = json.plants || [];
                     } else {
+                        const err = json ? json.error : "RAW CRASH TEXT: " + text.substring(0, 100);
+                        alert("API DATABASE SESSION CRASH: " + err);
                         this.logout(); 
                     }
                 } catch (e) {
-                    console.error("Cloud fetch failed", e);
+                    alert("API DATABASE NETWORK FAIL: " + e.message);
                 }
                 
                 this.renderGrid();
@@ -2216,4 +2237,3 @@
     </script>
 </body>
 </html>
-
