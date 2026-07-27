@@ -450,9 +450,11 @@
                     <div class="wide-box" style="background: rgba(255, 255, 255, 0.3);">
                         <div class="celestial-title">➕ Add to Diary</div>
                         
-                        <!-- SEARCH BAR SEARCHING DATABASE -->
-                        <input list="plant-datalist" id="plant-select-input" placeholder="🔍 Search plant database..." class="days-input" style="width: 100%; margin-bottom: 8px; border-radius: 15px; font-size: 0.85rem; text-align: left; box-sizing: border-box;">
-                        <datalist id="plant-datalist"></datalist>
+                        <!-- INSTANT SEARCH DROPDOWN REPLACEMENT -->
+                        <div style="position: relative; width: 100%; margin-bottom: 8px;">
+                            <input type="text" id="plant-select-input" placeholder="🔍 Search plant database..." class="days-input" style="width: 100%; border-radius: 15px; font-size: 0.85rem; text-align: left; box-sizing: border-box;" oninput="DiaryManager.showSuggestions(this.value)" autocomplete="off">
+                            <div id="custom-suggestions" style="display: none; position: absolute; top: 100%; left: 0; width: 100%; max-height: 150px; overflow-y: auto; background: var(--inner-bubble); border: 2px solid white; border-radius: 10px; z-index: 100; box-shadow: 0 4px 10px rgba(0, 240, 255, 0.3); backdrop-filter: blur(10px);"></div>
+                        </div>
 
                         <input type="text" id="plant-nickname" placeholder="Custom Nickname (e.g. Monstera Corner)" class="days-input" style="width: 100%; margin-bottom: 8px; border-radius: 15px; font-size: 0.85rem; text-align: left; box-sizing: border-box;">
                         
@@ -928,8 +930,6 @@
                     console.error("Failed to load cloud templates", e);
                 }
                 
-                this.populatePlantList();
-
                 if (window.lastWeatherState && window.ClimateEngine) {
                     const state = window.lastWeatherState;
                     const newResults = window.ClimateEngine.runAnalysis(
@@ -977,13 +977,46 @@
                 this.renderGrid();
             },
 
-            populatePlantList: function() {
-                const datalist = document.getElementById('plant-datalist');
-                if (datalist && window.floraDB) {
-                    datalist.innerHTML = Object.keys(window.floraDB).map(id => 
-                        `<option value="${window.floraDB[id].name}"></option>`
-                    ).join('');
+            showSuggestions: function(query) {
+                const box = document.getElementById('custom-suggestions');
+                box.innerHTML = '';
+                if (!query) {
+                    box.style.display = 'none';
+                    return;
                 }
+                
+                const q = query.toLowerCase();
+                let matches = [];
+                
+                for (const id in window.floraDB) {
+                    if (window.floraDB[id].name.toLowerCase().includes(q)) {
+                        matches.push(window.floraDB[id].name);
+                    }
+                }
+                
+                if (matches.length === 0) {
+                    box.style.display = 'none';
+                    return;
+                }
+                
+                matches.forEach(name => {
+                    const div = document.createElement('div');
+                    div.innerText = name;
+                    div.style.padding = '10px';
+                    div.style.borderBottom = '1px dotted rgba(255,255,255,0.5)';
+                    div.style.color = 'var(--deep-sea)';
+                    div.style.fontWeight = '700';
+                    div.style.cursor = 'pointer';
+                    div.onclick = () => DiaryManager.selectSuggestion(name);
+                    box.appendChild(div);
+                });
+                
+                box.style.display = 'block';
+            },
+
+            selectSuggestion: function(name) {
+                document.getElementById('plant-select-input').value = name;
+                document.getElementById('custom-suggestions').style.display = 'none';
             },
 
             uploadMasterTemplate: async function() {
@@ -1122,12 +1155,16 @@
 
             waterPlant: async function(id) {
                 if (confirm("Are you sure you watered this plant? This will reset the schedule!")) {
+                    const myPlant = this.plants.find(p => p.id === id);
+                    if (myPlant) {
+                        myPlant.last_watered_at = new Date().toISOString();
+                    }
+                    this.closeModal();
                     await fetch('/api/db', {
                         method: 'PUT',
                         headers: { 'Content-Type': 'application/json', 'session-token': this.sessionToken },
                         body: JSON.stringify({ id: id })
                     });
-                    this.closeModal();
                     this.init();
                 }
             },
