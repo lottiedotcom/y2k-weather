@@ -2,10 +2,14 @@ const { Pool } = require('pg');
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 
 module.exports = async (req, res) => {
-    const userId = req.headers['user-id'];
-    if (!userId) return res.status(401).json({ error: 'Not logged in' });
+    const token = req.headers['session-token'];
+    if (!token) return res.status(401).json({ error: 'Not logged in' });
 
     try {
+        const userRes = await pool.query('SELECT id FROM users WHERE session_token = $1', [token]);
+        if (userRes.rows.length === 0) return res.status(401).json({ error: 'Invalid or expired session' });
+        const userId = userRes.rows[0].id;
+
         if (req.method === 'GET') {
             const result = await pool.query(
                 `SELECT id, user_id, plant_template_id, nickname, shelf_type, custom_image,
