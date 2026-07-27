@@ -596,7 +596,7 @@
 <body>
 
     <div class="weather-container">
-        <h1>☁️ Right Now</h1>
+        <h1>☁️ Right Now <span style="font-size: 0.8rem; cursor: pointer; opacity: 0.5;" id="admin-nav-btn" onclick="switchTab('tab-admin', this)">⚙️</span></h1>
         
         <div id="weather-search-box" class="search-box">
             <input type="text" id="search-input" placeholder="Search city... 🌺" onkeypress="handleSearchKeyPress(event)">
@@ -662,6 +662,59 @@
                 <button class="nav-btn" onclick="switchTab('tab-future', this)">🔮 FUTURE</button>
                 <button class="nav-btn" onclick="switchTab('tab-sky', this)">🌠 SKY</button>
                 <button class="nav-btn" onclick="switchTab('tab-flora', this)">🌿 FLORA</button>
+            </div>
+
+            <!-- TAB: ADMIN -->
+            <div id="tab-admin" class="tab-section">
+                <div class="wide-box" style="background: rgba(255, 255, 255, 0.3);">
+                    <div class="celestial-title">🛠️ Secret Admin Generator</div>
+                    <div class="vibe-desc" style="margin-bottom: 10px; font-size: 0.75rem;">Fill this out to instantly generate clean JSON code for your master flora_db.js file!</div>
+                    
+                    <input type="text" id="admin-id" placeholder="Plant ID (e.g. pink_princess)" class="days-input" style="width: 100%; margin-bottom: 8px; border-radius: 15px; font-size: 0.85rem; text-align: left; box-sizing: border-box;">
+                    <input type="text" id="admin-name" placeholder="Display Name (e.g. Pink Princess)" class="days-input" style="width: 100%; margin-bottom: 8px; border-radius: 15px; font-size: 0.85rem; text-align: left; box-sizing: border-box;">
+                    <input type="text" id="admin-img" placeholder="Image URL (Postimages link)" class="days-input" style="width: 100%; margin-bottom: 8px; border-radius: 15px; font-size: 0.85rem; text-align: left; box-sizing: border-box;">
+                    
+                    <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+                        <select id="admin-toxic" class="days-input" style="flex: 1; border-radius: 15px; font-size: 0.85rem;">
+                            <option value="true">☠️ Toxic to Pets</option>
+                            <option value="false">🐾 Pet Safe</option>
+                        </select>
+                        <select id="admin-wfreq" class="days-input" style="flex: 1; border-radius: 15px; font-size: 0.85rem;">
+                            <option value="high">💧 High Water</option>
+                            <option value="moderate" selected>💧 Mod Water</option>
+                            <option value="low">🌵 Low Water</option>
+                            <option value="very_low">🏜️ Very Low</option>
+                        </select>
+                    </div>
+                    
+                    <input type="text" id="admin-wsched" placeholder="Schedule (e.g. Water: Let dry completely)" class="days-input" style="width: 100%; margin-bottom: 8px; border-radius: 15px; font-size: 0.85rem; text-align: left; box-sizing: border-box;">
+                    
+                    <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+                        <input type="number" step="0.1" id="admin-vpd-min" placeholder="Min VPD (0.8)" class="days-input" style="flex: 1; border-radius: 15px; font-size: 0.85rem;">
+                        <input type="number" step="0.1" id="admin-vpd-max" placeholder="Max VPD (1.2)" class="days-input" style="flex: 1; border-radius: 15px; font-size: 0.85rem;">
+                    </div>
+
+                    <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+                        <input type="number" id="admin-tfloor" placeholder="Abs Min Temp (50)" class="days-input" style="flex: 1; border-radius: 15px; font-size: 0.85rem;">
+                        <input type="number" id="admin-tceil" placeholder="Abs Max Temp (95)" class="days-input" style="flex: 1; border-radius: 15px; font-size: 0.85rem;">
+                    </div>
+
+                    <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+                        <input type="number" id="admin-optmin" placeholder="Pref Min Temp (65)" class="days-input" style="flex: 1; border-radius: 15px; font-size: 0.85rem;">
+                        <input type="number" id="admin-optmax" placeholder="Pref Max Temp (80)" class="days-input" style="flex: 1; border-radius: 15px; font-size: 0.85rem;">
+                    </div>
+
+                    <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+                        <input type="number" id="admin-wind" placeholder="Max Wind (15)" class="days-input" style="flex: 1; border-radius: 15px; font-size: 0.85rem;">
+                        <input type="text" id="admin-lunar" placeholder="Lunar (waxing)" class="days-input" style="flex: 1; border-radius: 15px; font-size: 0.85rem; text-align: left;">
+                    </div>
+
+                    <button class="sync-btn" style="width: 100%; background: linear-gradient(135deg, #00d084, #00f0ff); color: white; border: 2px solid white; margin-bottom: 10px;" onclick="generateFloraCode()">⚙️ GENERATE CODE</button>
+                    
+                    <textarea id="admin-output" class="days-input" style="width: 100%; height: 150px; border-radius: 15px; font-size: 0.75rem; text-align: left; box-sizing: border-box; padding: 10px; margin-bottom: 10px; white-space: pre;" readonly placeholder="Code will appear here..."></textarea>
+                    
+                    <button class="sync-btn" style="width: 100%; background: var(--moe-pink); color: white; border: 2px solid white;" onclick="copyAdminCode()">📋 COPY TO CLIPBOARD</button>
+                </div>
             </div>
 
             <!-- TAB: NOW -->
@@ -842,7 +895,11 @@
                 <div id="flora-diary-view" style="display: none;">
                     <div class="wide-box" style="background: rgba(255, 255, 255, 0.3);">
                         <div class="celestial-title">➕ Add to Diary</div>
-                        <select id="plant-select" class="days-input" style="width: 100%; margin-bottom: 8px; border-radius: 15px; font-size: 0.85rem; text-align: left;"></select>
+                        
+                        <!-- SEARCHABLE DATALIST -->
+                        <input list="plant-datalist" id="plant-select-input" placeholder="🔍 Search plant database..." class="days-input" style="width: 100%; margin-bottom: 8px; border-radius: 15px; font-size: 0.85rem; text-align: left; box-sizing: border-box;">
+                        <datalist id="plant-datalist"></datalist>
+
                         <input type="text" id="plant-nickname" placeholder="Custom Nickname (e.g. Monstera Corner)" class="days-input" style="width: 100%; margin-bottom: 8px; border-radius: 15px; font-size: 0.85rem; text-align: left; box-sizing: border-box;">
                         
                         <label for="plant-photo" class="sync-btn" style="display:block; width: 100%; box-sizing: border-box; text-align: center; margin-bottom: 12px; background: var(--inner-bubble);">📸 UPLOAD CUSTOM PHOTO</label>
@@ -911,6 +968,55 @@
     </div>
 
     <script>
+        // Admin Code Generator Functions
+        function generateFloraCode() {
+            const id = document.getElementById('admin-id').value.trim() || "new_plant";
+            const name = document.getElementById('admin-name').value.trim() || "New Plant";
+            const img = document.getElementById('admin-img').value.trim() || "https://i.postimg.cc/Fs9tVbff/d1fbe1c35c32494c9290ebf699c16fc6.jpg";
+            const toxic = document.getElementById('admin-toxic').value === 'true';
+            const wFreq = document.getElementById('admin-wfreq').value;
+            const wSched = document.getElementById('admin-wsched').value.trim() || "Water: Let dry completely";
+            const vpdMin = document.getElementById('admin-vpd-min').value || "0.8";
+            const vpdMax = document.getElementById('admin-vpd-max').value || "1.2";
+            const tFloor = document.getElementById('admin-tfloor').value || "50";
+            const tCeil = document.getElementById('admin-tceil').value || "95";
+            const optMin = document.getElementById('admin-optmin').value || "65";
+            const optMax = document.getElementById('admin-optmax').value || "80";
+            const wind = document.getElementById('admin-wind').value || "15";
+            const lunar = document.getElementById('admin-lunar').value.trim() || "waxing";
+
+            const entry = `"${id}": {
+    "name": "${name}",
+    "stamp_img": "${img}",
+    "toxic_pets": ${toxic},
+    "water_frequency": "${wFreq}",
+    "water_schedule": "${wSched}",
+    "vpd_range": [${vpdMin}, ${vpdMax}],
+    "temp_floor": ${tFloor},
+    "temp_ceiling": ${tCeil},
+    "optimal_temp": [${optMin}, ${optMax}],
+    "wind_tolerance": ${wind},
+    "lunar_affinity": "${lunar}",
+    "cycle": "perennial",
+    "season": null
+},`;
+
+            document.getElementById('admin-output').value = entry;
+        }
+
+        function copyAdminCode() {
+            const copyText = document.getElementById('admin-output');
+            if(!copyText.value) return;
+            copyText.select();
+            copyText.setSelectionRange(0, 99999); // For mobile devices
+            navigator.clipboard.writeText(copyText.value).then(() => {
+                alert("📋 Copied! Open GitHub and paste this into flora_db.js!");
+            }).catch(err => {
+                document.execCommand("copy");
+                alert("📋 Copied! Open GitHub and paste this into flora_db.js!");
+            });
+        }
+
         function toggleRecoveryUI(showRecovery) {
             document.getElementById('standard-auth').style.display = showRecovery ? 'none' : 'flex';
             document.getElementById('recovery-auth').style.display = showRecovery ? 'flex' : 'none';
@@ -1127,16 +1233,30 @@
             },
 
             populatePlantList: function() {
-                const select = document.getElementById('plant-select');
-                if (select && window.floraDB) {
-                    select.innerHTML = Object.keys(window.floraDB).map(id => 
-                        `<option value="${id}">${window.floraDB[id].name}</option>`
+                const datalist = document.getElementById('plant-datalist');
+                if (datalist && window.floraDB) {
+                    datalist.innerHTML = Object.keys(window.floraDB).map(id => 
+                        `<option value="${window.floraDB[id].name}"></option>`
                     ).join('');
                 }
             },
 
             addPlant: async function() {
-                const templateId = document.getElementById('plant-select').value;
+                const inputValue = document.getElementById('plant-select-input').value.trim();
+                
+                let templateId = null;
+                for (const id in window.floraDB) {
+                    if (window.floraDB[id].name === inputValue) {
+                        templateId = id;
+                        break;
+                    }
+                }
+
+                if (!templateId) {
+                    alert("Please search and select a valid plant from the database list! 🌱");
+                    return;
+                }
+
                 const nicknameInput = document.getElementById('plant-nickname').value.trim();
                 const nickname = nicknameInput || window.floraDB[templateId].name;
                 const shelf = document.getElementById('shelf-select').value;
@@ -1157,6 +1277,7 @@
                     body: JSON.stringify({ plant_template_id: templateId, nickname: nickname, shelf_type: shelf, custom_image: base64Image })
                 });
                 
+                document.getElementById('plant-select-input').value = '';
                 document.getElementById('plant-nickname').value = '';
                 photoInput.value = '';
                 updatePhotoLabel(photoInput);
@@ -1477,12 +1598,14 @@
 
         function switchTab(tabId, btnElement) {
             document.querySelectorAll('.tab-section').forEach(tab => tab.classList.remove('active'));
-            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                if (btn) btn.classList.remove('active');
+            });
             
             document.getElementById(tabId).classList.add('active');
-            btnElement.classList.add('active');
+            if(btnElement && btnElement.classList) btnElement.classList.add('active');
 
-            if (tabId === 'tab-flora') {
+            if (tabId === 'tab-flora' || tabId === 'tab-admin') {
                 document.getElementById('weather-search-box').style.display = 'none';
             } else {
                 document.getElementById('weather-search-box').style.display = 'flex';
@@ -2328,4 +2451,3 @@
     </script>
 </body>
 </html>
-
