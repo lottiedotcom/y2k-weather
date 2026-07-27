@@ -597,6 +597,12 @@
                             <input type="number" id="admin-tfloor" placeholder="Abs Min Temp (50)" class="days-input" style="flex: 1; border-radius: 15px; font-size: 0.85rem;">
                             <input type="number" id="admin-tceil" placeholder="Abs Max Temp (95)" class="days-input" style="flex: 1; border-radius: 15px; font-size: 0.85rem;">
                         </div>
+                        
+                        <!-- NEW SEASONAL TEMP INPUTS -->
+                        <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+                            <input type="number" id="admin-wtfloor" placeholder="Winter Abs Min (10)" class="days-input" style="flex: 1; border-radius: 15px; font-size: 0.85rem;">
+                            <input type="number" id="admin-wtceil" placeholder="Winter Abs Max (50)" class="days-input" style="flex: 1; border-radius: 15px; font-size: 0.85rem;">
+                        </div>
 
                         <div style="display: flex; gap: 8px; margin-bottom: 8px;">
                             <input type="number" id="admin-optmin" placeholder="Pref Min Temp (65)" class="days-input" style="flex: 1; border-radius: 15px; font-size: 0.85rem;">
@@ -904,11 +910,14 @@
                                 vpd_range: [parseFloat(t.vpd_min), parseFloat(t.vpd_max)],
                                 temp_floor: t.temp_floor,
                                 temp_ceiling: t.temp_ceiling,
-                                optimal_temp: [t.opt_min, t.opt_max],
+                                opt_min: t.opt_min,
+                                opt_max: t.opt_max,
                                 wind_tolerance: t.wind_tolerance,
                                 lunar_affinity: t.lunar_affinity,
                                 cycle: t.cycle,
-                                season: (!t.season || t.season === 'null') ? null : t.season
+                                season: (!t.season || t.season === 'null') ? null : t.season,
+                                winter_temp_floor: t.winter_temp_floor,
+                                winter_temp_ceiling: t.winter_temp_ceiling
                             };
                         });
                     } else if (!tplRes.ok) {
@@ -979,6 +988,8 @@
                 const vpdMax = document.getElementById('admin-vpd-max').value || "1.2";
                 const tFloor = document.getElementById('admin-tfloor').value || "50";
                 const tCeil = document.getElementById('admin-tceil').value || "95";
+                const wTFloor = document.getElementById('admin-wtfloor').value || null;
+                const wTCeil = document.getElementById('admin-wtceil').value || null;
                 const optMin = document.getElementById('admin-optmin').value || "65";
                 const optMax = document.getElementById('admin-optmax').value || "80";
                 const wind = document.getElementById('admin-wind').value || "15";
@@ -1005,7 +1016,7 @@
                             id: id, name: name, stamp_img: base64Image, toxic_pets: toxic, water_frequency: wFreq,
                             water_schedule: wSched, vpd_min: vpdMin, vpd_max: vpdMax, temp_floor: tFloor,
                             temp_ceiling: tCeil, opt_min: optMin, opt_max: optMax, wind_tolerance: wind,
-                            lunar_affinity: lunar, cycle: cycle, season: season
+                            lunar_affinity: lunar, cycle: cycle, season: season, winter_temp_floor: wTFloor, winter_temp_ceiling: wTCeil
                         })
                     });
                     
@@ -2237,3 +2248,4 @@
     </script>
 </body>
 </html>
+
