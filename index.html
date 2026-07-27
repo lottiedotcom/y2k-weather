@@ -630,6 +630,12 @@
                 <div id="auth-message" style="color: var(--moe-pink); font-size: 0.85rem; margin-top: 10px; text-shadow: 1px 1px 0px white; font-weight: 700;"></div>
             </div>
             
+            <!-- NEW PROFILE HEADER -->
+            <div id="user-profile-header" style="display: none; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.4); padding: 10px 15px; border-radius: 20px; border: 2px dashed var(--moe-pink); margin-bottom: 15px;">
+                <div style="font-size: 0.85rem; font-weight: 700; color: var(--deep-sea); text-shadow: 1px 1px 0px white;">☁️ Connected to Cloud</div>
+                <button onclick="DiaryManager.logout()" style="background: var(--moe-pink); color: white; border: 2px solid white; border-radius: 10px; font-weight: 700; font-family: 'Fredoka'; padding: 5px 10px; font-size: 0.7rem; cursor: pointer;">LOGOUT</button>
+            </div>
+            
             <div class="top-nav">
                 <button class="nav-btn active" onclick="switchTab('tab-now', this)">🌫 NOW</button>
                 <button class="nav-btn" onclick="switchTab('tab-future', this)">🔮 FUTURE</button>
@@ -821,6 +827,11 @@
                         <div class="celestial-title">➕ Add to Diary</div>
                         <select id="plant-select" class="days-input" style="width: 100%; margin-bottom: 8px; border-radius: 15px; font-size: 0.85rem; text-align: left;"></select>
                         <input type="text" id="plant-nickname" placeholder="Custom Nickname (e.g. Monstera Corner)" class="days-input" style="width: 100%; margin-bottom: 8px; border-radius: 15px; font-size: 0.85rem; text-align: left; box-sizing: border-box;">
+                        
+                        <!-- CAMERA UPLOAD FIX -->
+                        <label for="plant-photo" class="sync-btn" style="display:block; width: 100%; box-sizing: border-box; text-align: center; margin-bottom: 12px; background: var(--inner-bubble);">📸 UPLOAD CUSTOM PHOTO</label>
+                        <input type="file" id="plant-photo" accept="image/*" style="display: none;" onchange="updatePhotoLabel(this)">
+                        
                         <select id="shelf-select" class="days-input" style="width: 100%; margin-bottom: 12px; border-radius: 15px; font-size: 0.85rem; text-align: left;">
                             <option value="mother">🪴 Mother Station</option>
                             <option value="nursery">🧪 Nursery</option>
@@ -886,6 +897,50 @@
     </div>
 
     <script>
+        // Photo label update function
+        function updatePhotoLabel(input) {
+            const label = document.querySelector('label[for="plant-photo"]');
+            if (input.files && input.files[0]) {
+                label.innerText = "✅ PHOTO SELECTED";
+                label.style.background = "var(--moe-pink)";
+                label.style.color = "white";
+                label.style.border = "2px solid white";
+            } else {
+                label.innerText = "📸 UPLOAD CUSTOM PHOTO";
+                label.style.background = "var(--inner-bubble)";
+                label.style.color = "var(--deep-sea)";
+            }
+        }
+
+        // Extremely fast image compressor for mobile
+        async function compressImage(file) {
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = event => {
+                    const img = new Image();
+                    img.src = event.target.result;
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        const MAX_WIDTH = 250; 
+                        const MAX_HEIGHT = 250;
+                        let width = img.width;
+                        let height = img.height;
+
+                        if (width > height) {
+                            if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
+                        } else {
+                            if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; }
+                        }
+                        canvas.width = width; canvas.height = height;
+                        ctx.drawImage(img, 0, 0, width, height);
+                        resolve(canvas.toDataURL('image/jpeg', 0.6));
+                    }
+                };
+            });
+        }
+
         // Toggle Diary View
         let isDiaryOpen = false;
         function toggleDiaryView() {
@@ -905,7 +960,7 @@
             } else {
                 dbView.style.display = 'block';
                 diaryView.style.display = 'none';
-                toggleBtn.innerHTML = '📓 Diary';
+                toggleBtn.innerHTML = '📖 OPEN MY DIARY';
                 toggleBtn.style.background = 'rgba(255, 255, 255, 0.5)';
                 toggleBtn.style.color = 'var(--deep-sea)';
                 toggleBtn.style.border = '2px dashed var(--mermaid-aqua)';
@@ -986,13 +1041,24 @@
 
             login: function() { this.authAction('login'); },
             register: function() { this.authAction('register'); },
+            
+            logout: function() {
+                this.userId = null;
+                localStorage.removeItem('floraUserId');
+                this.plants = [];
+                document.getElementById('user-profile-header').style.display = 'none';
+                document.getElementById('login-container').style.display = 'flex';
+                this.renderGrid();
+            },
 
             init: async function() {
                 if (!this.userId) {
                     document.getElementById('login-container').style.display = 'flex';
+                    document.getElementById('user-profile-header').style.display = 'none';
                     return;
                 }
                 document.getElementById('login-container').style.display = 'none';
+                document.getElementById('user-profile-header').style.display = 'flex';
 
                 try {
                     const response = await fetch('/api/db', {
@@ -1024,13 +1090,26 @@
                 const nickname = nicknameInput || window.floraDB[templateId].name;
                 const shelf = document.getElementById('shelf-select').value;
                 
+                let base64Image = null;
+                const photoInput = document.getElementById('plant-photo');
+                if (photoInput.files && photoInput.files[0]) {
+                    document.getElementById('loading').innerText = "Compressing image... 🌸";
+                    document.getElementById('loading').style.display = 'block';
+                    base64Image = await compressImage(photoInput.files[0]);
+                }
+                
+                document.getElementById('loading').innerText = "Uploading to Cloud... ☁️";
+                
                 await fetch('/api/db', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'user-id': this.userId },
-                    body: JSON.stringify({ plant_template_id: templateId, nickname: nickname, shelf_type: shelf })
+                    body: JSON.stringify({ plant_template_id: templateId, nickname: nickname, shelf_type: shelf, custom_image: base64Image })
                 });
                 
                 document.getElementById('plant-nickname').value = '';
+                photoInput.value = '';
+                updatePhotoLabel(photoInput);
+                document.getElementById('loading').style.display = 'none';
                 alert(`🪴 Added ${nickname} to your diary!`);
                 this.init();
             },
@@ -1084,7 +1163,7 @@
                 await fetch('/api/db', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'user-id': this.userId },
-                    body: JSON.stringify({ plant_template_id: templateId, nickname: newNickname, shelf_type: 'nursery' })
+                    body: JSON.stringify({ plant_template_id: templateId, nickname: newNickname, shelf_type: 'nursery', custom_image: parent.custom_image })
                 });
                 
                 this.closeModal();
@@ -1096,7 +1175,6 @@
             openExpandedView: function(dbId) {
                 if (!window.latestAgronomyResults) return;
 
-                // Find the specific plant from the DB array
                 const myPlant = this.plants.find(p => p.id === dbId);
                 if (!myPlant) return;
 
@@ -1203,12 +1281,14 @@
                 }
                 let formattedVpd = !isNaN(parseFloat(displayVpd)) ? parseFloat(displayVpd).toFixed(2) : displayVpd;
                 const vpdLabel = isIndoorActive ? `Live Indoor: ${formattedVpd}` : `Live Outdoor: ${formattedVpd}`;
+                
+                const finalImgSrc = myPlant.custom_image || res.plant.stamp_img;
 
                 const modalBody = document.getElementById('diary-modal-body');
                 modalBody.innerHTML = `
                     <div class="agronomy-card expanded" style="margin-bottom: 0; border: none; background: transparent; box-shadow: none;">
                         <div style="display: flex; flex-direction: column; align-items: center; gap: 4px; flex-shrink: 0;">
-                            <img src="${res.plant.stamp_img}" alt="${res.plant.name}" class="plant-stamp" onerror="this.src='https://i.postimg.cc/Fs9tVbff/d1fbe1c35c32494c9290ebf699c16fc6.jpg'">
+                            <img src="${finalImgSrc}" alt="${res.plant.name}" class="plant-stamp" onerror="this.src='https://i.postimg.cc/Fs9tVbff/d1fbe1c35c32494c9290ebf699c16fc6.jpg'">
                             <span style="font-size: 0.7rem; font-weight: 700; color: var(--deep-sea); text-shadow: 1px 1px 0px white;">${vpdLabel}</span>
                         </div>
                         
@@ -1285,8 +1365,6 @@
                             else if (plantData.water_frequency === "very_low") freq = 30;
                         }
 
-                        // ---> THE FIX IS RIGHT HERE <---
-                        // We safely parse the string, swap the space for a 'T', and ensure it reads correctly everywhere!
                         let lastWateredTime = 0;
                         if (plantObj.last_watered_at) {
                             let dateStr = String(plantObj.last_watered_at);
@@ -1317,9 +1395,11 @@
                             else { targetTier = tier3; dotColor = 'green'; }
                         }
 
+                        const finalImgSrc = plantObj.custom_image || plantData.stamp_img;
+
                         const stampHTML = `
                             <div class="diary-stamp-container" onclick="DiaryManager.openExpandedView(${plantObj.id})">
-                                <img src="${plantData.stamp_img}" alt="${plantData.name}" class="diary-stamp" onerror="this.src='https://i.postimg.cc/Fs9tVbff/d1fbe1c35c32494c9290ebf699c16fc6.jpg'">
+                                <img src="${finalImgSrc}" alt="${plantData.name}" class="diary-stamp" onerror="this.src='https://i.postimg.cc/Fs9tVbff/d1fbe1c35c32494c9290ebf699c16fc6.jpg'">
                                 <div class="status-dot dot-${dotColor}"></div>
                                 <div class="diary-stamp-name">${plantObj.nickname}</div>
                             </div>
