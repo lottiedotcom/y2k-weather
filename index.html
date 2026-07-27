@@ -783,7 +783,8 @@
                 btnNursery.classList.add('active');
             }
         }
-
+        window.floraDB = window.floraDB || {};
+        
         const DiaryManager = {
             plants: [], 
             sessionToken: localStorage.getItem('floraSessionToken') || null,
