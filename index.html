@@ -59,7 +59,26 @@
             margin-bottom: 20px;
             display: flex;
             flex-direction: column;
+            position: relative; /* Added for the settings gear */
         }
+
+        /* NEW SETTINGS GEAR */
+        .settings-gear {
+            position: absolute;
+            top: 25px;
+            right: 20px;
+            width: 32px;
+            height: 32px;
+            cursor: pointer;
+            border-radius: 8px;
+            border: 2px solid white;
+            box-shadow: 0 2px 5px rgba(0, 240, 255, 0.4);
+            object-fit: cover;
+            background: var(--moe-pink);
+            transition: transform 0.2s ease;
+            z-index: 10;
+        }
+        .settings-gear:active { transform: scale(0.9); }
 
         h1 {
             font-size: 1.5rem;
@@ -264,56 +283,11 @@
 <body>
 
     <div class="weather-container">
-        <h1>☁️ Right Now <span style="font-size: 0.8rem; cursor: pointer; opacity: 0.5; display: none;" id="admin-nav-btn" onclick="switchTab('tab-admin', this)">⚙️</span></h1>
+        <!-- SETTINGS GEAR ICON IN TOP RIGHT -->
+        <img src="gear.jpg" alt="Settings" class="settings-gear" onerror="this.style.display='none'" onclick="toggleSettingsModal()">
         
-        <!-- LOGIN CONTAINER (OUTSIDE WEATHER-CONTENT SO IT LOADS IMMEDIATELY) -->
-        <div id="login-container" class="wide-box" style="margin-bottom: 20px;">
-            <div class="celestial-title">🌸 Cloud Login 🌸</div>
-            
-            <div id="standard-auth" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
-                <input type="text" id="username" placeholder="Username" class="days-input" style="width: 80%; margin-bottom: 8px; border-radius: 20px;">
-                
-                <div style="position: relative; width: 80%; margin-bottom: 8px;">
-                    <input type="password" id="password" placeholder="Password" class="days-input" style="width: 100%; box-sizing: border-box; border-radius: 20px; padding-right: 35px;">
-                    <button type="button" onclick="togglePassword('password')" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 1.1rem; opacity: 0.7;">👁️</button>
-                </div>
-
-                <div class="vibe-desc" style="font-size: 0.75rem; color: var(--deep-sea); width: 85%; margin-bottom: 15px; line-height: 1.3; text-shadow: 1px 1px 0px white; background: rgba(255,255,255,0.3); padding: 8px; border-radius: 15px; border: 1px dashed var(--moe-pink);">
-                    ⚠️ <b>Privacy first!</b> No email required. Pick something cute and easy to remember! 🎀
-                </div>
-
-                <div style="display: flex; gap: 10px; width: 80%;">
-                    <button class="sync-btn" onclick="DiaryManager.authAction('login')">LOGIN</button>
-                    <button class="sync-btn" onclick="DiaryManager.authAction('register')">REGISTER</button>
-                </div>
-                
-                <div style="margin-top: 15px; font-size: 0.8rem; color: var(--deep-sea); text-decoration: underline; cursor: pointer; font-weight: 700; text-shadow: 1px 1px 0px white;" onclick="toggleRecoveryUI(true)">Forgot your password?</div>
-            </div>
-
-            <div id="recovery-auth" style="display: none; width: 100%; flex-direction: column; align-items: center;">
-                <div class="vibe-desc" style="font-size: 0.75rem; color: var(--deep-sea); width: 85%; margin-bottom: 10px; line-height: 1.3; text-shadow: 1px 1px 0px white;">Enter your username, Secret Recovery Key, and new password!</div>
-                
-                <input type="text" id="rec-username" placeholder="Username" class="days-input" style="width: 80%; margin-bottom: 8px; border-radius: 20px;">
-                <input type="text" id="rec-key" placeholder="Recovery Key (FLORA-...)" class="days-input" style="width: 80%; margin-bottom: 8px; border-radius: 20px;">
-                
-                <div style="position: relative; width: 80%; margin-bottom: 15px;">
-                    <input type="password" id="rec-password" placeholder="New Password" class="days-input" style="width: 100%; box-sizing: border-box; border-radius: 20px; padding-right: 35px;">
-                    <button type="button" onclick="togglePassword('rec-password')" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 1.1rem; opacity: 0.7;">👁️</button>
-                </div>
-
-                <button class="sync-btn" style="width: 80%; background: linear-gradient(135deg, var(--mermaid-aqua), var(--moe-pink)); color: white; border: 2px solid white;" onclick="DiaryManager.recoverAction()">RESET PASSWORD</button>
-                
-                <div style="margin-top: 15px; font-size: 0.8rem; color: var(--deep-sea); text-decoration: underline; cursor: pointer; font-weight: 700; text-shadow: 1px 1px 0px white;" onclick="toggleRecoveryUI(false)">Cancel</div>
-            </div>
-
-            <div id="auth-message" style="color: var(--moe-pink); font-size: 0.85rem; margin-top: 10px; text-shadow: 1px 1px 0px white; font-weight: 700;"></div>
-        </div>
-
-        <div id="user-profile-header" style="display: none; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.4); padding: 10px 15px; border-radius: 20px; border: 2px dashed var(--moe-pink); margin-bottom: 15px;">
-            <div style="font-size: 0.85rem; font-weight: 700; color: var(--deep-sea); text-shadow: 1px 1px 0px white;">☁️ Connected to Cloud</div>
-            <button onclick="DiaryManager.logout()" style="background: var(--moe-pink); color: white; border: 2px solid white; border-radius: 10px; font-weight: 700; font-family: 'Fredoka'; padding: 5px 10px; font-size: 0.7rem; cursor: pointer;">LOGOUT</button>
-        </div>
-
+        <h1>☁️ Right Now</h1>
+        
         <div id="weather-search-box" class="search-box">
             <input type="text" id="search-input" placeholder="Search city... 🌺" onkeypress="handleSearchKeyPress(event)">
             <button class="search-btn" onclick="searchLocation()">🔍</button>
@@ -513,7 +487,7 @@
                 </div>
             </div>
 
-            <!-- TAB: FLORA (Search, Database & Diary Toggle) -->
+            <!-- TAB: FLORA -->
             <div id="tab-flora" class="tab-section">
                 
                 <button id="diary-toggle-btn" class="sync-btn" style="width: 100%; margin-bottom: 15px; padding: 12px; font-size: 0.9rem; background: rgba(255, 255, 255, 0.5); border: 2px dashed var(--mermaid-aqua);" onclick="toggleDiaryView()">📖 OPEN MY DIARY</button>
@@ -607,6 +581,71 @@
         </div>
     </div>
 
+    <!-- SETTINGS MODAL (CONTAINS LOGIN & PROFILE INFO) -->
+    <div id="settings-modal" class="modal">
+        <div class="modal-content" style="height: auto; max-height: 85%;">
+            <div class="close-radar-btn" onclick="toggleSettingsModal()">⚙️ CLOSE SETTINGS</div>
+            <div style="padding: 15px; overflow-y: auto;">
+                
+                <!-- LOGIN UI MOVED INSIDE SETTINGS MENU -->
+                <div id="login-container" class="wide-box" style="margin-bottom: 0; box-shadow: none;">
+                    <div class="celestial-title">🌸 Cloud Login 🌸</div>
+                    
+                    <div id="standard-auth" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+                        <input type="text" id="username" placeholder="Username" class="days-input" style="width: 80%; margin-bottom: 8px; border-radius: 20px;">
+                        
+                        <div style="position: relative; width: 80%; margin-bottom: 8px;">
+                            <input type="password" id="password" placeholder="Password" class="days-input" style="width: 100%; box-sizing: border-box; border-radius: 20px; padding-right: 35px;">
+                            <button type="button" onclick="togglePassword('password')" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 1.1rem; opacity: 0.7;">👁️</button>
+                        </div>
+
+                        <div class="vibe-desc" style="font-size: 0.75rem; color: var(--deep-sea); width: 85%; margin-bottom: 15px; line-height: 1.3; text-shadow: 1px 1px 0px white; background: rgba(255,255,255,0.3); padding: 8px; border-radius: 15px; border: 1px dashed var(--moe-pink);">
+                            ⚠️ <b>Privacy first!</b> No email required. Pick something cute and easy to remember! 🎀
+                        </div>
+
+                        <div style="display: flex; gap: 10px; width: 80%;">
+                            <button class="sync-btn" onclick="DiaryManager.authAction('login')">LOGIN</button>
+                            <button class="sync-btn" onclick="DiaryManager.authAction('register')">REGISTER</button>
+                        </div>
+                        
+                        <div style="margin-top: 15px; font-size: 0.8rem; color: var(--deep-sea); text-decoration: underline; cursor: pointer; font-weight: 700; text-shadow: 1px 1px 0px white;" onclick="toggleRecoveryUI(true)">Forgot your password?</div>
+                    </div>
+
+                    <div id="recovery-auth" style="display: none; width: 100%; flex-direction: column; align-items: center;">
+                        <div class="vibe-desc" style="font-size: 0.75rem; color: var(--deep-sea); width: 85%; margin-bottom: 10px; line-height: 1.3; text-shadow: 1px 1px 0px white;">Enter your username, Secret Recovery Key, and new password!</div>
+                        
+                        <input type="text" id="rec-username" placeholder="Username" class="days-input" style="width: 80%; margin-bottom: 8px; border-radius: 20px;">
+                        <input type="text" id="rec-key" placeholder="Recovery Key (FLORA-...)" class="days-input" style="width: 80%; margin-bottom: 8px; border-radius: 20px;">
+                        
+                        <div style="position: relative; width: 80%; margin-bottom: 15px;">
+                            <input type="password" id="rec-password" placeholder="New Password" class="days-input" style="width: 100%; box-sizing: border-box; border-radius: 20px; padding-right: 35px;">
+                            <button type="button" onclick="togglePassword('rec-password')" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 1.1rem; opacity: 0.7;">👁️</button>
+                        </div>
+
+                        <button class="sync-btn" style="width: 80%; background: linear-gradient(135deg, var(--mermaid-aqua), var(--moe-pink)); color: white; border: 2px solid white;" onclick="DiaryManager.recoverAction()">RESET PASSWORD</button>
+                        
+                        <div style="margin-top: 15px; font-size: 0.8rem; color: var(--deep-sea); text-decoration: underline; cursor: pointer; font-weight: 700; text-shadow: 1px 1px 0px white;" onclick="toggleRecoveryUI(false)">Cancel</div>
+                    </div>
+
+                    <div id="auth-message" style="color: var(--moe-pink); font-size: 0.85rem; margin-top: 10px; text-shadow: 1px 1px 0px white; font-weight: 700;"></div>
+                </div>
+
+                <!-- USER PROFILE MOVED INSIDE SETTINGS MENU -->
+                <div id="user-profile-header" style="display: none; flex-direction: column; align-items: center; gap: 10px; background: rgba(255,255,255,0.4); padding: 15px; border-radius: 20px; border: 2px dashed var(--moe-pink); margin-bottom: 0;">
+                    <div style="font-size: 1.1rem; font-weight: 700; color: var(--deep-sea); text-shadow: 1px 1px 0px white;">☁️ Connected to Cloud</div>
+                    <div style="font-size: 0.85rem; color: var(--moe-pink); font-weight: 700; margin-bottom: 5px;">Logged in as: <span id="display-username"></span></div>
+                    
+                    <button onclick="DiaryManager.logout()" style="width: 100%; background: var(--moe-pink); color: white; border: 2px solid white; border-radius: 15px; font-weight: 700; font-family: 'Fredoka'; padding: 10px; font-size: 0.85rem; cursor: pointer; box-shadow: 0 2px 5px rgba(255, 133, 194, 0.4);">LOGOUT</button>
+                    
+                    <!-- Hidden Admin button that shows up here if Plum logs in -->
+                    <button id="admin-nav-btn" class="sync-btn" style="display: none; width: 100%; margin-top: 5px; background: linear-gradient(135deg, #00f0ff, #00d084); color: white; border: 2px solid white;" onclick="switchTab('tab-admin', null); toggleSettingsModal();">🛠️ MASTER ADMIN PANEL</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- RADAR MODAL -->
     <div id="radar-modal" class="modal">
         <div class="modal-content">
             <div class="close-radar-btn" onclick="closeRadar()">🌈 CLOSE RADAR </div>
@@ -614,6 +653,7 @@
         </div>
     </div>
 
+    <!-- DIARY EXPANDED MODAL -->
     <div id="diary-plant-modal" class="modal">
         <div class="modal-content" style="height: auto; max-height: 85%;">
             <div class="close-radar-btn" onclick="DiaryManager.closeModal()">🌺 CLOSE DIARY</div>
@@ -622,6 +662,11 @@
     </div>
 
     <script>
+        function toggleSettingsModal() {
+            const modal = document.getElementById('settings-modal');
+            modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex';
+        }
+
         function updateAdminPhotoLabel(input) {
             const label = document.querySelector('label[for="admin-photo"]');
             if (input.files && input.files[0]) {
@@ -779,6 +824,7 @@
                             alert(`⚠️ TAKE A SCREENSHOT! ⚠️\n\nYour Secret Recovery Key is:\n\n${data.recoveryKey}\n\nThis is the ONLY way to reset your password if you forget it! Keep it safe.`);
                         }
                         
+                        toggleSettingsModal(); // Close settings pop-up automatically
                         this.init(); 
                     } else {
                         msg.innerText = data.error;
@@ -810,6 +856,7 @@
                         msg.innerText = data.message;
                         document.getElementById('login-container').style.display = 'none';
                         alert("Password successfully reset! 🌸");
+                        toggleSettingsModal(); // Close settings pop-up automatically
                         this.init(); 
                     } else {
                         msg.innerText = data.error;
@@ -830,8 +877,16 @@
 
             init: async function() {
                 const loggedInUser = localStorage.getItem('floraUsername');
+                
+                // Show username in profile header
+                if (loggedInUser) {
+                    const displayEl = document.getElementById('display-username');
+                    if(displayEl) displayEl.innerText = loggedInUser;
+                }
+                
+                // Admin button visibility check
                 if (loggedInUser && loggedInUser.toLowerCase() === 'plum') {
-                    document.getElementById('admin-nav-btn').style.display = 'inline-block';
+                    document.getElementById('admin-nav-btn').style.display = 'block';
                 } else {
                     document.getElementById('admin-nav-btn').style.display = 'none';
                 }
@@ -869,9 +924,10 @@
                 if (!this.sessionToken) {
                     document.getElementById('login-container').style.display = 'flex';
                     document.getElementById('user-profile-header').style.display = 'none';
-                    return;
+                    return; // Stop here if they aren't logged in
                 }
                 
+                // If they are logged in, swap the view
                 document.getElementById('login-container').style.display = 'none';
                 document.getElementById('user-profile-header').style.display = 'flex';
 
@@ -2078,6 +2134,7 @@
                 }
 
                 let alertsHTML = "";
+                
                 if (perfectRainDays.length > 0) {
                     alertsHTML += `<div style="background: rgba(0, 240, 255, 0.2); padding: 10px; border-radius: 15px; border: 2px dashed var(--mermaid-aqua); font-size: 0.85rem; color: var(--deep-sea); text-shadow: 1px 1px 0px white; line-height: 1.4;">🌧️ <b>Safe-Soak Alert:</b> Perfect natural watering conditions expected on <b>${perfectRainDays.join(', ')}</b>. It is safe to place houseplants outside to get washed!</div>`;
                 }
