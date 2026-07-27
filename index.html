@@ -13,7 +13,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&display=swap" rel="stylesheet">
 
-    <!-- Your existing offline database file -->
+    <!-- Offline fallback database -->
     <script src="flora_db.js"></script>
     <script src="climate_db.js"></script>
 
@@ -191,7 +191,6 @@
         .diary-stamp { width: 50px; height: 50px; border-radius: 12px; border: 2px solid white; box-shadow: 0 2px 5px rgba(0, 240, 255, 0.4); object-fit: cover; background: var(--bubble-glass); }
         .diary-stamp-name { font-size: 0.6rem; font-weight: 700; color: var(--deep-sea); text-shadow: 1px 1px 0px white; text-align: center; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
 
-        /* Status Dots */
         .status-dot { width: 12px; height: 12px; border-radius: 50%; border: 2px solid white; position: absolute; top: -4px; right: 2px; box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
         .dot-green { background: #00d084; }
         .dot-yellow { background: #ffb347; }
@@ -247,7 +246,6 @@
         .close-radar-btn { background: var(--moe-pink); color: white; text-align: center; padding: 12px; font-weight: 700; cursor: pointer; text-transform: uppercase; letter-spacing: 2px; border-bottom: 2px dashed white; }
         #radar-frame { width: 100%; height: 100%; border: none; }
 
-        .sync-btn-container { display: flex; gap: 10px; margin-bottom: 15px; width: 100%; }
         .sync-btn { flex: 1; background: rgba(255, 255, 255, 0.5); border: 2px dashed var(--mermaid-aqua); border-radius: 20px; padding: 8px 5px; color: var(--deep-sea); font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 0.75rem; cursor: pointer; box-shadow: 2px 2px 8px rgba(0, 240, 255, 0.15); transition: 0.2s ease; text-shadow: 1px 1px 0px white; }
         .sync-btn:active { transform: scale(0.95); }
 
@@ -268,6 +266,54 @@
     <div class="weather-container">
         <h1>☁️ Right Now <span style="font-size: 0.8rem; cursor: pointer; opacity: 0.5; display: none;" id="admin-nav-btn" onclick="switchTab('tab-admin', this)">⚙️</span></h1>
         
+        <!-- LOGIN CONTAINER (OUTSIDE WEATHER-CONTENT SO IT LOADS IMMEDIATELY) -->
+        <div id="login-container" class="wide-box" style="margin-bottom: 20px;">
+            <div class="celestial-title">🌸 Cloud Login 🌸</div>
+            
+            <div id="standard-auth" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+                <input type="text" id="username" placeholder="Username" class="days-input" style="width: 80%; margin-bottom: 8px; border-radius: 20px;">
+                
+                <div style="position: relative; width: 80%; margin-bottom: 8px;">
+                    <input type="password" id="password" placeholder="Password" class="days-input" style="width: 100%; box-sizing: border-box; border-radius: 20px; padding-right: 35px;">
+                    <button type="button" onclick="togglePassword('password')" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 1.1rem; opacity: 0.7;">👁️</button>
+                </div>
+
+                <div class="vibe-desc" style="font-size: 0.75rem; color: var(--deep-sea); width: 85%; margin-bottom: 15px; line-height: 1.3; text-shadow: 1px 1px 0px white; background: rgba(255,255,255,0.3); padding: 8px; border-radius: 15px; border: 1px dashed var(--moe-pink);">
+                    ⚠️ <b>Privacy first!</b> No email required. Pick something cute and easy to remember! 🎀
+                </div>
+
+                <div style="display: flex; gap: 10px; width: 80%;">
+                    <button class="sync-btn" onclick="DiaryManager.authAction('login')">LOGIN</button>
+                    <button class="sync-btn" onclick="DiaryManager.authAction('register')">REGISTER</button>
+                </div>
+                
+                <div style="margin-top: 15px; font-size: 0.8rem; color: var(--deep-sea); text-decoration: underline; cursor: pointer; font-weight: 700; text-shadow: 1px 1px 0px white;" onclick="toggleRecoveryUI(true)">Forgot your password?</div>
+            </div>
+
+            <div id="recovery-auth" style="display: none; width: 100%; flex-direction: column; align-items: center;">
+                <div class="vibe-desc" style="font-size: 0.75rem; color: var(--deep-sea); width: 85%; margin-bottom: 10px; line-height: 1.3; text-shadow: 1px 1px 0px white;">Enter your username, Secret Recovery Key, and new password!</div>
+                
+                <input type="text" id="rec-username" placeholder="Username" class="days-input" style="width: 80%; margin-bottom: 8px; border-radius: 20px;">
+                <input type="text" id="rec-key" placeholder="Recovery Key (FLORA-...)" class="days-input" style="width: 80%; margin-bottom: 8px; border-radius: 20px;">
+                
+                <div style="position: relative; width: 80%; margin-bottom: 15px;">
+                    <input type="password" id="rec-password" placeholder="New Password" class="days-input" style="width: 100%; box-sizing: border-box; border-radius: 20px; padding-right: 35px;">
+                    <button type="button" onclick="togglePassword('rec-password')" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 1.1rem; opacity: 0.7;">👁️</button>
+                </div>
+
+                <button class="sync-btn" style="width: 80%; background: linear-gradient(135deg, var(--mermaid-aqua), var(--moe-pink)); color: white; border: 2px solid white;" onclick="DiaryManager.recoverAction()">RESET PASSWORD</button>
+                
+                <div style="margin-top: 15px; font-size: 0.8rem; color: var(--deep-sea); text-decoration: underline; cursor: pointer; font-weight: 700; text-shadow: 1px 1px 0px white;" onclick="toggleRecoveryUI(false)">Cancel</div>
+            </div>
+
+            <div id="auth-message" style="color: var(--moe-pink); font-size: 0.85rem; margin-top: 10px; text-shadow: 1px 1px 0px white; font-weight: 700;"></div>
+        </div>
+
+        <div id="user-profile-header" style="display: none; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.4); padding: 10px 15px; border-radius: 20px; border: 2px dashed var(--moe-pink); margin-bottom: 15px;">
+            <div style="font-size: 0.85rem; font-weight: 700; color: var(--deep-sea); text-shadow: 1px 1px 0px white;">☁️ Connected to Cloud</div>
+            <button onclick="DiaryManager.logout()" style="background: var(--moe-pink); color: white; border: 2px solid white; border-radius: 10px; font-weight: 700; font-family: 'Fredoka'; padding: 5px 10px; font-size: 0.7rem; cursor: pointer;">LOGOUT</button>
+        </div>
+
         <div id="weather-search-box" class="search-box">
             <input type="text" id="search-input" placeholder="Search city... 🌺" onkeypress="handleSearchKeyPress(event)">
             <button class="search-btn" onclick="searchLocation()">🔍</button>
@@ -279,54 +325,6 @@
         
         <div id="weather-content" style="display:none;">
 
-            <!-- LOGIN UI -->
-            <div id="login-container" class="wide-box" style="margin-bottom: 20px;">
-                <div class="celestial-title">🌸 Cloud Login 🌸</div>
-                
-                <div id="standard-auth" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
-                    <input type="text" id="username" placeholder="Username" class="days-input" style="width: 80%; margin-bottom: 8px; border-radius: 20px;">
-                    
-                    <div style="position: relative; width: 80%; margin-bottom: 8px;">
-                        <input type="password" id="password" placeholder="Password" class="days-input" style="width: 100%; box-sizing: border-box; border-radius: 20px; padding-right: 35px;">
-                        <button type="button" onclick="togglePassword('password')" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 1.1rem; opacity: 0.7;">👁️</button>
-                    </div>
-
-                    <div class="vibe-desc" style="font-size: 0.75rem; color: var(--deep-sea); width: 85%; margin-bottom: 15px; line-height: 1.3; text-shadow: 1px 1px 0px white; background: rgba(255,255,255,0.3); padding: 8px; border-radius: 15px; border: 1px dashed var(--moe-pink);">
-                        ⚠️ <b>Privacy first!</b> No email required. Please do <b>NOT</b> use a real password from your bank or social media. Pick something cute and easy to remember! 🎀
-                    </div>
-
-                    <div style="display: flex; gap: 10px; width: 80%;">
-                        <button class="sync-btn" onclick="DiaryManager.authAction('login')">LOGIN</button>
-                        <button class="sync-btn" onclick="DiaryManager.authAction('register')">REGISTER</button>
-                    </div>
-                    
-                    <div style="margin-top: 15px; font-size: 0.8rem; color: var(--deep-sea); text-decoration: underline; cursor: pointer; font-weight: 700; text-shadow: 1px 1px 0px white;" onclick="toggleRecoveryUI(true)">Forgot your password?</div>
-                </div>
-
-                <div id="recovery-auth" style="display: none; width: 100%; flex-direction: column; align-items: center;">
-                    <div class="vibe-desc" style="font-size: 0.75rem; color: var(--deep-sea); width: 85%; margin-bottom: 10px; line-height: 1.3; text-shadow: 1px 1px 0px white;">Enter your username, your Secret Recovery Key, and your new password!</div>
-                    
-                    <input type="text" id="rec-username" placeholder="Username" class="days-input" style="width: 80%; margin-bottom: 8px; border-radius: 20px;">
-                    <input type="text" id="rec-key" placeholder="Recovery Key (FLORA-...)" class="days-input" style="width: 80%; margin-bottom: 8px; border-radius: 20px;">
-                    
-                    <div style="position: relative; width: 80%; margin-bottom: 15px;">
-                        <input type="password" id="rec-password" placeholder="New Password" class="days-input" style="width: 100%; box-sizing: border-box; border-radius: 20px; padding-right: 35px;">
-                        <button type="button" onclick="togglePassword('rec-password')" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 1.1rem; opacity: 0.7;">👁️</button>
-                    </div>
-
-                    <button class="sync-btn" style="width: 80%; background: linear-gradient(135deg, var(--mermaid-aqua), var(--moe-pink)); color: white; border: 2px solid white;" onclick="DiaryManager.recoverAction()">RESET PASSWORD</button>
-                    
-                    <div style="margin-top: 15px; font-size: 0.8rem; color: var(--deep-sea); text-decoration: underline; cursor: pointer; font-weight: 700; text-shadow: 1px 1px 0px white;" onclick="toggleRecoveryUI(false)">Cancel</div>
-                </div>
-
-                <div id="auth-message" style="color: var(--moe-pink); font-size: 0.85rem; margin-top: 10px; text-shadow: 1px 1px 0px white; font-weight: 700;"></div>
-            </div>
-            
-            <div id="user-profile-header" style="display: none; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.4); padding: 10px 15px; border-radius: 20px; border: 2px dashed var(--moe-pink); margin-bottom: 15px;">
-                <div style="font-size: 0.85rem; font-weight: 700; color: var(--deep-sea); text-shadow: 1px 1px 0px white;">☁️ Connected to Cloud</div>
-                <button onclick="DiaryManager.logout()" style="background: var(--moe-pink); color: white; border: 2px solid white; border-radius: 10px; font-weight: 700; font-family: 'Fredoka'; padding: 5px 10px; font-size: 0.7rem; cursor: pointer;">LOGOUT</button>
-            </div>
-            
             <div class="top-nav">
                 <button class="nav-btn active" onclick="switchTab('tab-now', this)">🌫 NOW</button>
                 <button class="nav-btn" onclick="switchTab('tab-future', this)">🔮 FUTURE</button>
@@ -377,22 +375,10 @@
 
                 <div class="wide-box">
                     <div class="celestial-title">🫧 Air Report 🫧</div>
-                    <div class="aqi-row">
-                        <span class="aqi-label">Overall AQI:</span>
-                        <span class="aqi-val" id="aqi-score">Scanning...</span>
-                    </div>
-                    <div class="aqi-row">
-                        <span class="aqi-label">Fine Particles:</span>
-                        <span class="aqi-val" id="aqi-pm25">--</span>
-                    </div>
-                    <div class="aqi-row">
-                        <span class="aqi-label">Dust:</span>
-                        <span class="aqi-val" id="aqi-pm10">--</span>
-                    </div>
-                    <div class="aqi-row">
-                        <span class="aqi-label">Ozone / Smog:</span>
-                        <span class="aqi-val" id="aqi-ozone">--</span>
-                    </div>
+                    <div class="aqi-row"><span class="aqi-label">Overall AQI:</span><span class="aqi-val" id="aqi-score">Scanning...</span></div>
+                    <div class="aqi-row"><span class="aqi-label">Fine Particles:</span><span class="aqi-val" id="aqi-pm25">--</span></div>
+                    <div class="aqi-row"><span class="aqi-label">Dust:</span><span class="aqi-val" id="aqi-pm10">--</span></div>
+                    <div class="aqi-row"><span class="aqi-label">Ozone / Smog:</span><span class="aqi-val" id="aqi-ozone">--</span></div>
                 </div>
 
                 <div class="wide-box">
@@ -432,31 +418,19 @@
                     <div class="celestial-timeline">
                         <div class="celestial-event">
                             <img class="pixel-stamp" src="https://i.postimg.cc/pX2NJQ95/fcc21a191313ea7e7ad9f23d615fbdd6.jpg" alt="Rise Stamp">
-                            <div class="celestial-info">
-                                <div class="stat-label">Sunrise</div>
-                                <div class="stat-value" id="sunrise">--:--</div>
-                            </div>
+                            <div class="celestial-info"><div class="stat-label">Sunrise</div><div class="stat-value" id="sunrise">--:--</div></div>
                         </div>
                         <div class="celestial-event">
                             <img class="pixel-stamp" src="https://i.postimg.cc/pX2NJQ9m/fe1fc3ebfafb9d2d765ccfd84af051fa.jpg" alt="Golden Hour Stamp">
-                            <div class="celestial-info">
-                                <div class="stat-label">Golden Hr</div>
-                                <div class="stat-value" id="golden-hour">--:--</div>
-                            </div>
+                            <div class="celestial-info"><div class="stat-label">Golden Hr</div><div class="stat-value" id="golden-hour">--:--</div></div>
                         </div>
                         <div class="celestial-event">
                             <img class="pixel-stamp" src="https://i.postimg.cc/028g0G6M/3b6149f779ec5e6827f5eb7fdc0b73af.jpg" alt="Set Stamp">
-                            <div class="celestial-info">
-                                <div class="stat-label">Sunset</div>
-                                <div class="stat-value" id="sunset">--:--</div>
-                            </div>
+                            <div class="celestial-info"><div class="stat-label">Sunset</div><div class="stat-value" id="sunset">--:--</div></div>
                         </div>
                         <div class="celestial-event">
                             <img class="pixel-stamp" src="https://i.postimg.cc/Fs9tVbff/d1fbe1c35c32494c9290ebf699c16fc6.jpg" alt="Phase Stamp">
-                            <div class="celestial-info">
-                                <div class="stat-label">Phase</div>
-                                <div class="stat-value"><span id="moon-phase">Scanning...</span> <span id="moon-icon">🌙</span></div>
-                            </div>
+                            <div class="celestial-info"><div class="stat-label">Phase</div><div class="stat-value"><span id="moon-phase">Scanning...</span> <span id="moon-icon">🌙</span></div></div>
                         </div>
                     </div>
                 </div>
@@ -578,7 +552,6 @@
                     <div class="wide-box" style="background: rgba(255, 255, 255, 0.3);">
                         <div class="celestial-title">➕ Add to Diary</div>
                         
-                        <!-- SEARCHABLE DATALIST -->
                         <input list="plant-datalist" id="plant-select-input" placeholder="🔍 Search plant database..." class="days-input" style="width: 100%; margin-bottom: 8px; border-radius: 15px; font-size: 0.85rem; text-align: left; box-sizing: border-box;">
                         <datalist id="plant-datalist"></datalist>
 
@@ -644,8 +617,7 @@
     <div id="diary-plant-modal" class="modal">
         <div class="modal-content" style="height: auto; max-height: 85%;">
             <div class="close-radar-btn" onclick="DiaryManager.closeModal()">🌺 CLOSE DIARY</div>
-            <div id="diary-modal-body" style="padding: 15px; overflow-y: auto;">
-                </div>
+            <div id="diary-modal-body" style="padding: 15px; overflow-y: auto;"></div>
         </div>
     </div>
 
@@ -776,7 +748,6 @@
             }
         }
 
-        // 📖 PLANT DIARY MANAGER LOGIC WITH SECURE TOKENS 📖
         const DiaryManager = {
             plants: [], 
             sessionToken: localStorage.getItem('floraSessionToken') || null,
@@ -858,7 +829,6 @@
             },
 
             init: async function() {
-                // Check if user is Plum to show Admin gear
                 const loggedInUser = localStorage.getItem('floraUsername');
                 if (loggedInUser && loggedInUser.toLowerCase() === 'plum') {
                     document.getElementById('admin-nav-btn').style.display = 'inline-block';
@@ -866,28 +836,29 @@
                     document.getElementById('admin-nav-btn').style.display = 'none';
                 }
 
-                // 1. Fetch the master templates from the Cloud Database first!
                 try {
                     const tplRes = await fetch('/api/db', { headers: { 'db-type': 'template' } });
                     if (tplRes.ok) {
                         const tplJson = await tplRes.json();
-                        tplJson.templates.forEach(t => {
-                            window.floraDB[t.id] = {
-                                name: t.name,
-                                stamp_img: t.stamp_img || 'https://i.postimg.cc/Fs9tVbff/d1fbe1c35c32494c9290ebf699c16fc6.jpg',
-                                toxic_pets: t.toxic_pets,
-                                water_frequency: t.water_frequency,
-                                water_schedule: t.water_schedule,
-                                vpd_range: [parseFloat(t.vpd_min), parseFloat(t.vpd_max)],
-                                temp_floor: t.temp_floor,
-                                temp_ceiling: t.temp_ceiling,
-                                optimal_temp: [t.opt_min, t.opt_max],
-                                wind_tolerance: t.wind_tolerance,
-                                lunar_affinity: t.lunar_affinity,
-                                cycle: t.cycle,
-                                season: (!t.season || t.season === 'null') ? null : t.season
-                            };
-                        });
+                        if (tplJson.templates) {
+                            tplJson.templates.forEach(t => {
+                                window.floraDB[t.id] = {
+                                    name: t.name,
+                                    stamp_img: t.stamp_img || 'https://i.postimg.cc/Fs9tVbff/d1fbe1c35c32494c9290ebf699c16fc6.jpg',
+                                    toxic_pets: t.toxic_pets,
+                                    water_frequency: t.water_frequency,
+                                    water_schedule: t.water_schedule,
+                                    vpd_range: [parseFloat(t.vpd_min), parseFloat(t.vpd_max)],
+                                    temp_floor: t.temp_floor,
+                                    temp_ceiling: t.temp_ceiling,
+                                    optimal_temp: [t.opt_min, t.opt_max],
+                                    wind_tolerance: t.wind_tolerance,
+                                    lunar_affinity: t.lunar_affinity,
+                                    cycle: t.cycle,
+                                    season: (!t.season || t.season === 'null') ? null : t.season
+                                };
+                            });
+                        }
                     }
                 } catch (e) {
                     console.error("Failed to load cloud templates", e);
@@ -900,6 +871,7 @@
                     document.getElementById('user-profile-header').style.display = 'none';
                     return;
                 }
+                
                 document.getElementById('login-container').style.display = 'none';
                 document.getElementById('user-profile-header').style.display = 'flex';
 
@@ -978,7 +950,7 @@
                         document.getElementById('admin-name').value = '';
                         photoInput.value = '';
                         updateAdminPhotoLabel(photoInput);
-                        this.init(); // Refresh so it shows up in the search bar immediately
+                        this.init();
                     } else {
                         alert("Error: " + data.error);
                     }
@@ -2106,7 +2078,6 @@
                 }
 
                 let alertsHTML = "";
-                
                 if (perfectRainDays.length > 0) {
                     alertsHTML += `<div style="background: rgba(0, 240, 255, 0.2); padding: 10px; border-radius: 15px; border: 2px dashed var(--mermaid-aqua); font-size: 0.85rem; color: var(--deep-sea); text-shadow: 1px 1px 0px white; line-height: 1.4;">🌧️ <b>Safe-Soak Alert:</b> Perfect natural watering conditions expected on <b>${perfectRainDays.join(', ')}</b>. It is safe to place houseplants outside to get washed!</div>`;
                 }
@@ -2140,8 +2111,6 @@
 
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('weather-content').style.display = 'block';
-                
-                if(window.DiaryManager) DiaryManager.renderGrid();
 
             } catch (error) {
                 console.error(error);
