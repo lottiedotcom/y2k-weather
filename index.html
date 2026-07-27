@@ -1154,19 +1154,25 @@
                 }
             },
 
-            waterPlant: async function(id) {
+                        waterPlant: function(id) {
                 if (confirm("Are you sure you watered this plant? This will reset the schedule!")) {
+                    
+                    // 1. Instantly update the local time so it moves down
                     const myPlant = this.plants.find(p => p.id === id);
                     if (myPlant) {
                         myPlant.last_watered_at = new Date().toISOString();
                     }
+                    
+                    // 2. Close modal and redraw the shelf
                     this.closeModal();
-                    await fetch('/api/db', {
+                    
+                    // 3. Quietly tell the cloud to save it in the background. 
+                    // NO this.init() being called here, so it cannot rubber-band back up!
+                    fetch('/api/db', {
                         method: 'PUT',
                         headers: { 'Content-Type': 'application/json', 'session-token': this.sessionToken },
                         body: JSON.stringify({ id: id })
                     });
-                    this.init();
                 }
             },
 
