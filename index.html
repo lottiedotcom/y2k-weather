@@ -13,6 +13,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&display=swap" rel="stylesheet">
 
+    <!-- Your existing offline database file -->
     <script src="flora_db.js"></script>
     <script src="climate_db.js"></script>
 
@@ -70,105 +71,20 @@
             text-shadow: 2px 2px var(--moe-pink), -2px -2px var(--mermaid-aqua);
         }
 
-        .search-box {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 15px;
-            width: 100%;
-        }
+        .search-box { display: flex; gap: 8px; margin-bottom: 15px; width: 100%; }
         
-        #search-input {
-            flex: 1;
-            padding: 10px 15px;
-            border-radius: 20px;
-            border: 2px solid white;
-            background: var(--inner-bubble);
-            color: var(--deep-sea);
-            font-family: 'Fredoka', sans-serif;
-            font-weight: 700;
-            outline: none;
-            box-shadow: inset 1px 1px 5px rgba(0, 240, 255, 0.1);
-            text-shadow: 1px 1px 0px white;
-        }
+        #search-input { flex: 1; padding: 10px 15px; border-radius: 20px; border: 2px solid white; background: var(--inner-bubble); color: var(--deep-sea); font-family: 'Fredoka', sans-serif; font-weight: 700; outline: none; box-shadow: inset 1px 1px 5px rgba(0, 240, 255, 0.1); text-shadow: 1px 1px 0px white; }
+        #search-input::placeholder { color: var(--moe-pink); opacity: 0.8; text-shadow: none; }
         
-        #search-input::placeholder {
-            color: var(--moe-pink);
-            opacity: 0.8;
-            text-shadow: none;
-        }
-        
-        .search-btn {
-            background: linear-gradient(135deg, var(--mermaid-aqua), var(--moe-pink));
-            border: 2px solid white;
-            border-radius: 50%;
-            width: 42px;
-            height: 42px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0, 240, 255, 0.3);
-            transition: transform 0.2s ease;
-        }
+        .search-btn { background: linear-gradient(135deg, var(--mermaid-aqua), var(--moe-pink)); border: 2px solid white; border-radius: 50%; width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 10px rgba(0, 240, 255, 0.3); transition: transform 0.2s ease; }
         .search-btn:active { transform: scale(0.9); }
 
-        #location-name {
-            font-size: 1rem;
-            color: var(--deep-sea);
-            text-shadow: 1px 1px white;
-            margin-bottom: 15px;
-            font-weight: 700;
-            background: var(--inner-bubble);
-            display: inline-block;
-            padding: 5px 15px;
-            border-radius: 20px;
-            border: 2px dashed var(--mermaid-aqua);
-        }
+        #location-name { font-size: 1rem; color: var(--deep-sea); text-shadow: 1px 1px white; margin-bottom: 15px; font-weight: 700; background: var(--inner-bubble); display: inline-block; padding: 5px 15px; border-radius: 20px; border: 2px dashed var(--mermaid-aqua); }
+        #temp { font-size: 5.5rem; font-weight: 700; margin: 0; color: white; text-shadow: 0 0 20px var(--mermaid-aqua), 3px 3px var(--moe-pink); }
+        #feels-like { font-size: 1.1rem; font-weight: 700; margin-bottom: 10px; color: var(--moe-pink); text-shadow: 1px 1px white; }
+        #status { font-size: 1.2rem; background: white; color: var(--mermaid-aqua); display: inline-block; padding: 8px 20px; border-radius: 25px; font-weight: 700; box-shadow: 4px 4px 0px var(--moe-pink); margin-bottom: 20px; border: 2px solid var(--mermaid-aqua); }
 
-        #temp {
-            font-size: 5.5rem;
-            font-weight: 700;
-            margin: 0;
-            color: white;
-            text-shadow: 0 0 20px var(--mermaid-aqua), 3px 3px var(--moe-pink);
-        }
-
-        #feels-like {
-            font-size: 1.1rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-            color: var(--moe-pink);
-            text-shadow: 1px 1px white;
-        }
-
-        #status {
-            font-size: 1.2rem;
-            background: white;
-            color: var(--mermaid-aqua);
-            display: inline-block;
-            padding: 8px 20px;
-            border-radius: 25px;
-            font-weight: 700;
-            box-shadow: 4px 4px 0px var(--moe-pink);
-            margin-bottom: 20px;
-            border: 2px solid var(--mermaid-aqua);
-        }
-
-        #saturation-alert {
-            display: none;
-            font-size: 0.95rem;
-            color: var(--deep-sea);
-            background: rgba(255, 255, 255, 0.65);
-            padding: 6px 16px;
-            border-radius: 20px;
-            border: 2px dashed var(--mermaid-aqua);
-            font-weight: 700;
-            margin: -10px auto 20px auto;
-            width: fit-content;
-            text-shadow: 1px 1px white;
-            box-shadow: 2px 2px 8px rgba(0, 240, 255, 0.2);
-            animation: fadeIn 0.5s ease;
-        }
+        #saturation-alert { display: none; font-size: 0.95rem; color: var(--deep-sea); background: rgba(255, 255, 255, 0.65); padding: 6px 16px; border-radius: 20px; border: 2px dashed var(--mermaid-aqua); font-weight: 700; margin: -10px auto 20px auto; width: fit-content; text-shadow: 1px 1px white; box-shadow: 2px 2px 8px rgba(0, 240, 255, 0.2); animation: fadeIn 0.5s ease; }
 
         .tab-section { display: none; animation: fadeIn 0.4s ease; }
         .tab-section.active { display: block; }
@@ -176,102 +92,24 @@
 
         .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 15px; }
 
-        .stat-box, .wide-box, .celestial-box {
-            background: var(--inner-bubble);
-            border: 2px solid white;
-            border-radius: 25px;
-            padding: 12px 5px;
-            box-shadow: 3px 3px 12px rgba(0, 240, 255, 0.2), inset -3px -3px 10px rgba(255,255,255,0.5);
-            color: var(--deep-sea);
-            font-weight: 700;
-            text-shadow: 1px 1px 0px white;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
+        .stat-box, .wide-box, .celestial-box { background: var(--inner-bubble); border: 2px solid white; border-radius: 25px; padding: 12px 5px; box-shadow: 3px 3px 12px rgba(0, 240, 255, 0.2), inset -3px -3px 10px rgba(255,255,255,0.5); color: var(--deep-sea); font-weight: 700; text-shadow: 1px 1px 0px white; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .wide-box { margin-bottom: 15px; padding: 15px; }
-        .celestial-box { margin-bottom: 15px; padding: 15px; }
 
-        .celestial-title {
-            font-size: 0.9rem;
-            color: var(--moe-pink);
-            text-shadow: 1px 1px 0px white;
-            margin-bottom: 10px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            border-bottom: 2px dotted var(--mermaid-aqua);
-            padding-bottom: 5px;
-            width: 100%;
-        }
+        .celestial-title { font-size: 0.9rem; color: var(--moe-pink); text-shadow: 1px 1px 0px white; margin-bottom: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; border-bottom: 2px dotted var(--mermaid-aqua); padding-bottom: 5px; width: 100%; }
 
         .vibe-title { color: var(--mermaid-aqua); font-weight: 700; font-size: 1.15rem; margin: 5px 0; text-shadow: 1px 1px 0px white; }
         .vibe-desc { font-size: 0.9rem; color: var(--deep-sea); line-height: 1.4; padding: 0 5px; }
         
-        .aqi-row {
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-            padding: 5px 10px;
-            box-sizing: border-box;
-            border-bottom: 1px dotted rgba(255,255,255,0.5);
-            font-size: 0.85rem;
-        }
+        .aqi-row { display: flex; justify-content: space-between; width: 100%; padding: 5px 10px; box-sizing: border-box; border-bottom: 1px dotted rgba(255,255,255,0.5); font-size: 0.85rem; }
         .aqi-row:last-child { border-bottom: none; }
         .aqi-label { color: var(--deep-sea); text-shadow: 1px 1px 0px white; text-align: left; }
         .aqi-val { font-weight: 900; color: var(--moe-pink); text-shadow: 1px 1px 0px white; text-align: right; }
 
-        .celestial-timeline {
-            position: relative;
-            padding-left: 20px;
-            margin-left: 15px;
-            margin-top: 10px;
-            margin-bottom: 5px;
-            display: flex;
-            flex-direction: column;
-            gap: 25px;
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        .celestial-timeline::before {
-            content: '';
-            position: absolute;
-            top: 5px;
-            bottom: 5px;
-            left: 0;
-            border-left: 3px dotted var(--moe-pink);
-        }
-
-        .celestial-event {
-            display: flex;
-            align-items: center;
-            position: relative;
-            width: 100%;
-        }
-
-        .celestial-event .pixel-stamp {
-            width: 45px;
-            height: 45px;
-            position: absolute;
-            left: -44px;
-            border-radius: 8px;
-            border: 2px solid white;
-            box-shadow: 0 0 8px var(--mermaid-aqua);
-            object-fit: cover;
-            background: var(--bubble-glass);
-            margin: 0;
-        }
-
-        .celestial-info {
-            padding-left: 15px;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            text-align: left;
-        }
+        .celestial-timeline { position: relative; padding-left: 20px; margin-left: 15px; margin-top: 10px; margin-bottom: 5px; display: flex; flex-direction: column; gap: 25px; width: 100%; box-sizing: border-box; }
+        .celestial-timeline::before { content: ''; position: absolute; top: 5px; bottom: 5px; left: 0; border-left: 3px dotted var(--moe-pink); }
+        .celestial-event { display: flex; align-items: center; position: relative; width: 100%; }
+        .celestial-event .pixel-stamp { width: 45px; height: 45px; position: absolute; left: -44px; border-radius: 8px; border: 2px solid white; box-shadow: 0 0 8px var(--mermaid-aqua); object-fit: cover; background: var(--bubble-glass); margin: 0; }
+        .celestial-info { padding-left: 15px; display: flex; flex-direction: column; align-items: flex-start; text-align: left; }
 
         .stat-icon { font-size: 1.6rem; margin-bottom: 2px; filter: drop-shadow(2px 2px 0px white); }
         .stat-label { font-size: 0.75rem; text-transform: uppercase; color: var(--moe-pink); letter-spacing: 1px; text-align: left; font-weight: 700; text-shadow: 1px 1px 0px white;}
@@ -281,31 +119,10 @@
 
         .atmosphere-scanner { margin-bottom: 15px; overflow: hidden; }
         
-        #diorama-box {
-            width: 100%;
-            height: 200px;
-            border: 3px solid white;
-            border-radius: 15px;
-            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.2);
-            position: relative;
-            overflow: hidden;
-            background-size: 100% 100%; 
-            background-repeat: no-repeat;
-            background-position: center;
-            transition: background-image 0.5s ease;
-            margin-top: 10px;
-        }
+        #diorama-box { width: 100%; height: 200px; border: 3px solid white; border-radius: 15px; box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.2); position: relative; overflow: hidden; background-size: 100% 100%; background-repeat: no-repeat; background-position: center; transition: background-image 0.5s ease; margin-top: 10px; }
 
-        .sprite {
-            position: absolute;
-            animation: drift linear infinite;
-        }
-
-        @keyframes drift {
-            0% { transform: translateX(-30px); }
-            50% { transform: translateX(30px); }
-            100% { transform: translateX(-30px); }
-        }
+        .sprite { position: absolute; animation: drift linear infinite; }
+        @keyframes drift { 0% { transform: translateX(-30px); } 50% { transform: translateX(30px); } 100% { transform: translateX(-30px); } }
 
         #cloud-scanner-output { font-size: 0.85rem; color: var(--deep-sea); margin-top: 15px; line-height: 1.4; width: 100%; text-align: center; border-top: 2px dotted rgba(255,255,255,0.5); padding-top: 10px; }
         
@@ -316,22 +133,7 @@
 
         .zone-header { font-size: 0.85rem; color: var(--moe-pink); font-weight: 700; margin: 15px 0 10px 0; text-transform: uppercase; border-bottom: 2px dotted white; padding-bottom: 5px; }
 
-        .agronomy-card {
-            background: rgba(180, 230, 255, 0.5);
-            border: 2px solid white;
-            border-radius: 20px;
-            padding: 12px;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            text-align: left;
-            box-shadow: 2px 2px 8px rgba(0, 240, 255, 0.15);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            cursor: pointer;
-            flex-wrap: wrap;
-        }
-        
+        .agronomy-card { background: rgba(180, 230, 255, 0.5); border: 2px solid white; border-radius: 20px; padding: 12px; margin-bottom: 10px; display: flex; align-items: flex-start; gap: 12px; text-align: left; box-shadow: 2px 2px 8px rgba(0, 240, 255, 0.15); transition: transform 0.2s ease, box-shadow 0.2s ease; cursor: pointer; flex-wrap: wrap; }
         .agronomy-card:active { transform: scale(0.98); }
 
         .plant-stamp { width: 70px; height: 70px; border-radius: 10px; border: 2px dashed white; object-fit: cover; background: var(--bubble-glass); flex-shrink: 0; box-shadow: 0 0 5px var(--mermaid-aqua); }
@@ -425,66 +227,16 @@
         .forecast-details p { margin: 4px 0; color: var(--moe-pink); text-shadow: 1px 1px 0px white; }
         .forecast-details span { color: var(--deep-sea); }
 
-        .prop-window {
-            background: linear-gradient(135deg, rgba(0, 208, 132, 0.15), rgba(200, 255, 200, 0.3)) !important;
-            border-color: #00d084 !important;
-            box-shadow: 0 0 12px rgba(0, 208, 132, 0.3) !important;
-        }
-        .prop-badge {
-            font-size: 0.65rem;
-            background: #00d084;
-            color: white;
-            padding: 3px 8px;
-            border-radius: 12px;
-            margin-top: 6px;
-            display: inline-block;
-            text-shadow: 1px 1px 1px rgba(0,0,0,0.2);
-            border: 1px solid white;
-        }
+        .prop-window { background: linear-gradient(135deg, rgba(0, 208, 132, 0.15), rgba(200, 255, 200, 0.3)) !important; border-color: #00d084 !important; box-shadow: 0 0 12px rgba(0, 208, 132, 0.3) !important; }
+        .prop-badge { font-size: 0.65rem; background: #00d084; color: white; padding: 3px 8px; border-radius: 12px; margin-top: 6px; display: inline-block; text-shadow: 1px 1px 1px rgba(0,0,0,0.2); border: 1px solid white; }
 
         #loading { font-size: 1.2rem; font-weight: 700; color: white; animation: bounce 1.5s infinite; text-shadow: 2px 2px var(--mermaid-aqua); margin: 20px 0; }
         @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
 
-        .top-nav {
-            display: flex;
-            justify-content: space-between;
-            background: var(--inner-bubble);
-            border: 2px dotted white;
-            border-radius: 30px;
-            padding: 6px;
-            margin-bottom: 15px; 
-            margin-top: 0;
-            box-shadow: 2px 2px 8px rgba(0, 240, 255, 0.15);
-            gap: 4px;
-        }
+        .top-nav { display: flex; justify-content: space-between; background: var(--inner-bubble); border: 2px dotted white; border-radius: 30px; padding: 6px; margin-bottom: 15px; margin-top: 0; box-shadow: 2px 2px 8px rgba(0, 240, 255, 0.15); gap: 4px; }
         
-        .nav-btn {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: none;
-            border: none;
-            color: var(--deep-sea);
-            font-family: 'Fredoka', sans-serif;
-            font-weight: 700;
-            font-size: 0.75rem;
-            padding: 10px 0;
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: 0.3s ease;
-            text-shadow: 1px 1px 0px white;
-            border-radius: 20px;
-            white-space: nowrap;
-        }
-
-        .nav-btn.active {
-            background: linear-gradient(135deg, var(--mermaid-aqua), var(--moe-pink));
-            color: white;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-            box-shadow: inset 0 -2px 0 rgba(0,0,0,0.1);
-        }
+        .nav-btn { flex: 1; display: flex; align-items: center; justify-content: center; background: none; border: none; color: var(--deep-sea); font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 0.75rem; padding: 10px 0; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s ease; text-shadow: 1px 1px 0px white; border-radius: 20px; white-space: nowrap; }
+        .nav-btn.active { background: linear-gradient(135deg, var(--mermaid-aqua), var(--moe-pink)); color: white; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); box-shadow: inset 0 -2px 0 rgba(0,0,0,0.1); }
 
         .btn-container { display: flex; gap: 10px; margin-top: 15px; width: 100%; }
         .refresh-btn { flex: 1; background: linear-gradient(135deg, var(--mermaid-aqua), var(--moe-pink)); border: 3px solid white; padding: 12px 10px; border-radius: 50px; color: white; font-size: 1rem; font-family: 'Fredoka', sans-serif; font-weight: 700; letter-spacing: 1px; cursor: pointer; box-shadow: 0 6px 15px rgba(0, 240, 255, 0.3), inset 0 -3px 0 rgba(0,0,0,0.1); transition: 0.2s; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); }
@@ -495,100 +247,18 @@
         .close-radar-btn { background: var(--moe-pink); color: white; text-align: center; padding: 12px; font-weight: 700; cursor: pointer; text-transform: uppercase; letter-spacing: 2px; border-bottom: 2px dashed white; }
         #radar-frame { width: 100%; height: 100%; border: none; }
 
-        .sync-btn-container {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-            width: 100%;
-        }
-        .sync-btn {
-            flex: 1;
-            background: rgba(255, 255, 255, 0.5);
-            border: 2px dashed var(--mermaid-aqua);
-            border-radius: 20px;
-            padding: 8px 5px;
-            color: var(--deep-sea);
-            font-family: 'Fredoka', sans-serif;
-            font-weight: 700;
-            font-size: 0.75rem;
-            cursor: pointer;
-            box-shadow: 2px 2px 8px rgba(0, 240, 255, 0.15);
-            transition: 0.2s ease;
-            text-shadow: 1px 1px 0px white;
-        }
+        .sync-btn-container { display: flex; gap: 10px; margin-bottom: 15px; width: 100%; }
+        .sync-btn { flex: 1; background: rgba(255, 255, 255, 0.5); border: 2px dashed var(--mermaid-aqua); border-radius: 20px; padding: 8px 5px; color: var(--deep-sea); font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 0.75rem; cursor: pointer; box-shadow: 2px 2px 8px rgba(0, 240, 255, 0.15); transition: 0.2s ease; text-shadow: 1px 1px 0px white; }
         .sync-btn:active { transform: scale(0.95); }
 
-        .shelf-toggle-container {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 15px;
-            width: 100%;
-        }
-        .shelf-toggle-btn {
-            flex: 1;
-            background: var(--inner-bubble);
-            border: 2px dotted white;
-            border-radius: 20px;
-            padding: 10px 5px;
-            color: var(--deep-sea);
-            font-family: 'Fredoka', sans-serif;
-            font-weight: 700;
-            font-size: 0.8rem;
-            cursor: pointer;
-            box-shadow: 2px 2px 8px rgba(0, 240, 255, 0.15);
-            transition: 0.3s ease;
-            text-shadow: 1px 1px 0px white;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        .shelf-toggle-btn.active {
-            background: linear-gradient(135deg, var(--mermaid-aqua), var(--moe-pink));
-            color: white;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-            border: 2px solid white;
-        }
+        .shelf-toggle-container { display: flex; gap: 8px; margin-bottom: 15px; width: 100%; }
+        .shelf-toggle-btn { flex: 1; background: var(--inner-bubble); border: 2px dotted white; border-radius: 20px; padding: 10px 5px; color: var(--deep-sea); font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 0.8rem; cursor: pointer; box-shadow: 2px 2px 8px rgba(0, 240, 255, 0.15); transition: 0.3s ease; text-shadow: 1px 1px 0px white; text-transform: uppercase; letter-spacing: 1px; }
+        .shelf-toggle-btn.active { background: linear-gradient(135deg, var(--mermaid-aqua), var(--moe-pink)); color: white; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); border: 2px solid white; }
 
-        .propagate-btn {
-            width: 100%;
-            margin-top: 10px;
-            margin-bottom: 15px;
-            display: block;
-            background: linear-gradient(135deg, rgba(0, 240, 255, 0.3), rgba(0, 208, 132, 0.3));
-            border: 2px dashed #00d084;
-            border-radius: 15px;
-            padding: 10px;
-            color: var(--deep-sea);
-            font-family: 'Fredoka', sans-serif;
-            font-weight: 700;
-            font-size: 0.85rem;
-            cursor: pointer;
-            box-shadow: 0 2px 5px rgba(0, 240, 255, 0.2);
-            transition: 0.2;
-            text-shadow: 1px 1px 0px white;
-            text-transform: lowercase;
-            letter-spacing: 2px;
-        }
+        .propagate-btn { width: 100%; margin-top: 10px; margin-bottom: 15px; display: block; background: linear-gradient(135deg, rgba(0, 240, 255, 0.3), rgba(0, 208, 132, 0.3)); border: 2px dashed #00d084; border-radius: 15px; padding: 10px; color: var(--deep-sea); font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 0.85rem; cursor: pointer; box-shadow: 0 2px 5px rgba(0, 240, 255, 0.2); transition: 0.2; text-shadow: 1px 1px 0px white; text-transform: lowercase; letter-spacing: 2px; }
         .propagate-btn:active { transform: scale(0.98); }
         
-        .delete-btn {
-            width: 100%;
-            margin-bottom: 25px;
-            display: block;
-            background: rgba(255, 77, 77, 0.2);
-            border: 2px dashed #ff4d4d;
-            border-radius: 15px;
-            padding: 10px;
-            color: #ff4d4d;
-            font-family: 'Fredoka', sans-serif;
-            font-weight: 700;
-            font-size: 0.85rem;
-            cursor: pointer;
-            box-shadow: 0 2px 5px rgba(255, 77, 77, 0.2);
-            transition: 0.2;
-            text-shadow: 1px 1px 0px white;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
+        .delete-btn { width: 100%; margin-bottom: 25px; display: block; background: rgba(255, 77, 77, 0.2); border: 2px dashed #ff4d4d; border-radius: 15px; padding: 10px; color: #ff4d4d; font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 0.85rem; cursor: pointer; box-shadow: 0 2px 5px rgba(255, 77, 77, 0.2); transition: 0.2; text-shadow: 1px 1px 0px white; text-transform: uppercase; letter-spacing: 2px; }
         .delete-btn:active { transform: scale(0.98); }
 
     </style>
@@ -596,7 +266,7 @@
 <body>
 
     <div class="weather-container">
-        <h1>☁️ Right Now <span style="font-size: 0.8rem; cursor: pointer; opacity: 0.5;" id="admin-nav-btn" onclick="switchTab('tab-admin', this)">⚙️</span></h1>
+        <h1>☁️ Right Now <span style="font-size: 0.8rem; cursor: pointer; opacity: 0.5; display: none;" id="admin-nav-btn" onclick="switchTab('tab-admin', this)">⚙️</span></h1>
         
         <div id="weather-search-box" class="search-box">
             <input type="text" id="search-input" placeholder="Search city... 🌺" onkeypress="handleSearchKeyPress(event)">
@@ -609,6 +279,7 @@
         
         <div id="weather-content" style="display:none;">
 
+            <!-- LOGIN UI -->
             <div id="login-container" class="wide-box" style="margin-bottom: 20px;">
                 <div class="celestial-title">🌸 Cloud Login 🌸</div>
                 
@@ -632,7 +303,6 @@
                     <div style="margin-top: 15px; font-size: 0.8rem; color: var(--deep-sea); text-decoration: underline; cursor: pointer; font-weight: 700; text-shadow: 1px 1px 0px white;" onclick="toggleRecoveryUI(true)">Forgot your password?</div>
                 </div>
 
-                <!-- Recovery UI (Hidden by default) -->
                 <div id="recovery-auth" style="display: none; width: 100%; flex-direction: column; align-items: center;">
                     <div class="vibe-desc" style="font-size: 0.75rem; color: var(--deep-sea); width: 85%; margin-bottom: 10px; line-height: 1.3; text-shadow: 1px 1px 0px white;">Enter your username, your Secret Recovery Key, and your new password!</div>
                     
@@ -662,59 +332,6 @@
                 <button class="nav-btn" onclick="switchTab('tab-future', this)">🔮 FUTURE</button>
                 <button class="nav-btn" onclick="switchTab('tab-sky', this)">🌠 SKY</button>
                 <button class="nav-btn" onclick="switchTab('tab-flora', this)">🌿 FLORA</button>
-            </div>
-
-            <!-- TAB: ADMIN -->
-            <div id="tab-admin" class="tab-section">
-                <div class="wide-box" style="background: rgba(255, 255, 255, 0.3);">
-                    <div class="celestial-title">🛠️ Secret Admin Generator</div>
-                    <div class="vibe-desc" style="margin-bottom: 10px; font-size: 0.75rem;">Fill this out to instantly generate clean JSON code for your master flora_db.js file!</div>
-                    
-                    <input type="text" id="admin-id" placeholder="Plant ID (e.g. pink_princess)" class="days-input" style="width: 100%; margin-bottom: 8px; border-radius: 15px; font-size: 0.85rem; text-align: left; box-sizing: border-box;">
-                    <input type="text" id="admin-name" placeholder="Display Name (e.g. Pink Princess)" class="days-input" style="width: 100%; margin-bottom: 8px; border-radius: 15px; font-size: 0.85rem; text-align: left; box-sizing: border-box;">
-                    <input type="text" id="admin-img" placeholder="Image URL (Postimages link)" class="days-input" style="width: 100%; margin-bottom: 8px; border-radius: 15px; font-size: 0.85rem; text-align: left; box-sizing: border-box;">
-                    
-                    <div style="display: flex; gap: 8px; margin-bottom: 8px;">
-                        <select id="admin-toxic" class="days-input" style="flex: 1; border-radius: 15px; font-size: 0.85rem;">
-                            <option value="true">☠️ Toxic to Pets</option>
-                            <option value="false">🐾 Pet Safe</option>
-                        </select>
-                        <select id="admin-wfreq" class="days-input" style="flex: 1; border-radius: 15px; font-size: 0.85rem;">
-                            <option value="high">💧 High Water</option>
-                            <option value="moderate" selected>💧 Mod Water</option>
-                            <option value="low">🌵 Low Water</option>
-                            <option value="very_low">🏜️ Very Low</option>
-                        </select>
-                    </div>
-                    
-                    <input type="text" id="admin-wsched" placeholder="Schedule (e.g. Water: Let dry completely)" class="days-input" style="width: 100%; margin-bottom: 8px; border-radius: 15px; font-size: 0.85rem; text-align: left; box-sizing: border-box;">
-                    
-                    <div style="display: flex; gap: 8px; margin-bottom: 8px;">
-                        <input type="number" step="0.1" id="admin-vpd-min" placeholder="Min VPD (0.8)" class="days-input" style="flex: 1; border-radius: 15px; font-size: 0.85rem;">
-                        <input type="number" step="0.1" id="admin-vpd-max" placeholder="Max VPD (1.2)" class="days-input" style="flex: 1; border-radius: 15px; font-size: 0.85rem;">
-                    </div>
-
-                    <div style="display: flex; gap: 8px; margin-bottom: 8px;">
-                        <input type="number" id="admin-tfloor" placeholder="Abs Min Temp (50)" class="days-input" style="flex: 1; border-radius: 15px; font-size: 0.85rem;">
-                        <input type="number" id="admin-tceil" placeholder="Abs Max Temp (95)" class="days-input" style="flex: 1; border-radius: 15px; font-size: 0.85rem;">
-                    </div>
-
-                    <div style="display: flex; gap: 8px; margin-bottom: 8px;">
-                        <input type="number" id="admin-optmin" placeholder="Pref Min Temp (65)" class="days-input" style="flex: 1; border-radius: 15px; font-size: 0.85rem;">
-                        <input type="number" id="admin-optmax" placeholder="Pref Max Temp (80)" class="days-input" style="flex: 1; border-radius: 15px; font-size: 0.85rem;">
-                    </div>
-
-                    <div style="display: flex; gap: 8px; margin-bottom: 12px;">
-                        <input type="number" id="admin-wind" placeholder="Max Wind (15)" class="days-input" style="flex: 1; border-radius: 15px; font-size: 0.85rem;">
-                        <input type="text" id="admin-lunar" placeholder="Lunar (waxing)" class="days-input" style="flex: 1; border-radius: 15px; font-size: 0.85rem; text-align: left;">
-                    </div>
-
-                    <button class="sync-btn" style="width: 100%; background: linear-gradient(135deg, #00d084, #00f0ff); color: white; border: 2px solid white; margin-bottom: 10px;" onclick="generateFloraCode()">⚙️ GENERATE CODE</button>
-                    
-                    <textarea id="admin-output" class="days-input" style="width: 100%; height: 150px; border-radius: 15px; font-size: 0.75rem; text-align: left; box-sizing: border-box; padding: 10px; margin-bottom: 10px; white-space: pre;" readonly placeholder="Code will appear here..."></textarea>
-                    
-                    <button class="sync-btn" style="width: 100%; background: var(--moe-pink); color: white; border: 2px solid white;" onclick="copyAdminCode()">📋 COPY TO CLIPBOARD</button>
-                </div>
             </div>
 
             <!-- TAB: NOW -->
@@ -857,6 +474,71 @@
                 </div>
             </div>
 
+            <!-- TAB: ADMIN MASTER DATABASE UPLOADER -->
+            <div id="tab-admin" class="tab-section">
+                <div class="wide-box" style="background: rgba(255, 255, 255, 0.3);">
+                    <div class="celestial-title">☁️ Master Database Uploader</div>
+                    <div class="vibe-desc" style="margin-bottom: 10px; font-size: 0.75rem;">Add a new master template directly to your Postgres cloud database.</div>
+                    
+                    <input type="text" id="admin-id" placeholder="Plant ID (e.g. pink_princess)" class="days-input" style="width: 100%; margin-bottom: 8px; border-radius: 15px; font-size: 0.85rem; text-align: left; box-sizing: border-box;">
+                    <input type="text" id="admin-name" placeholder="Display Name (e.g. Pink Princess)" class="days-input" style="width: 100%; margin-bottom: 8px; border-radius: 15px; font-size: 0.85rem; text-align: left; box-sizing: border-box;">
+                    
+                    <label for="admin-photo" class="sync-btn" style="display:block; width: 100%; box-sizing: border-box; text-align: center; margin-bottom: 8px; background: var(--inner-bubble);">📸 UPLOAD PLANT STAMP IMAGE</label>
+                    <input type="file" id="admin-photo" accept="image/*" style="display: none;" onchange="updateAdminPhotoLabel(this)">
+                    
+                    <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+                        <select id="admin-toxic" class="days-input" style="flex: 1; border-radius: 15px; font-size: 0.85rem;">
+                            <option value="true">☠️ Toxic to Pets</option>
+                            <option value="false">🐾 Pet Safe</option>
+                        </select>
+                        <select id="admin-wfreq" class="days-input" style="flex: 1; border-radius: 15px; font-size: 0.85rem;">
+                            <option value="high">💧 High Water</option>
+                            <option value="moderate" selected>💧 Mod Water</option>
+                            <option value="low">🌵 Low Water</option>
+                            <option value="very_low">🏜️ Very Low</option>
+                        </select>
+                    </div>
+                    
+                    <input type="text" id="admin-wsched" placeholder="Schedule (e.g. Water: Let dry completely)" class="days-input" style="width: 100%; margin-bottom: 8px; border-radius: 15px; font-size: 0.85rem; text-align: left; box-sizing: border-box;">
+                    
+                    <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+                        <input type="number" step="0.1" id="admin-vpd-min" placeholder="Min VPD (0.8)" class="days-input" style="flex: 1; border-radius: 15px; font-size: 0.85rem;">
+                        <input type="number" step="0.1" id="admin-vpd-max" placeholder="Max VPD (1.2)" class="days-input" style="flex: 1; border-radius: 15px; font-size: 0.85rem;">
+                    </div>
+
+                    <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+                        <input type="number" id="admin-tfloor" placeholder="Abs Min Temp (50)" class="days-input" style="flex: 1; border-radius: 15px; font-size: 0.85rem;">
+                        <input type="number" id="admin-tceil" placeholder="Abs Max Temp (95)" class="days-input" style="flex: 1; border-radius: 15px; font-size: 0.85rem;">
+                    </div>
+
+                    <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+                        <input type="number" id="admin-optmin" placeholder="Pref Min Temp (65)" class="days-input" style="flex: 1; border-radius: 15px; font-size: 0.85rem;">
+                        <input type="number" id="admin-optmax" placeholder="Pref Max Temp (80)" class="days-input" style="flex: 1; border-radius: 15px; font-size: 0.85rem;">
+                    </div>
+
+                    <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+                        <select id="admin-cycle" class="days-input" style="flex: 1; border-radius: 15px; font-size: 0.85rem;">
+                            <option value="perennial" selected>Perennial</option>
+                            <option value="annual">Annual</option>
+                        </select>
+                        <select id="admin-season" class="days-input" style="flex: 1; border-radius: 15px; font-size: 0.85rem;">
+                            <option value="null" selected>No specific season</option>
+                            <option value="spring">Spring</option>
+                            <option value="summer">Summer</option>
+                            <option value="fall">Fall</option>
+                            <option value="winter">Winter</option>
+                        </select>
+                    </div>
+
+                    <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+                        <input type="number" id="admin-wind" placeholder="Max Wind (15)" class="days-input" style="flex: 1; border-radius: 15px; font-size: 0.85rem;">
+                        <input type="text" id="admin-lunar" placeholder="Lunar (waxing)" class="days-input" style="flex: 1; border-radius: 15px; font-size: 0.85rem; text-align: left;">
+                    </div>
+
+                    <button class="sync-btn" style="width: 100%; background: linear-gradient(135deg, #00d084, #00f0ff); color: white; border: 2px solid white; margin-bottom: 10px;" onclick="DiaryManager.uploadMasterTemplate()">☁️ UPLOAD TO CLOUD DB</button>
+                </div>
+            </div>
+
             <!-- TAB: FLORA (Search, Database & Diary Toggle) -->
             <div id="tab-flora" class="tab-section">
                 
@@ -968,53 +650,18 @@
     </div>
 
     <script>
-        // Admin Code Generator Functions
-        function generateFloraCode() {
-            const id = document.getElementById('admin-id').value.trim() || "new_plant";
-            const name = document.getElementById('admin-name').value.trim() || "New Plant";
-            const img = document.getElementById('admin-img').value.trim() || "https://i.postimg.cc/Fs9tVbff/d1fbe1c35c32494c9290ebf699c16fc6.jpg";
-            const toxic = document.getElementById('admin-toxic').value === 'true';
-            const wFreq = document.getElementById('admin-wfreq').value;
-            const wSched = document.getElementById('admin-wsched').value.trim() || "Water: Let dry completely";
-            const vpdMin = document.getElementById('admin-vpd-min').value || "0.8";
-            const vpdMax = document.getElementById('admin-vpd-max').value || "1.2";
-            const tFloor = document.getElementById('admin-tfloor').value || "50";
-            const tCeil = document.getElementById('admin-tceil').value || "95";
-            const optMin = document.getElementById('admin-optmin').value || "65";
-            const optMax = document.getElementById('admin-optmax').value || "80";
-            const wind = document.getElementById('admin-wind').value || "15";
-            const lunar = document.getElementById('admin-lunar').value.trim() || "waxing";
-
-            const entry = `"${id}": {
-    "name": "${name}",
-    "stamp_img": "${img}",
-    "toxic_pets": ${toxic},
-    "water_frequency": "${wFreq}",
-    "water_schedule": "${wSched}",
-    "vpd_range": [${vpdMin}, ${vpdMax}],
-    "temp_floor": ${tFloor},
-    "temp_ceiling": ${tCeil},
-    "optimal_temp": [${optMin}, ${optMax}],
-    "wind_tolerance": ${wind},
-    "lunar_affinity": "${lunar}",
-    "cycle": "perennial",
-    "season": null
-},`;
-
-            document.getElementById('admin-output').value = entry;
-        }
-
-        function copyAdminCode() {
-            const copyText = document.getElementById('admin-output');
-            if(!copyText.value) return;
-            copyText.select();
-            copyText.setSelectionRange(0, 99999); // For mobile devices
-            navigator.clipboard.writeText(copyText.value).then(() => {
-                alert("📋 Copied! Open GitHub and paste this into flora_db.js!");
-            }).catch(err => {
-                document.execCommand("copy");
-                alert("📋 Copied! Open GitHub and paste this into flora_db.js!");
-            });
+        function updateAdminPhotoLabel(input) {
+            const label = document.querySelector('label[for="admin-photo"]');
+            if (input.files && input.files[0]) {
+                label.innerText = "✅ STAMP LOADED";
+                label.style.background = "var(--moe-pink)";
+                label.style.color = "white";
+                label.style.border = "2px solid white";
+            } else {
+                label.innerText = "📸 UPLOAD PLANT STAMP IMAGE";
+                label.style.background = "var(--inner-bubble)";
+                label.style.color = "var(--deep-sea)";
+            }
         }
 
         function toggleRecoveryUI(showRecovery) {
@@ -1153,6 +800,7 @@
                     if (res.ok) {
                         this.sessionToken = data.token;
                         localStorage.setItem('floraSessionToken', data.token);
+                        localStorage.setItem('floraUsername', data.username);
                         msg.innerText = data.message;
                         document.getElementById('login-container').style.display = 'none';
                         
@@ -1187,6 +835,7 @@
                     if (res.ok) {
                         this.sessionToken = data.token;
                         localStorage.setItem('floraSessionToken', data.token);
+                        localStorage.setItem('floraUsername', data.username);
                         msg.innerText = data.message;
                         document.getElementById('login-container').style.display = 'none';
                         alert("Password successfully reset! 🌸");
@@ -1200,13 +849,52 @@
             logout: function() {
                 this.sessionToken = null;
                 localStorage.removeItem('floraSessionToken');
+                localStorage.removeItem('floraUsername');
                 this.plants = [];
                 document.getElementById('user-profile-header').style.display = 'none';
+                document.getElementById('admin-nav-btn').style.display = 'none';
                 document.getElementById('login-container').style.display = 'flex';
                 this.renderGrid();
             },
 
             init: async function() {
+                // Check if user is Plum to show Admin gear
+                const loggedInUser = localStorage.getItem('floraUsername');
+                if (loggedInUser && loggedInUser.toLowerCase() === 'plum') {
+                    document.getElementById('admin-nav-btn').style.display = 'inline-block';
+                } else {
+                    document.getElementById('admin-nav-btn').style.display = 'none';
+                }
+
+                // 1. Fetch the master templates from the Cloud Database first!
+                try {
+                    const tplRes = await fetch('/api/db', { headers: { 'db-type': 'template' } });
+                    if (tplRes.ok) {
+                        const tplJson = await tplRes.json();
+                        tplJson.templates.forEach(t => {
+                            window.floraDB[t.id] = {
+                                name: t.name,
+                                stamp_img: t.stamp_img || 'https://i.postimg.cc/Fs9tVbff/d1fbe1c35c32494c9290ebf699c16fc6.jpg',
+                                toxic_pets: t.toxic_pets,
+                                water_frequency: t.water_frequency,
+                                water_schedule: t.water_schedule,
+                                vpd_range: [parseFloat(t.vpd_min), parseFloat(t.vpd_max)],
+                                temp_floor: t.temp_floor,
+                                temp_ceiling: t.temp_ceiling,
+                                optimal_temp: [t.opt_min, t.opt_max],
+                                wind_tolerance: t.wind_tolerance,
+                                lunar_affinity: t.lunar_affinity,
+                                cycle: t.cycle,
+                                season: (!t.season || t.season === 'null') ? null : t.season
+                            };
+                        });
+                    }
+                } catch (e) {
+                    console.error("Failed to load cloud templates", e);
+                }
+                
+                this.populatePlantList();
+
                 if (!this.sessionToken) {
                     document.getElementById('login-container').style.display = 'flex';
                     document.getElementById('user-profile-header').style.display = 'none';
@@ -1228,7 +916,7 @@
                 } catch (e) {
                     console.error("Cloud fetch failed", e);
                 }
-                this.populatePlantList();
+                
                 this.renderGrid();
             },
 
@@ -1238,6 +926,65 @@
                     datalist.innerHTML = Object.keys(window.floraDB).map(id => 
                         `<option value="${window.floraDB[id].name}"></option>`
                     ).join('');
+                }
+            },
+
+            uploadMasterTemplate: async function() {
+                const id = document.getElementById('admin-id').value.trim() || "new_plant";
+                const name = document.getElementById('admin-name').value.trim() || "New Plant";
+                const toxic = document.getElementById('admin-toxic').value === 'true';
+                const wFreq = document.getElementById('admin-wfreq').value;
+                const wSched = document.getElementById('admin-wsched').value.trim() || "Water: Let dry completely";
+                const vpdMin = document.getElementById('admin-vpd-min').value || "0.8";
+                const vpdMax = document.getElementById('admin-vpd-max').value || "1.2";
+                const tFloor = document.getElementById('admin-tfloor').value || "50";
+                const tCeil = document.getElementById('admin-tceil').value || "95";
+                const optMin = document.getElementById('admin-optmin').value || "65";
+                const optMax = document.getElementById('admin-optmax').value || "80";
+                const wind = document.getElementById('admin-wind').value || "15";
+                const lunar = document.getElementById('admin-lunar').value.trim() || "waxing";
+                const cycle = document.getElementById('admin-cycle').value;
+                const season = document.getElementById('admin-season').value;
+
+                let base64Image = null;
+                const photoInput = document.getElementById('admin-photo');
+                if (photoInput.files && photoInput.files[0]) {
+                    document.getElementById('loading').innerText = "Compressing stamp... 🌸";
+                    document.getElementById('loading').style.display = 'block';
+                    base64Image = await compressImage(photoInput.files[0]);
+                }
+
+                document.getElementById('loading').innerText = "Uploading Master to Cloud... ☁️";
+                document.getElementById('loading').style.display = 'block';
+
+                try {
+                    const res = await fetch('/api/db', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'session-token': this.sessionToken, 'db-type': 'template' },
+                        body: JSON.stringify({
+                            id: id, name: name, stamp_img: base64Image, toxic_pets: toxic, water_frequency: wFreq,
+                            water_schedule: wSched, vpd_min: vpdMin, vpd_max: vpdMax, temp_floor: tFloor,
+                            temp_ceiling: tCeil, opt_min: optMin, opt_max: optMax, wind_tolerance: wind,
+                            lunar_affinity: lunar, cycle: cycle, season: season
+                        })
+                    });
+                    
+                    const data = await res.json();
+                    document.getElementById('loading').style.display = 'none';
+
+                    if (res.ok) {
+                        alert("☁️ Master Template Uploaded to Cloud! It is now permanently in the database.");
+                        document.getElementById('admin-id').value = '';
+                        document.getElementById('admin-name').value = '';
+                        photoInput.value = '';
+                        updateAdminPhotoLabel(photoInput);
+                        this.init(); // Refresh so it shows up in the search bar immediately
+                    } else {
+                        alert("Error: " + data.error);
+                    }
+                } catch (e) {
+                    document.getElementById('loading').style.display = 'none';
+                    alert("Network error while uploading!");
                 }
             },
 
@@ -1270,6 +1017,7 @@
                 }
                 
                 document.getElementById('loading').innerText = "Uploading to Cloud... ☁️";
+                document.getElementById('loading').style.display = 'block';
                 
                 await fetch('/api/db', {
                     method: 'POST',
@@ -2451,3 +2199,4 @@
     </script>
 </body>
 </html>
+
