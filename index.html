@@ -13,6 +13,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&display=swap" rel="stylesheet">
 
+    <!-- Database Fallback & Climate Engine -->
+    <script src="flora_db.js"></script>
     <script src="climate_db.js"></script>
 
     <style>
@@ -450,7 +452,7 @@
                     <div class="wide-box" style="background: rgba(255, 255, 255, 0.3);">
                         <div class="celestial-title">➕ Add to Diary</div>
                         
-                        <!-- NATIVE SEARCH BAR REPLACEMENT -->
+                        <!-- SEARCH BAR SEARCHING DATABASE -->
                         <input list="plant-datalist" id="plant-select-input" placeholder="🔍 Search plant database..." class="days-input" style="width: 100%; margin-bottom: 8px; border-radius: 15px; font-size: 0.85rem; text-align: left; box-sizing: border-box;">
                         <datalist id="plant-datalist"></datalist>
 
@@ -898,7 +900,7 @@
                     try { tplJson = JSON.parse(text); } catch(e) {}
 
                     if (tplRes.ok && tplJson && tplJson.templates) {
-                        if (!window.floraDB) window.floraDB = {}; // Prevent crash if old DB is wiped
+                        if (!window.floraDB) window.floraDB = {};
                         tplJson.templates.forEach(t => {
                             window.floraDB[t.id] = {
                                 name: t.name,
@@ -909,8 +911,7 @@
                                 vpd_range: [parseFloat(t.vpd_min), parseFloat(t.vpd_max)],
                                 temp_floor: t.temp_floor,
                                 temp_ceiling: t.temp_ceiling,
-                                opt_min: t.opt_min,
-                                opt_max: t.opt_max,
+                                optimal_temp: [t.opt_min, t.opt_max], // FIXED ARRAY FORMAT
                                 wind_tolerance: t.wind_tolerance,
                                 lunar_affinity: t.lunar_affinity,
                                 cycle: t.cycle,
@@ -1207,7 +1208,7 @@
                             </div>
                             <div class="stat-cell-dynamic">
                                 <div class="stat-label-clean">Ideal Temp</div>
-                                <div class="stat-value-clean">${res.plant.optimal_temp[0]}° - ${res.plant.optimal_temp[1]}°</div>
+                                <div class="stat-value-clean">${res.plant.optimal_temp ? res.plant.optimal_temp[0] + '° - ' + res.plant.optimal_temp[1] + '°' : '--'}</div>
                             </div>
                             <div class="stat-cell-dynamic">
                                 <div class="stat-label-clean">Water Needs</div>
@@ -1618,7 +1619,7 @@
                 title = "Warm  ˖.𖤓 ݁٠࣪˖˚⋆";
                 desc = "It's a sunny day! The plants are loving life, it's a great day to get outside 𖤓";
             } else if (temp < 90) {
-                title = "Toasty ☀︎⋆.ೃ࿔*:･";
+                title = "Toasty ☀︎⋆.utf8";
                 desc = "Time to turn on the fan, grab a massive ice drink and keep things simple with low stress vibes (⸝⸝ᵕᴗᵕ⸝⸝)˚˖𓍢ִ໋`🌿:";
             } else if (temp < 100) {
                 title = "Scorched ⊹₊🔥⋆｡°✩";
@@ -1796,6 +1797,11 @@
                 let outVpd = !isNaN(parseFloat(res.liveVPD)) ? parseFloat(res.liveVPD).toFixed(2) : res.liveVPD;
                 let vpdLabel = useIndoor ? `Live Indoor: ${formattedVpd}` : `Live Outdoor: ${outVpd}`;
 
+                let optTempText = "--";
+                if (res.plant.optimal_temp && Array.isArray(res.plant.optimal_temp)) {
+                    optTempText = `${res.plant.optimal_temp[0]}° - ${res.plant.optimal_temp[1]}°`;
+                }
+
                 container.innerHTML += `
                     <div class="agronomy-card ${isExpanded}" onclick="this.classList.toggle('expanded')">
                         <div style="display: flex; flex-direction: column; align-items: center; gap: 4px; flex-shrink: 0;">
@@ -1834,7 +1840,7 @@
                                     </div>
                                     <div class="stat-cell-dynamic">
                                         <div class="stat-label-clean">Ideal Temp</div>
-                                        <div class="stat-value-clean">${res.plant.optimal_temp[0]}° - ${res.plant.optimal_temp[1]}°</div>
+                                        <div class="stat-value-clean">${optTempText}</div>
                                     </div>
                                     <div class="stat-cell-dynamic">
                                         <div class="stat-label-clean">Water Needs</div>
@@ -1846,12 +1852,12 @@
                                     </div>
                                     <div class="stat-cell-static">
                                         <div class="stat-label-clean">Lunar Boost</div>
-                                        <div class="stat-value-clean ${res.isLunarBoostActive ? 'lunar-boost-active' : ''}">${res.plant.lunar_affinity.toUpperCase()}</div>
+                                        <div class="stat-value-clean ${res.isLunarBoostActive ? 'lunar-boost-active' : ''}">${res.plant.lunar_affinity ? res.plant.lunar_affinity.toUpperCase() : ''}</div>
                                     </div>
                                 </div>
                                 <div class="metabolism-box">
                                     <div class="stat-label-clean">Metabolism</div>
-                                    <div class="metabolism-text">${res.respiration}</div>
+                                    <div class="metabolism-text">${res.respiration || ''}</div>
                                 </div>
                             </div>
                         </div>
@@ -2201,7 +2207,7 @@
 
             } catch (error) {
                 console.error(error);
-                document.getElementById('loading').innerText = "(✖╭╮✖) Data loading error...";
+                document.getElementById('loading').innerText = "(✖╭╮✖) Error: " + error.message;
             }
         }
 
@@ -2243,9 +2249,9 @@
             }
         }
 
-        window.addEventListener('load', () => {
+        window.addEventListener('load', async () => {
+            if (window.DiaryManager) await window.DiaryManager.init();
             fetchWeather();
-            if (window.DiaryManager) window.DiaryManager.init();
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.register('sw.js')
                     .then(registration => console.log('ServiceWorker registered! 🫧'))
