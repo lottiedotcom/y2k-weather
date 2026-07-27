@@ -7,14 +7,19 @@ module.exports = async (req, res) => {
 
     try {
         if (req.method === 'GET') {
-            const result = await pool.query('SELECT * FROM plant_instances WHERE user_id = $1 ORDER BY created_at ASC', [userId]);
+            const result = await pool.query(
+                `SELECT id, user_id, plant_template_id, nickname, shelf_type, custom_image,
+                EXTRACT(EPOCH FROM last_watered_at) * 1000 AS last_watered_at, 
+                created_at FROM plant_instances WHERE user_id = $1 ORDER BY created_at ASC`, 
+                [userId]
+            );
             res.status(200).json({ plants: result.rows });
         } 
         else if (req.method === 'POST') {
-            const { plant_template_id, nickname, shelf_type } = req.body;
+            const { plant_template_id, nickname, shelf_type, custom_image } = req.body;
             await pool.query(
-                'INSERT INTO plant_instances (user_id, plant_template_id, nickname, shelf_type) VALUES ($1, $2, $3, $4)',
-                [userId, plant_template_id, nickname, shelf_type]
+                'INSERT INTO plant_instances (user_id, plant_template_id, nickname, shelf_type, custom_image) VALUES ($1, $2, $3, $4, $5)',
+                [userId, plant_template_id, nickname, shelf_type, custom_image]
             );
             res.status(200).json({ message: 'Added!' });
         } 
