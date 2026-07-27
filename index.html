@@ -612,25 +612,46 @@
             <div id="login-container" class="wide-box" style="margin-bottom: 20px;">
                 <div class="celestial-title">🌸 Cloud Login 🌸</div>
                 
-                <input type="text" id="username" placeholder="Username" class="days-input" style="width: 80%; margin-bottom: 8px; border-radius: 20px;">
-                
-                <div style="position: relative; width: 80%; margin-bottom: 8px;">
-                    <input type="password" id="password" placeholder="Password" class="days-input" style="width: 100%; box-sizing: border-box; border-radius: 20px; padding-right: 35px;">
-                    <button type="button" onclick="togglePassword()" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 1.1rem; opacity: 0.7;">👁️</button>
+                <div id="standard-auth" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+                    <input type="text" id="username" placeholder="Username" class="days-input" style="width: 80%; margin-bottom: 8px; border-radius: 20px;">
+                    
+                    <div style="position: relative; width: 80%; margin-bottom: 8px;">
+                        <input type="password" id="password" placeholder="Password" class="days-input" style="width: 100%; box-sizing: border-box; border-radius: 20px; padding-right: 35px;">
+                        <button type="button" onclick="togglePassword('password')" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 1.1rem; opacity: 0.7;">👁️</button>
+                    </div>
+
+                    <div class="vibe-desc" style="font-size: 0.75rem; color: var(--deep-sea); width: 85%; margin-bottom: 15px; line-height: 1.3; text-shadow: 1px 1px 0px white; background: rgba(255,255,255,0.3); padding: 8px; border-radius: 15px; border: 1px dashed var(--moe-pink);">
+                        ⚠️ <b>Privacy first!</b> No email required. Please do <b>NOT</b> use a real password from your bank or social media. Pick something cute and easy to remember! 🎀
+                    </div>
+
+                    <div style="display: flex; gap: 10px; width: 80%;">
+                        <button class="sync-btn" onclick="DiaryManager.authAction('login')">LOGIN</button>
+                        <button class="sync-btn" onclick="DiaryManager.authAction('register')">REGISTER</button>
+                    </div>
+                    
+                    <div style="margin-top: 15px; font-size: 0.8rem; color: var(--deep-sea); text-decoration: underline; cursor: pointer; font-weight: 700; text-shadow: 1px 1px 0px white;" onclick="toggleRecoveryUI(true)">Forgot your password?</div>
                 </div>
 
-                <div class="vibe-desc" style="font-size: 0.75rem; color: var(--deep-sea); width: 85%; margin-bottom: 15px; line-height: 1.3; text-shadow: 1px 1px 0px white; background: rgba(255,255,255,0.3); padding: 8px; border-radius: 15px; border: 1px dashed var(--moe-pink);">
-                    ⚠️ <b>Privacy first!</b> No email required. Please do <b>NOT</b> use a real password from your bank or social media. Pick something cute and easy to remember! 🎀
+                <!-- Recovery UI (Hidden by default) -->
+                <div id="recovery-auth" style="display: none; width: 100%; flex-direction: column; align-items: center;">
+                    <div class="vibe-desc" style="font-size: 0.75rem; color: var(--deep-sea); width: 85%; margin-bottom: 10px; line-height: 1.3; text-shadow: 1px 1px 0px white;">Enter your username, your Secret Recovery Key, and your new password!</div>
+                    
+                    <input type="text" id="rec-username" placeholder="Username" class="days-input" style="width: 80%; margin-bottom: 8px; border-radius: 20px;">
+                    <input type="text" id="rec-key" placeholder="Recovery Key (FLORA-...)" class="days-input" style="width: 80%; margin-bottom: 8px; border-radius: 20px;">
+                    
+                    <div style="position: relative; width: 80%; margin-bottom: 15px;">
+                        <input type="password" id="rec-password" placeholder="New Password" class="days-input" style="width: 100%; box-sizing: border-box; border-radius: 20px; padding-right: 35px;">
+                        <button type="button" onclick="togglePassword('rec-password')" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 1.1rem; opacity: 0.7;">👁️</button>
+                    </div>
+
+                    <button class="sync-btn" style="width: 80%; background: linear-gradient(135deg, var(--mermaid-aqua), var(--moe-pink)); color: white; border: 2px solid white;" onclick="DiaryManager.recoverAction()">RESET PASSWORD</button>
+                    
+                    <div style="margin-top: 15px; font-size: 0.8rem; color: var(--deep-sea); text-decoration: underline; cursor: pointer; font-weight: 700; text-shadow: 1px 1px 0px white;" onclick="toggleRecoveryUI(false)">Cancel</div>
                 </div>
 
-                <div style="display: flex; gap: 10px; width: 80%;">
-                    <button class="sync-btn" onclick="DiaryManager.login()">LOGIN</button>
-                    <button class="sync-btn" onclick="DiaryManager.register()">REGISTER</button>
-                </div>
                 <div id="auth-message" style="color: var(--moe-pink); font-size: 0.85rem; margin-top: 10px; text-shadow: 1px 1px 0px white; font-weight: 700;"></div>
             </div>
             
-            <!-- NEW PROFILE HEADER -->
             <div id="user-profile-header" style="display: none; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.4); padding: 10px 15px; border-radius: 20px; border: 2px dashed var(--moe-pink); margin-bottom: 15px;">
                 <div style="font-size: 0.85rem; font-weight: 700; color: var(--deep-sea); text-shadow: 1px 1px 0px white;">☁️ Connected to Cloud</div>
                 <button onclick="DiaryManager.logout()" style="background: var(--moe-pink); color: white; border: 2px solid white; border-radius: 10px; font-weight: 700; font-family: 'Fredoka'; padding: 5px 10px; font-size: 0.7rem; cursor: pointer;">LOGOUT</button>
@@ -786,10 +807,8 @@
             <!-- TAB: FLORA (Search, Database & Diary Toggle) -->
             <div id="tab-flora" class="tab-section">
                 
-                <!-- Diary Toggle Button -->
                 <button id="diary-toggle-btn" class="sync-btn" style="width: 100%; margin-bottom: 15px; padding: 12px; font-size: 0.9rem; background: rgba(255, 255, 255, 0.5); border: 2px dashed var(--mermaid-aqua);" onclick="toggleDiaryView()">📖 OPEN MY DIARY</button>
                 
-                <!-- THE FLORA DATABASE VIEW -->
                 <div id="flora-database-view">
                     <div class="wide-box" id="flora-smart-alerts" style="display: none;">
                         <div class="celestial-title">💡 Smart Botanical Alerts</div>
@@ -820,15 +839,12 @@
                     <div id="agronomy-list"></div>
                 </div>
 
-                <!-- THE PERSONAL DIARY VIEW -->
                 <div id="flora-diary-view" style="display: none;">
-                    <!-- Add New Plant Form -->
                     <div class="wide-box" style="background: rgba(255, 255, 255, 0.3);">
                         <div class="celestial-title">➕ Add to Diary</div>
                         <select id="plant-select" class="days-input" style="width: 100%; margin-bottom: 8px; border-radius: 15px; font-size: 0.85rem; text-align: left;"></select>
                         <input type="text" id="plant-nickname" placeholder="Custom Nickname (e.g. Monstera Corner)" class="days-input" style="width: 100%; margin-bottom: 8px; border-radius: 15px; font-size: 0.85rem; text-align: left; box-sizing: border-box;">
                         
-                        <!-- CAMERA UPLOAD FIX -->
                         <label for="plant-photo" class="sync-btn" style="display:block; width: 100%; box-sizing: border-box; text-align: center; margin-bottom: 12px; background: var(--inner-bubble);">📸 UPLOAD CUSTOM PHOTO</label>
                         <input type="file" id="plant-photo" accept="image/*" style="display: none;" onchange="updatePhotoLabel(this)">
                         
@@ -870,9 +886,7 @@
                         </div>
                     </div>
                 </div>
-
             </div>
-
         </div>
 
         <div class="btn-container">
@@ -897,7 +911,12 @@
     </div>
 
     <script>
-        // Photo label update function
+        function toggleRecoveryUI(showRecovery) {
+            document.getElementById('standard-auth').style.display = showRecovery ? 'none' : 'flex';
+            document.getElementById('recovery-auth').style.display = showRecovery ? 'flex' : 'none';
+            document.getElementById('auth-message').innerText = '';
+        }
+
         function updatePhotoLabel(input) {
             const label = document.querySelector('label[for="plant-photo"]');
             if (input.files && input.files[0]) {
@@ -912,7 +931,6 @@
             }
         }
 
-        // Extremely fast image compressor for mobile
         async function compressImage(file) {
             return new Promise((resolve) => {
                 const reader = new FileReader();
@@ -941,7 +959,6 @@
             });
         }
 
-        // Toggle Diary View
         let isDiaryOpen = false;
         function toggleDiaryView() {
             isDiaryOpen = !isDiaryOpen;
@@ -968,8 +985,8 @@
             }
         }
 
-        function togglePassword() {
-            const pwdInput = document.getElementById('password');
+        function togglePassword(inputId) {
+            const pwdInput = document.getElementById(inputId);
             if (pwdInput.type === 'password') {
                 pwdInput.type = 'text';
             } else {
@@ -1006,10 +1023,10 @@
             }
         }
 
-        // 📖 PLANT DIARY MANAGER LOGIC WITH CLOUD SYNC & DATABASE 📖
+        // 📖 PLANT DIARY MANAGER LOGIC WITH SECURE TOKENS 📖
         const DiaryManager = {
-            plants: [], // Array of plant objects from database
-            userId: localStorage.getItem('floraUserId') || null,
+            plants: [], 
+            sessionToken: localStorage.getItem('floraSessionToken') || null,
 
             authAction: async function(action) {
                 const u = document.getElementById('username').value;
@@ -1017,7 +1034,7 @@
                 const msg = document.getElementById('auth-message');
                 
                 if (!u || !p) { msg.innerText = "Need username and password!"; return; }
-                msg.innerText = "Connecting...";
+                msg.innerText = "Connecting securely...";
 
                 try {
                     const res = await fetch('/api/auth', {
@@ -1028,10 +1045,15 @@
                     const data = await res.json();
                     
                     if (res.ok) {
-                        this.userId = data.userId;
-                        localStorage.setItem('floraUserId', data.userId);
+                        this.sessionToken = data.token;
+                        localStorage.setItem('floraSessionToken', data.token);
                         msg.innerText = data.message;
                         document.getElementById('login-container').style.display = 'none';
+                        
+                        if (action === 'register' && data.recoveryKey) {
+                            alert(`⚠️ TAKE A SCREENSHOT! ⚠️\n\nYour Secret Recovery Key is:\n\n${data.recoveryKey}\n\nThis is the ONLY way to reset your password if you forget it! Keep it safe.`);
+                        }
+                        
                         this.init(); 
                     } else {
                         msg.innerText = data.error;
@@ -1039,12 +1061,39 @@
                 } catch(e) { msg.innerText = "Network error!"; }
             },
 
-            login: function() { this.authAction('login'); },
-            register: function() { this.authAction('register'); },
-            
+            recoverAction: async function() {
+                const u = document.getElementById('rec-username').value;
+                const key = document.getElementById('rec-key').value;
+                const newPwd = document.getElementById('rec-password').value;
+                const msg = document.getElementById('auth-message');
+                
+                if (!u || !key || !newPwd) { msg.innerText = "All fields required!"; return; }
+                msg.innerText = "Verifying Recovery Key...";
+
+                try {
+                    const res = await fetch('/api/auth', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ action: 'recover', username: u, recoveryKey: key, newPassword: newPwd })
+                    });
+                    const data = await res.json();
+                    
+                    if (res.ok) {
+                        this.sessionToken = data.token;
+                        localStorage.setItem('floraSessionToken', data.token);
+                        msg.innerText = data.message;
+                        document.getElementById('login-container').style.display = 'none';
+                        alert("Password successfully reset! 🌸");
+                        this.init(); 
+                    } else {
+                        msg.innerText = data.error;
+                    }
+                } catch(e) { msg.innerText = "Network error!"; }
+            },
+
             logout: function() {
-                this.userId = null;
-                localStorage.removeItem('floraUserId');
+                this.sessionToken = null;
+                localStorage.removeItem('floraSessionToken');
                 this.plants = [];
                 document.getElementById('user-profile-header').style.display = 'none';
                 document.getElementById('login-container').style.display = 'flex';
@@ -1052,7 +1101,7 @@
             },
 
             init: async function() {
-                if (!this.userId) {
+                if (!this.sessionToken) {
                     document.getElementById('login-container').style.display = 'flex';
                     document.getElementById('user-profile-header').style.display = 'none';
                     return;
@@ -1062,11 +1111,13 @@
 
                 try {
                     const response = await fetch('/api/db', {
-                        headers: { 'user-id': this.userId }
+                        headers: { 'session-token': this.sessionToken }
                     });
                     if (response.ok) {
                         const json = await response.json();
                         this.plants = json.plants || [];
+                    } else {
+                        this.logout(); 
                     }
                 } catch (e) {
                     console.error("Cloud fetch failed", e);
@@ -1102,7 +1153,7 @@
                 
                 await fetch('/api/db', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'user-id': this.userId },
+                    headers: { 'Content-Type': 'application/json', 'session-token': this.sessionToken },
                     body: JSON.stringify({ plant_template_id: templateId, nickname: nickname, shelf_type: shelf, custom_image: base64Image })
                 });
                 
@@ -1118,7 +1169,7 @@
                 if(confirm("Are you sure you want to delete this plant forever? 🥀")) {
                     await fetch('/api/db', {
                         method: 'DELETE',
-                        headers: { 'Content-Type': 'application/json', 'user-id': this.userId },
+                        headers: { 'Content-Type': 'application/json', 'session-token': this.sessionToken },
                         body: JSON.stringify({ id: id })
                     });
                     this.closeModal();
@@ -1145,7 +1196,7 @@
                 if (confirm("Are you sure you watered this plant? This will reset the schedule!")) {
                     await fetch('/api/db', {
                         method: 'PUT',
-                        headers: { 'Content-Type': 'application/json', 'user-id': this.userId },
+                        headers: { 'Content-Type': 'application/json', 'session-token': this.sessionToken },
                         body: JSON.stringify({ id: id })
                     });
                     this.closeModal();
@@ -1162,7 +1213,7 @@
                 
                 await fetch('/api/db', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'user-id': this.userId },
+                    headers: { 'Content-Type': 'application/json', 'session-token': this.sessionToken },
                     body: JSON.stringify({ plant_template_id: templateId, nickname: newNickname, shelf_type: 'nursery', custom_image: parent.custom_image })
                 });
                 
@@ -2277,3 +2328,4 @@
     </script>
 </body>
 </html>
+
