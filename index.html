@@ -59,24 +59,30 @@
             margin-bottom: 20px;
             display: flex;
             flex-direction: column;
-            position: relative; /* Added for the settings gear */
+            position: relative;
         }
 
-        /* NEW SETTINGS GEAR */
+        /* CUSTOM GEAR ICON */
         .settings-gear {
             position: absolute;
             top: 25px;
             right: 20px;
-            width: 32px;
-            height: 32px;
+            width: 36px;
+            height: 36px;
             cursor: pointer;
-            border-radius: 8px;
+            border-radius: 10px;
             border: 2px solid white;
             box-shadow: 0 2px 5px rgba(0, 240, 255, 0.4);
-            object-fit: cover;
-            background: var(--moe-pink);
+            background-color: var(--moe-pink);
+            background-image: url('gear.jpg');
+            background-size: cover;
+            background-position: center;
             transition: transform 0.2s ease;
             z-index: 10;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: transparent; 
         }
         .settings-gear:active { transform: scale(0.9); }
 
@@ -284,10 +290,12 @@
 
     <div class="weather-container">
         <!-- SETTINGS GEAR ICON IN TOP RIGHT -->
-        <img src="gear.jpg" alt="Settings" class="settings-gear" onerror="this.style.display='none'" onclick="toggleSettingsModal()">
+        <div class="settings-gear" onclick="toggleSettingsModal()">
+            <img src="gear.jpg" alt="⚙️" style="width: 100%; height: 100%; border-radius: 8px; object-fit: cover;">
+        </div>
         
         <h1>☁️ Right Now</h1>
-        
+
         <div id="weather-search-box" class="search-box">
             <input type="text" id="search-input" placeholder="Search city... 🌺" onkeypress="handleSearchKeyPress(event)">
             <button class="search-btn" onclick="searchLocation()">🔍</button>
@@ -422,72 +430,7 @@
                 </div>
             </div>
 
-            <!-- TAB: ADMIN MASTER DATABASE UPLOADER -->
-            <div id="tab-admin" class="tab-section">
-                <div class="wide-box" style="background: rgba(255, 255, 255, 0.3);">
-                    <div class="celestial-title">☁️ Master Database Uploader</div>
-                    <div class="vibe-desc" style="margin-bottom: 10px; font-size: 0.75rem;">Add a new master template directly to your Postgres cloud database.</div>
-                    
-                    <input type="text" id="admin-id" placeholder="Plant ID (e.g. pink_princess)" class="days-input" style="width: 100%; margin-bottom: 8px; border-radius: 15px; font-size: 0.85rem; text-align: left; box-sizing: border-box;">
-                    <input type="text" id="admin-name" placeholder="Display Name (e.g. Pink Princess)" class="days-input" style="width: 100%; margin-bottom: 8px; border-radius: 15px; font-size: 0.85rem; text-align: left; box-sizing: border-box;">
-                    
-                    <label for="admin-photo" class="sync-btn" style="display:block; width: 100%; box-sizing: border-box; text-align: center; margin-bottom: 8px; background: var(--inner-bubble);">📸 UPLOAD PLANT STAMP IMAGE</label>
-                    <input type="file" id="admin-photo" accept="image/*" style="display: none;" onchange="updateAdminPhotoLabel(this)">
-                    
-                    <div style="display: flex; gap: 8px; margin-bottom: 8px;">
-                        <select id="admin-toxic" class="days-input" style="flex: 1; border-radius: 15px; font-size: 0.85rem;">
-                            <option value="true">☠️ Toxic to Pets</option>
-                            <option value="false">🐾 Pet Safe</option>
-                        </select>
-                        <select id="admin-wfreq" class="days-input" style="flex: 1; border-radius: 15px; font-size: 0.85rem;">
-                            <option value="high">💧 High Water</option>
-                            <option value="moderate" selected>💧 Mod Water</option>
-                            <option value="low">🌵 Low Water</option>
-                            <option value="very_low">🏜️ Very Low</option>
-                        </select>
-                    </div>
-                    
-                    <input type="text" id="admin-wsched" placeholder="Schedule (e.g. Water: Let dry completely)" class="days-input" style="width: 100%; margin-bottom: 8px; border-radius: 15px; font-size: 0.85rem; text-align: left; box-sizing: border-box;">
-                    
-                    <div style="display: flex; gap: 8px; margin-bottom: 8px;">
-                        <input type="number" step="0.1" id="admin-vpd-min" placeholder="Min VPD (0.8)" class="days-input" style="flex: 1; border-radius: 15px; font-size: 0.85rem;">
-                        <input type="number" step="0.1" id="admin-vpd-max" placeholder="Max VPD (1.2)" class="days-input" style="flex: 1; border-radius: 15px; font-size: 0.85rem;">
-                    </div>
-
-                    <div style="display: flex; gap: 8px; margin-bottom: 8px;">
-                        <input type="number" id="admin-tfloor" placeholder="Abs Min Temp (50)" class="days-input" style="flex: 1; border-radius: 15px; font-size: 0.85rem;">
-                        <input type="number" id="admin-tceil" placeholder="Abs Max Temp (95)" class="days-input" style="flex: 1; border-radius: 15px; font-size: 0.85rem;">
-                    </div>
-
-                    <div style="display: flex; gap: 8px; margin-bottom: 8px;">
-                        <input type="number" id="admin-optmin" placeholder="Pref Min Temp (65)" class="days-input" style="flex: 1; border-radius: 15px; font-size: 0.85rem;">
-                        <input type="number" id="admin-optmax" placeholder="Pref Max Temp (80)" class="days-input" style="flex: 1; border-radius: 15px; font-size: 0.85rem;">
-                    </div>
-
-                    <div style="display: flex; gap: 8px; margin-bottom: 8px;">
-                        <select id="admin-cycle" class="days-input" style="flex: 1; border-radius: 15px; font-size: 0.85rem;">
-                            <option value="perennial" selected>Perennial</option>
-                            <option value="annual">Annual</option>
-                        </select>
-                        <select id="admin-season" class="days-input" style="flex: 1; border-radius: 15px; font-size: 0.85rem;">
-                            <option value="null" selected>No specific season</option>
-                            <option value="spring">Spring</option>
-                            <option value="summer">Summer</option>
-                            <option value="fall">Fall</option>
-                            <option value="winter">Winter</option>
-                        </select>
-                    </div>
-
-                    <div style="display: flex; gap: 8px; margin-bottom: 12px;">
-                        <input type="number" id="admin-wind" placeholder="Max Wind (15)" class="days-input" style="flex: 1; border-radius: 15px; font-size: 0.85rem;">
-                        <input type="text" id="admin-lunar" placeholder="Lunar (waxing)" class="days-input" style="flex: 1; border-radius: 15px; font-size: 0.85rem; text-align: left;">
-                    </div>
-
-                    <button class="sync-btn" style="width: 100%; background: linear-gradient(135deg, #00d084, #00f0ff); color: white; border: 2px solid white; margin-bottom: 10px;" onclick="DiaryManager.uploadMasterTemplate()">☁️ UPLOAD TO CLOUD DB</button>
-                </div>
-            </div>
-
-            <!-- TAB: FLORA -->
+            <!-- TAB: FLORA (Search, Database & Diary Toggle) -->
             <div id="tab-flora" class="tab-section">
                 
                 <button id="diary-toggle-btn" class="sync-btn" style="width: 100%; margin-bottom: 15px; padding: 12px; font-size: 0.9rem; background: rgba(255, 255, 255, 0.5); border: 2px dashed var(--mermaid-aqua);" onclick="toggleDiaryView()">📖 OPEN MY DIARY</button>
@@ -538,7 +481,8 @@
                             <option value="mother">🪴 Mother Station</option>
                             <option value="nursery">🧪 Nursery</option>
                         </select>
-                        <button class="sync-btn" style="width: 100%; background: linear-gradient(135deg, var(--mermaid-aqua), var(--moe-pink)); color: white; border: 2px solid white;" onclick="DiaryManager.addPlant()">ADD NEW PLANT</button>
+                        <!-- CHANGED TEXT COLOR TO BLACK FOR VISIBILITY -->
+                        <button class="sync-btn" style="width: 100%; background: linear-gradient(135deg, var(--mermaid-aqua), var(--moe-pink)); color: black; font-weight: 900; border: 2px solid white;" onclick="DiaryManager.addPlant()">ADD NEW PLANT</button>
                     </div>
 
                     <div class="wide-box" id="diary-container">
@@ -581,13 +525,13 @@
         </div>
     </div>
 
-    <!-- SETTINGS MODAL (CONTAINS LOGIN & PROFILE INFO) -->
+    <!-- SETTINGS MODAL (CONTAINS LOGIN, PROFILE & ADMIN PANEL) -->
     <div id="settings-modal" class="modal">
         <div class="modal-content" style="height: auto; max-height: 85%;">
             <div class="close-radar-btn" onclick="toggleSettingsModal()">⚙️ CLOSE SETTINGS</div>
             <div style="padding: 15px; overflow-y: auto;">
                 
-                <!-- LOGIN UI MOVED INSIDE SETTINGS MENU -->
+                <!-- LOGIN UI -->
                 <div id="login-container" class="wide-box" style="margin-bottom: 0; box-shadow: none;">
                     <div class="celestial-title">🌸 Cloud Login 🌸</div>
                     
@@ -630,15 +574,77 @@
                     <div id="auth-message" style="color: var(--moe-pink); font-size: 0.85rem; margin-top: 10px; text-shadow: 1px 1px 0px white; font-weight: 700;"></div>
                 </div>
 
-                <!-- USER PROFILE MOVED INSIDE SETTINGS MENU -->
+                <!-- USER PROFILE HEADER -->
                 <div id="user-profile-header" style="display: none; flex-direction: column; align-items: center; gap: 10px; background: rgba(255,255,255,0.4); padding: 15px; border-radius: 20px; border: 2px dashed var(--moe-pink); margin-bottom: 0;">
                     <div style="font-size: 1.1rem; font-weight: 700; color: var(--deep-sea); text-shadow: 1px 1px 0px white;">☁️ Connected to Cloud</div>
                     <div style="font-size: 0.85rem; color: var(--moe-pink); font-weight: 700; margin-bottom: 5px;">Logged in as: <span id="display-username"></span></div>
                     
                     <button onclick="DiaryManager.logout()" style="width: 100%; background: var(--moe-pink); color: white; border: 2px solid white; border-radius: 15px; font-weight: 700; font-family: 'Fredoka'; padding: 10px; font-size: 0.85rem; cursor: pointer; box-shadow: 0 2px 5px rgba(255, 133, 194, 0.4);">LOGOUT</button>
-                    
-                    <!-- Hidden Admin button that shows up here if Plum logs in -->
-                    <button id="admin-nav-btn" class="sync-btn" style="display: none; width: 100%; margin-top: 5px; background: linear-gradient(135deg, #00f0ff, #00d084); color: white; border: 2px solid white;" onclick="switchTab('tab-admin', null); toggleSettingsModal();">🛠️ MASTER ADMIN PANEL</button>
+                </div>
+
+                <!-- ADMIN PANEL (ONLY SHOWS IF LOGGED IN AS PLUM) -->
+                <div id="admin-panel" style="display: none; margin-top: 15px;">
+                    <div class="wide-box" style="background: rgba(255, 255, 255, 0.3); margin-bottom: 0;">
+                        <div class="celestial-title">☁️ Master Database Uploader</div>
+                        <div class="vibe-desc" style="margin-bottom: 10px; font-size: 0.75rem;">Add a new master template directly to your Postgres cloud database.</div>
+                        
+                        <input type="text" id="admin-id" placeholder="Plant ID (e.g. pink_princess)" class="days-input" style="width: 100%; margin-bottom: 8px; border-radius: 15px; font-size: 0.85rem; text-align: left; box-sizing: border-box;">
+                        <input type="text" id="admin-name" placeholder="Display Name (e.g. Pink Princess)" class="days-input" style="width: 100%; margin-bottom: 8px; border-radius: 15px; font-size: 0.85rem; text-align: left; box-sizing: border-box;">
+                        
+                        <label for="admin-photo" class="sync-btn" style="display:block; width: 100%; box-sizing: border-box; text-align: center; margin-bottom: 8px; background: var(--inner-bubble);">📸 UPLOAD PLANT STAMP IMAGE</label>
+                        <input type="file" id="admin-photo" accept="image/*" style="display: none;" onchange="updateAdminPhotoLabel(this)">
+                        
+                        <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+                            <select id="admin-toxic" class="days-input" style="flex: 1; border-radius: 15px; font-size: 0.85rem;">
+                                <option value="true">☠️ Toxic to Pets</option>
+                                <option value="false">🐾 Pet Safe</option>
+                            </select>
+                            <select id="admin-wfreq" class="days-input" style="flex: 1; border-radius: 15px; font-size: 0.85rem;">
+                                <option value="high">💧 High Water</option>
+                                <option value="moderate" selected>💧 Mod Water</option>
+                                <option value="low">🌵 Low Water</option>
+                                <option value="very_low">🏜️ Very Low</option>
+                            </select>
+                        </div>
+                        
+                        <input type="text" id="admin-wsched" placeholder="Schedule (e.g. Water: Let dry completely)" class="days-input" style="width: 100%; margin-bottom: 8px; border-radius: 15px; font-size: 0.85rem; text-align: left; box-sizing: border-box;">
+                        
+                        <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+                            <input type="number" step="0.1" id="admin-vpd-min" placeholder="Min VPD (0.8)" class="days-input" style="flex: 1; border-radius: 15px; font-size: 0.85rem;">
+                            <input type="number" step="0.1" id="admin-vpd-max" placeholder="Max VPD (1.2)" class="days-input" style="flex: 1; border-radius: 15px; font-size: 0.85rem;">
+                        </div>
+
+                        <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+                            <input type="number" id="admin-tfloor" placeholder="Abs Min Temp (50)" class="days-input" style="flex: 1; border-radius: 15px; font-size: 0.85rem;">
+                            <input type="number" id="admin-tceil" placeholder="Abs Max Temp (95)" class="days-input" style="flex: 1; border-radius: 15px; font-size: 0.85rem;">
+                        </div>
+
+                        <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+                            <input type="number" id="admin-optmin" placeholder="Pref Min Temp (65)" class="days-input" style="flex: 1; border-radius: 15px; font-size: 0.85rem;">
+                            <input type="number" id="admin-optmax" placeholder="Pref Max Temp (80)" class="days-input" style="flex: 1; border-radius: 15px; font-size: 0.85rem;">
+                        </div>
+
+                        <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+                            <select id="admin-cycle" class="days-input" style="flex: 1; border-radius: 15px; font-size: 0.85rem;">
+                                <option value="perennial" selected>Perennial</option>
+                                <option value="annual">Annual</option>
+                            </select>
+                            <select id="admin-season" class="days-input" style="flex: 1; border-radius: 15px; font-size: 0.85rem;">
+                                <option value="null" selected>No specific season</option>
+                                <option value="spring">Spring</option>
+                                <option value="summer">Summer</option>
+                                <option value="fall">Fall</option>
+                                <option value="winter">Winter</option>
+                            </select>
+                        </div>
+
+                        <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+                            <input type="number" id="admin-wind" placeholder="Max Wind (15)" class="days-input" style="flex: 1; border-radius: 15px; font-size: 0.85rem;">
+                            <input type="text" id="admin-lunar" placeholder="Lunar (waxing)" class="days-input" style="flex: 1; border-radius: 15px; font-size: 0.85rem; text-align: left;">
+                        </div>
+
+                        <button class="sync-btn" style="width: 100%; background: linear-gradient(135deg, #00d084, #00f0ff); color: black; font-weight: 900; border: 2px solid white; margin-bottom: 10px;" onclick="DiaryManager.uploadMasterTemplate()">☁️ UPLOAD TO CLOUD DB</button>
+                    </div>
                 </div>
 
             </div>
@@ -819,12 +825,16 @@
                         localStorage.setItem('floraUsername', data.username);
                         msg.innerText = data.message;
                         document.getElementById('login-container').style.display = 'none';
+                        document.getElementById('user-profile-header').style.display = 'flex';
+                        
+                        if (data.username && data.username.toLowerCase() === 'plum') {
+                            document.getElementById('admin-panel').style.display = 'block';
+                        }
                         
                         if (action === 'register' && data.recoveryKey) {
                             alert(`⚠️ TAKE A SCREENSHOT! ⚠️\n\nYour Secret Recovery Key is:\n\n${data.recoveryKey}\n\nThis is the ONLY way to reset your password if you forget it! Keep it safe.`);
                         }
                         
-                        toggleSettingsModal(); // Close settings pop-up automatically
                         this.init(); 
                     } else {
                         msg.innerText = data.error;
@@ -855,8 +865,13 @@
                         localStorage.setItem('floraUsername', data.username);
                         msg.innerText = data.message;
                         document.getElementById('login-container').style.display = 'none';
+                        document.getElementById('user-profile-header').style.display = 'flex';
+                        
+                        if (data.username && data.username.toLowerCase() === 'plum') {
+                            document.getElementById('admin-panel').style.display = 'block';
+                        }
+                        
                         alert("Password successfully reset! 🌸");
-                        toggleSettingsModal(); // Close settings pop-up automatically
                         this.init(); 
                     } else {
                         msg.innerText = data.error;
@@ -870,7 +885,7 @@
                 localStorage.removeItem('floraUsername');
                 this.plants = [];
                 document.getElementById('user-profile-header').style.display = 'none';
-                document.getElementById('admin-nav-btn').style.display = 'none';
+                document.getElementById('admin-panel').style.display = 'none';
                 document.getElementById('login-container').style.display = 'flex';
                 this.renderGrid();
             },
@@ -878,17 +893,9 @@
             init: async function() {
                 const loggedInUser = localStorage.getItem('floraUsername');
                 
-                // Show username in profile header
                 if (loggedInUser) {
                     const displayEl = document.getElementById('display-username');
                     if(displayEl) displayEl.innerText = loggedInUser;
-                }
-                
-                // Admin button visibility check
-                if (loggedInUser && loggedInUser.toLowerCase() === 'plum') {
-                    document.getElementById('admin-nav-btn').style.display = 'block';
-                } else {
-                    document.getElementById('admin-nav-btn').style.display = 'none';
                 }
 
                 try {
@@ -924,12 +931,18 @@
                 if (!this.sessionToken) {
                     document.getElementById('login-container').style.display = 'flex';
                     document.getElementById('user-profile-header').style.display = 'none';
-                    return; // Stop here if they aren't logged in
+                    document.getElementById('admin-panel').style.display = 'none';
+                    return; 
                 }
                 
-                // If they are logged in, swap the view
                 document.getElementById('login-container').style.display = 'none';
                 document.getElementById('user-profile-header').style.display = 'flex';
+                
+                if (loggedInUser && loggedInUser.toLowerCase() === 'plum') {
+                    document.getElementById('admin-panel').style.display = 'block';
+                } else {
+                    document.getElementById('admin-panel').style.display = 'none';
+                }
 
                 try {
                     const response = await fetch('/api/db', {
@@ -2225,4 +2238,3 @@
     </script>
 </body>
 </html>
-
