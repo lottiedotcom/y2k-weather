@@ -5,7 +5,6 @@ module.exports = async (req, res) => {
     const token = req.headers['session-token'];
     const dbType = req.headers['db-type'] || 'instance';
 
-    // Publicly load all master templates from the database so the search bar works
     if (dbType === 'template' && req.method === 'GET') {
         try {
             const result = await pool.query('SELECT * FROM plant_templates');
@@ -24,7 +23,6 @@ module.exports = async (req, res) => {
         const userId = userRes.rows[0].id;
         const username = userRes.rows[0].username;
 
-        // MASTER DATABASE UPLOAD (ONLY FOR ADMIN 'PLUM')
         if (dbType === 'template' && req.method === 'POST') {
             if (username.toLowerCase() !== 'plum') return res.status(403).json({ error: 'Admin access denied.' });
             
@@ -37,7 +35,6 @@ module.exports = async (req, res) => {
             return res.status(200).json({ message: 'Template safely uploaded to Cloud!' });
         }
 
-        // STANDARD USER DIARY MANAGEMENT
         if (req.method === 'GET') {
             const result = await pool.query(
                 `SELECT id, user_id, plant_template_id, nickname, shelf_type, custom_image,
