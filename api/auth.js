@@ -23,7 +23,7 @@ module.exports = async (req, res) => {
                 [username, hash, recKey, token]
             );
 
-            res.status(200).json({ message: 'Registered!', token: token, recoveryKey: recKey });
+            res.status(200).json({ message: 'Registered!', token: token, recoveryKey: recKey, username: username });
         } 
         else if (action === 'login') {
             if (!password) return res.status(400).json({ error: 'Password required' });
@@ -52,7 +52,7 @@ module.exports = async (req, res) => {
             const token = crypto.randomBytes(32).toString('hex');
             await pool.query('UPDATE users SET failed_attempts = 0, locked_until = NULL, session_token = $1 WHERE username = $2', [token, username]);
             
-            res.status(200).json({ message: 'Logged in!', token: token });
+            res.status(200).json({ message: 'Logged in!', token: token, username: u.username });
         }
         else if (action === 'recover') {
             if (!recoveryKey || !newPassword) return res.status(400).json({ error: 'Key and new password required' });
@@ -65,7 +65,7 @@ module.exports = async (req, res) => {
             
             await pool.query('UPDATE users SET password_hash = $1, session_token = $2, failed_attempts = 0, locked_until = NULL WHERE username = $3', [hash, token, username]);
             
-            res.status(200).json({ message: 'Password reset successful!', token: token });
+            res.status(200).json({ message: 'Password reset successful!', token: token, username: username });
         }
     } catch (err) {
         res.status(500).json({ error: err.message });
