@@ -13,8 +13,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&display=swap" rel="stylesheet">
 
-    <!-- Database Fallback & Climate Engine -->
-    <script src="flora_db.js"></script>
     <script src="climate_db.js"></script>
 
     <style>
@@ -783,8 +781,9 @@
                 btnNursery.classList.add('active');
             }
         }
+
         window.floraDB = window.floraDB || {};
-        
+
         const DiaryManager = {
             plants: [], 
             sessionToken: localStorage.getItem('floraSessionToken') || null,
@@ -912,7 +911,7 @@
                                 vpd_range: [parseFloat(t.vpd_min), parseFloat(t.vpd_max)],
                                 temp_floor: t.temp_floor,
                                 temp_ceiling: t.temp_ceiling,
-                                optimal_temp: [t.opt_min, t.opt_max], // FIXED ARRAY FORMAT
+                                optimal_temp: [t.opt_min, t.opt_max],
                                 wind_tolerance: t.wind_tolerance,
                                 lunar_affinity: t.lunar_affinity,
                                 cycle: t.cycle,
@@ -1221,12 +1220,12 @@
                             </div>
                             <div class="stat-cell-static">
                                 <div class="stat-label-clean">Lunar Boost</div>
-                                <div class="stat-value-clean ${res.isLunarBoostActive ? 'lunar-boost-active' : ''}">${res.plant.lunar_affinity.toUpperCase()}</div>
+                                <div class="stat-value-clean ${res.isLunarBoostActive ? 'lunar-boost-active' : ''}">${res.plant.lunar_affinity ? res.plant.lunar_affinity.toUpperCase() : ''}</div>
                             </div>
                         </div>
                         <div class="metabolism-box">
                             <div class="stat-label-clean">Metabolism</div>
-                            <div class="metabolism-text">${res.respiration}</div>
+                            <div class="metabolism-text">${res.respiration || ''}</div>
                         </div>
                     `;
                 } else {
@@ -1620,7 +1619,7 @@
                 title = "Warm  ˖.𖤓 ݁٠࣪˖˚⋆";
                 desc = "It's a sunny day! The plants are loving life, it's a great day to get outside 𖤓";
             } else if (temp < 90) {
-                title = "Toasty ☀︎⋆.utf8";
+                title = "Toasty ☀︎⋆.ೃ࿔*:･";
                 desc = "Time to turn on the fan, grab a massive ice drink and keep things simple with low stress vibes (⸝⸝ᵕᴗᵕ⸝⸝)˚˖𓍢ִ໋`🌿:";
             } else if (temp < 100) {
                 title = "Scorched ⊹₊🔥⋆｡°✩";
