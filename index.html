@@ -955,8 +955,9 @@
                 }
 
                 try {
-                    const response = await fetch('/api/db', {
-                        headers: { 'session-token': this.sessionToken }
+                    const response = await fetch('/api/db?t=' + Date.now(), {
+                        headers: { 'session-token': this.sessionToken },
+                        cache: 'no-store'
                     });
                     
                     const text = await response.text();
@@ -1264,7 +1265,8 @@
                             <div class="stat-label-clean">Metabolism</div>
                             <div class="metabolism-text">${res.respiration || ''}</div>
                         </div>
-                    `;
+                    </div>
+                `;
                 } else {
                     let daysProp = Math.floor((Date.now() - new Date(myPlant.created_at).getTime()) / (1000 * 60 * 60 * 24)) || 0;
                     let advice = "Keep in indirect light, avoid direct sun. Change water every 5 days. 💧";
