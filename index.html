@@ -255,10 +255,6 @@
         .sync-btn { flex: 1; background: rgba(255, 255, 255, 0.5); border: 2px dashed var(--mermaid-aqua); border-radius: 20px; padding: 8px 5px; color: var(--deep-sea); font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 0.75rem; cursor: pointer; box-shadow: 2px 2px 8px rgba(0, 240, 255, 0.15); transition: 0.2s ease; text-shadow: 1px 1px 0px white; }
         .sync-btn:active { transform: scale(0.95); }
 
-        .shelf-toggle-container { display: flex; gap: 8px; margin-bottom: 15px; width: 100%; }
-        .shelf-toggle-btn { flex: 1; background: var(--inner-bubble); border: 2px dotted white; border-radius: 20px; padding: 10px 5px; color: var(--deep-sea); font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 0.8rem; cursor: pointer; box-shadow: 2px 2px 8px rgba(0, 240, 255, 0.15); transition: 0.3s ease; text-shadow: 1px 1px 0px white; text-transform: uppercase; letter-spacing: 1px; }
-        .shelf-toggle-btn.active { background: linear-gradient(135deg, var(--mermaid-aqua), var(--moe-pink)); color: white; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); border: 2px solid white; }
-
         .propagate-btn { width: 100%; margin-top: 10px; margin-bottom: 15px; display: block; background: linear-gradient(135deg, rgba(0, 240, 255, 0.3), rgba(0, 208, 132, 0.3)); border: 2px dashed #00d084; border-radius: 15px; padding: 10px; color: var(--deep-sea); font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 0.85rem; cursor: pointer; box-shadow: 0 2px 5px rgba(0, 240, 255, 0.2); transition: 0.2; text-shadow: 1px 1px 0px white; text-transform: lowercase; letter-spacing: 2px; }
         .propagate-btn:active { transform: scale(0.98); }
         
@@ -450,7 +446,6 @@
                     <div class="wide-box" style="background: rgba(255, 255, 255, 0.3);">
                         <div class="celestial-title">➕ Add to Diary</div>
                         
-                        <!-- INSTANT SEARCH DROPDOWN REPLACEMENT -->
                         <div style="position: relative; width: 100%; margin-bottom: 8px;">
                             <input type="text" id="plant-select-input" placeholder="🔍 Search plant database..." class="days-input" style="width: 100%; border-radius: 15px; font-size: 0.85rem; text-align: left; box-sizing: border-box;" oninput="DiaryManager.showSuggestions(this.value)" autocomplete="off">
                             <div id="custom-suggestions" style="display: none; position: absolute; top: 100%; left: 0; width: 100%; max-height: 150px; overflow-y: auto; background: var(--inner-bubble); border: 2px solid white; border-radius: 10px; z-index: 100; box-shadow: 0 4px 10px rgba(0, 240, 255, 0.3); backdrop-filter: blur(10px);"></div>
@@ -462,8 +457,8 @@
                         <input type="file" id="plant-photo" accept="image/*" style="display: none;" onchange="updatePhotoLabel(this)">
                         
                         <select id="shelf-select" class="days-input" style="width: 100%; margin-bottom: 12px; border-radius: 15px; font-size: 0.85rem; text-align: left;">
-                            <option value="mother">🪴 Mother Station</option>
-                            <option value="nursery">🧪 Nursery</option>
+                            <option value="mother">🪴 Established Plant</option>
+                            <option value="nursery">🧪 Propagation (Fast Water Cycle)</option>
                         </select>
                         <button class="sync-btn" style="width: 100%; background: linear-gradient(135deg, var(--mermaid-aqua), var(--moe-pink)); color: black; font-weight: 900; border: 2px solid white;" onclick="DiaryManager.addPlant()">ADD NEW PLANT</button>
                     </div>
@@ -471,12 +466,7 @@
                     <div class="wide-box" id="diary-container">
                         <div class="celestial-title">✎ My Plants</div>
 
-                        <div class="shelf-toggle-container">
-                            <button id="btn-mother-shelf" class="shelf-toggle-btn active" onclick="toggleShelfView('mother')">🪴 Mother Station</button>
-                            <button id="btn-nursery-shelf" class="shelf-toggle-btn" onclick="toggleShelfView('nursery')">🧪 Nursery</button>
-                        </div>
-
-                        <div id="mother-shelf-view">
+                        <div id="unified-shelf-view">
                             <div class="diary-tier-label">𖦹 ˚ 𓇼 Water now!</div>
                             <div class="diary-tier" id="diary-tier-1"></div>
                             
@@ -485,17 +475,6 @@
                             
                             <div class="diary-tier-label">⋆.˚ 𓆉 Hydrated</div>
                             <div class="diary-tier" id="diary-tier-3"></div>
-                        </div>
-
-                        <div id="nursery-shelf-view" style="display: none;">
-                            <div class="diary-tier-label">𖦹 ˚ 𓇼 Needs Water Change!</div>
-                            <div class="diary-tier" id="nursery-tier-1"></div>
-                            
-                            <div class="diary-tier-label">₊‧ ଳ Check Roots</div>
-                            <div class="diary-tier" id="nursery-tier-2"></div>
-                            
-                            <div class="diary-tier-label">⋆.˚ 𓆉 Fresh Water</div>
-                            <div class="diary-tier" id="nursery-tier-3"></div>
                         </div>
                     </div>
                 </div>
@@ -763,25 +742,6 @@
                 return { isSaturated: true, status: "💧 Saturation: Building" };
             }
             return { isSaturated: false, status: "" };
-        }
-
-        function toggleShelfView(viewType) {
-            const motherView = document.getElementById('mother-shelf-view');
-            const nurseryView = document.getElementById('nursery-shelf-view');
-            const btnMother = document.getElementById('btn-mother-shelf');
-            const btnNursery = document.getElementById('btn-nursery-shelf');
-
-            if (viewType === 'mother') {
-                motherView.style.display = 'block';
-                nurseryView.style.display = 'none';
-                btnMother.classList.add('active');
-                btnNursery.classList.remove('active');
-            } else {
-                motherView.style.display = 'none';
-                nurseryView.style.display = 'block';
-                btnMother.classList.remove('active');
-                btnNursery.classList.add('active');
-            }
         }
 
         window.floraDB = window.floraDB || {};
@@ -1186,8 +1146,7 @@
                 });
                 
                 this.closeModal();
-                alert(`🌱 Cutting taken! It has been moved to your Nursery.`);
-                toggleShelfView('nursery');
+                alert(`🌱 Cutting taken! It has been added to your plants.`);
                 this.init();
             },
 
@@ -1267,8 +1226,7 @@
                             <div class="stat-label-clean">Metabolism</div>
                             <div class="metabolism-text">${res.respiration || ''}</div>
                         </div>
-                    </div>
-                `;
+                    `;
                 } else {
                     let daysProp = Math.floor((Date.now() - new Date(myPlant.created_at).getTime()) / (1000 * 60 * 60 * 24)) || 0;
                     let advice = "Keep in indirect light, avoid direct sun. Change water every 5 days. 💧";
@@ -1290,6 +1248,20 @@
 
                 let displayName = isProp ? `🧪 ${myPlant.nickname}` : myPlant.nickname;
                 let waterBtnText = isProp ? "💧 WATER CHANGED / TOPPED OFF!" : "💧 YES, I WATERED IT!";
+
+                let lastWateredText = "Never watered";
+                if (myPlant.last_watered_at) {
+                    let dateStr = String(myPlant.last_watered_at);
+                    if (dateStr.includes(' ')) {
+                        dateStr = dateStr.replace(' ', 'T');
+                        if (!dateStr.endsWith('Z')) dateStr += 'Z';
+                    }
+                    const d = new Date(dateStr);
+                    if (!isNaN(d.getTime())) {
+                        const options = { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' };
+                        lastWateredText = d.toLocaleString('en-US', options);
+                    }
+                }
 
                 const indoorT = localStorage.getItem('indoorTemp');
                 const indoorH = localStorage.getItem('indoorHum');
@@ -1331,7 +1303,8 @@
                             </div>
                         </div>
                     </div>
-                    <button class="refresh-btn" style="width: 100%; margin-top: 15px; margin-bottom: 10px; background: linear-gradient(135deg, #00d084, #00f0ff); border: 2px dashed white;" onclick="DiaryManager.waterPlant(${myPlant.id})">${waterBtnText}</button>
+                    <button class="refresh-btn" style="width: 100%; margin-top: 15px; margin-bottom: 5px; background: linear-gradient(135deg, #00d084, #00f0ff); border: 2px dashed white;" onclick="DiaryManager.waterPlant(${myPlant.id})">${waterBtnText}</button>
+                    <div style="font-size: 0.75rem; color: var(--deep-sea); text-align: center; margin-bottom: 15px; font-weight: 700; opacity: 0.8; text-shadow: 1px 1px 0px white;">Last Watered: ${lastWateredText}</div>
                     <button class="delete-btn" onclick="DiaryManager.deletePlant(${myPlant.id})">🗑️ DELETE FOREVER</button>
                 `;
 
@@ -1355,27 +1328,19 @@
                     const tier1 = document.getElementById('diary-tier-1'); 
                     const tier2 = document.getElementById('diary-tier-2'); 
                     const tier3 = document.getElementById('diary-tier-3'); 
-                    
-                    const nTier1 = document.getElementById('nursery-tier-1'); 
-                    const nTier2 = document.getElementById('nursery-tier-2'); 
-                    const nTier3 = document.getElementById('nursery-tier-3'); 
 
-                    if(!tier1 || !nTier1) return;
+                    if(!tier1) return;
 
                     tier1.innerHTML = ''; tier2.innerHTML = ''; tier3.innerHTML = '';
-                    nTier1.innerHTML = ''; nTier2.innerHTML = ''; nTier3.innerHTML = '';
 
-                    let hasMothers = false;
-                    let hasBabies = false;
+                    let hasPlants = false;
                     const now = Date.now();
 
                     this.plants.forEach(plantObj => {
+                        hasPlants = true;
                         const isProp = plantObj.shelf_type === 'nursery';
                         const plantData = window.floraDB[plantObj.plant_template_id];
                         if (!plantData) return;
-
-                        if (isProp) hasBabies = true;
-                        else hasMothers = true;
 
                         let checkDays = 5;
                         let waterDays = 7;
@@ -1418,22 +1383,12 @@
                         let targetTier = tier3; 
                         let dotColor = 'green';
                         
-                        if (isProp) {
-                            if (lastWateredTime === 0 || daysSinceWatered >= waterDays) { 
-                                targetTier = nTier1; dotColor = 'red'; 
-                            } else if (daysSinceWatered >= checkDays) { 
-                                targetTier = nTier2; dotColor = 'yellow'; 
-                            } else { 
-                                targetTier = nTier3; dotColor = 'green'; 
-                            }
-                        } else {
-                            if (lastWateredTime === 0 || daysSinceWatered >= waterDays) { 
-                                targetTier = tier1; dotColor = 'red'; 
-                            } else if (daysSinceWatered >= checkDays) { 
-                                targetTier = tier2; dotColor = 'yellow'; 
-                            } else { 
-                                targetTier = tier3; dotColor = 'green'; 
-                            }
+                        if (lastWateredTime === 0 || daysSinceWatered >= waterDays) { 
+                            targetTier = tier1; dotColor = 'red'; 
+                        } else if (daysSinceWatered >= checkDays) { 
+                            targetTier = tier2; dotColor = 'yellow'; 
+                        } else { 
+                            targetTier = tier3; dotColor = 'green'; 
                         }
 
                         const finalImgSrc = plantObj.custom_image || plantData.stamp_img;
@@ -1448,11 +1403,8 @@
                         targetTier.innerHTML += stampHTML;
                     });
 
-                    if (!hasMothers) {
+                    if (!hasPlants) {
                         tier2.innerHTML = `<div style="width: 100%; text-align: center; color: var(--deep-sea); font-size: 0.8rem; font-weight: 700; opacity: 0.6;">No plants pinned yet 📌</div>`;
-                    }
-                    if (!hasBabies) {
-                        nTier2.innerHTML = `<div style="width: 100%; text-align: center; color: var(--deep-sea); font-size: 0.8rem; font-weight: 700; opacity: 0.6;">Nursery is empty 🧪</div>`;
                     }
                 } catch (err) {
                     console.error("Grid rendering failed:", err);
