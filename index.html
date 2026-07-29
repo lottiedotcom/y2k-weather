@@ -1154,20 +1154,16 @@
                 }
             },
 
-                        waterPlant: function(id) {
+            waterPlant: function(id) {
                 if (confirm("Are you sure you watered this plant? This will reset the schedule!")) {
                     
-                    // 1. Instantly update the local time so it moves down
                     const myPlant = this.plants.find(p => p.id === id);
                     if (myPlant) {
                         myPlant.last_watered_at = new Date().toISOString();
                     }
                     
-                    // 2. Close modal and redraw the shelf
                     this.closeModal();
                     
-                    // 3. Quietly tell the cloud to save it in the background. 
-                    // NO this.init() being called here, so it cannot rubber-band back up!
                     fetch('/api/db', {
                         method: 'PUT',
                         headers: { 'Content-Type': 'application/json', 'session-token': this.sessionToken },
@@ -1381,12 +1377,26 @@
                         if (isProp) hasBabies = true;
                         else hasMothers = true;
 
-                        let freq = isProp ? 5 : 14; 
-                        if (!isProp) {
-                            if (plantData.water_frequency === "high") freq = 3;
-                            else if (plantData.water_frequency === "moderate") freq = 7;
-                            else if (plantData.water_frequency === "low") freq = 14;
-                            else if (plantData.water_frequency === "very_low") freq = 30;
+                        let checkDays = 5;
+                        let waterDays = 7;
+
+                        if (isProp) {
+                            checkDays = 3;
+                            waterDays = 5;
+                        } else {
+                            if (plantData.water_frequency === "high") {
+                                checkDays = 3;
+                                waterDays = 5; 
+                            } else if (plantData.water_frequency === "moderate") {
+                                checkDays = 5;
+                                waterDays = 7;
+                            } else if (plantData.water_frequency === "low") {
+                                checkDays = 7;
+                                waterDays = 14;
+                            } else if (plantData.water_frequency === "very_low") {
+                                checkDays = 14;
+                                waterDays = 30;
+                            }
                         }
 
                         let lastWateredTime = 0;
@@ -1404,19 +1414,26 @@
 
                         const msSinceWatered = now - lastWateredTime;
                         const daysSinceWatered = msSinceWatered / (1000 * 60 * 60 * 24);
-                        const daysUntilWatering = freq - daysSinceWatered;
 
                         let targetTier = tier3; 
                         let dotColor = 'green';
                         
                         if (isProp) {
-                            if (lastWateredTime === 0 || daysUntilWatering <= 2) { targetTier = nTier1; dotColor = 'red'; }
-                            else if (daysUntilWatering <= 4 || daysSinceWatered >= (freq / 2)) { targetTier = nTier2; dotColor = 'yellow'; }
-                            else { targetTier = nTier3; dotColor = 'green'; }
+                            if (lastWateredTime === 0 || daysSinceWatered >= waterDays) { 
+                                targetTier = nTier1; dotColor = 'red'; 
+                            } else if (daysSinceWatered >= checkDays) { 
+                                targetTier = nTier2; dotColor = 'yellow'; 
+                            } else { 
+                                targetTier = nTier3; dotColor = 'green'; 
+                            }
                         } else {
-                            if (lastWateredTime === 0 || daysUntilWatering <= 3) { targetTier = tier1; dotColor = 'red'; }
-                            else if (daysUntilWatering <= 7 || daysSinceWatered >= (freq / 2)) { targetTier = tier2; dotColor = 'yellow'; }
-                            else { targetTier = tier3; dotColor = 'green'; }
+                            if (lastWateredTime === 0 || daysSinceWatered >= waterDays) { 
+                                targetTier = tier1; dotColor = 'red'; 
+                            } else if (daysSinceWatered >= checkDays) { 
+                                targetTier = tier2; dotColor = 'yellow'; 
+                            } else { 
+                                targetTier = tier3; dotColor = 'green'; 
+                            }
                         }
 
                         const finalImgSrc = plantObj.custom_image || plantData.stamp_img;
