@@ -255,6 +255,10 @@
         .sync-btn { flex: 1; background: rgba(255, 255, 255, 0.5); border: 2px dashed var(--mermaid-aqua); border-radius: 20px; padding: 8px 5px; color: var(--deep-sea); font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 0.75rem; cursor: pointer; box-shadow: 2px 2px 8px rgba(0, 240, 255, 0.15); transition: 0.2s ease; text-shadow: 1px 1px 0px white; }
         .sync-btn:active { transform: scale(0.95); }
 
+        .shelf-toggle-container { display: flex; gap: 8px; margin-bottom: 15px; width: 100%; }
+        .shelf-toggle-btn { flex: 1; background: var(--inner-bubble); border: 2px dotted white; border-radius: 20px; padding: 10px 5px; color: var(--deep-sea); font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 0.8rem; cursor: pointer; box-shadow: 2px 2px 8px rgba(0, 240, 255, 0.15); transition: 0.3s ease; text-shadow: 1px 1px 0px white; text-transform: uppercase; letter-spacing: 1px; }
+        .shelf-toggle-btn.active { background: linear-gradient(135deg, var(--mermaid-aqua), var(--moe-pink)); color: white; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); border: 2px solid white; }
+
         .propagate-btn { width: 100%; margin-top: 10px; margin-bottom: 15px; display: block; background: linear-gradient(135deg, rgba(0, 240, 255, 0.3), rgba(0, 208, 132, 0.3)); border: 2px dashed #00d084; border-radius: 15px; padding: 10px; color: var(--deep-sea); font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 0.85rem; cursor: pointer; box-shadow: 0 2px 5px rgba(0, 240, 255, 0.2); transition: 0.2; text-shadow: 1px 1px 0px white; text-transform: lowercase; letter-spacing: 2px; }
         .propagate-btn:active { transform: scale(0.98); }
         
@@ -1116,19 +1120,23 @@
 
             waterPlant: function(id) {
                 if (confirm("Are you sure you watered this plant? This will reset the schedule!")) {
-                    
                     const myPlant = this.plants.find(p => p.id === id);
+                    const exactTime = new Date().toISOString();
+                    
                     if (myPlant) {
-                        myPlant.last_watered_at = new Date().toISOString();
+                        myPlant.last_watered_at = exactTime;
                     }
                     
                     this.closeModal();
                     
-                    fetch('/api/db', {
-                        method: 'PUT',
+                    fetch('/api/set/', {
+                        method: 'POST',
                         headers: { 'Content-Type': 'application/json', 'session-token': this.sessionToken },
-                        body: JSON.stringify({ id: id })
-                    });
+                        body: JSON.stringify({ 
+                            id: id,
+                            last_watered_at: exactTime
+                        })
+                    }).catch(err => console.error("Set endpoint failed:", err));
                 }
             },
 
@@ -1226,7 +1234,8 @@
                             <div class="stat-label-clean">Metabolism</div>
                             <div class="metabolism-text">${res.respiration || ''}</div>
                         </div>
-                    `;
+                    </div>
+                `;
                 } else {
                     let daysProp = Math.floor((Date.now() - new Date(myPlant.created_at).getTime()) / (1000 * 60 * 60 * 24)) || 0;
                     let advice = "Keep in indirect light, avoid direct sun. Change water every 5 days. 💧";
